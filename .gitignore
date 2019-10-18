@@ -6,3 +6,8 @@ nbproject/genfiles.properties
 nbproject/build-impl.xml
 manifest.mf
 build.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+TrabPD.iml
+.idea/workspace.xml
