@@ -12,3 +12,4 @@ build.xml
 TrabPD.iml
 .idea/workspace.xml
 *.class
+/build/
