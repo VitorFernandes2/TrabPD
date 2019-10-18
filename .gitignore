@@ -13,3 +13,4 @@ TrabPD.iml
 .idea/workspace.xml
 *.class
 /build/
+nbproject/private/private.xml
