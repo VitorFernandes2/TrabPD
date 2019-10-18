@@ -2,13 +2,12 @@ package user;
 
 public class User {
 
-    private static int count = 0;
     private int id;
     private String username;
     private String password;
 
-    public User(String username, String password) {
-        this.id = count++;
+    public User(int id, String username, String password) {
+        this.id = id;
         this.username = username;
         this.password = password;
     }
