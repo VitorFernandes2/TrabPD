@@ -11,3 +11,4 @@ build.xml
 .idea/vcs.xml
 TrabPD.iml
 .idea/workspace.xml
+*.class
