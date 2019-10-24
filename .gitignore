@@ -14,3 +14,4 @@ TrabPD.iml
 *.class
 /build/
 nbproject/private/private.xml
+.idea/uiDesigner.xml

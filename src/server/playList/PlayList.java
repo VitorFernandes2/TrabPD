@@ -6,8 +6,8 @@
 package PlayList;
 
 import java.util.List;
-import music.Music;
-import user.User;
+import server.music.Music;
+import server.user.User;
 
 /**
  *

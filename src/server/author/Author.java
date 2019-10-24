@@ -1,4 +1,4 @@
-package author;
+package server.author;
 
 public class Author {
 

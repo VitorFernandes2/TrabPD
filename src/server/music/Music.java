@@ -1,6 +1,4 @@
-package music;
-
-import author.Author;
+package server.music;
 
 import java.util.Date;
 
