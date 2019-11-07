@@ -10,11 +10,11 @@
 
     <dependencies>
 
-        <!-- https://mvnrepository.com/artifact/org.simplejavamail/simple-java-mail -->
+        <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
         <dependency>
-            <groupId>org.simplejavamail</groupId>
-            <artifactId>simple-java-mail</artifactId>
-            <version>5.4.0</version>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
         </dependency>
 
     </dependencies>
