@@ -44,15 +44,6 @@ public class ClientStart extends Thread {
         this.ReceiveJsonObj = new JSONObject();
         this.SendJsonObj = new JSONObject();
     }
-
-    //Funções a usar caso o Cliente tenha de ser relocado para um novo servidor TCP
-    public void setPort(String Port) {
-        this.Port = Port;
-    }
-
-    public void setIP(String IP) {
-        this.IP = IP;
-    }
     
     @Override
     public void run() {

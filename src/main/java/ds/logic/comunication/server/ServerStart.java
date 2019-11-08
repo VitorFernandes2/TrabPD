@@ -11,7 +11,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.HashMap;
 
-public class ServerStart extends Thread {
+public class ServerStart {
 
     private final int TotalBytes = 4096;
 
@@ -42,7 +42,6 @@ public class ServerStart extends Thread {
     }
 
     //Thread para receber todos os novos servidores
-    @Override
     public void run() {
 
         DatagramSocket Socket;
