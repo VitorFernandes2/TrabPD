@@ -45,7 +45,7 @@ public class ClientStart extends Thread {
         this.SendJsonObj = new JSONObject();
     }
 
-    //Funções a usar caso o Cliente tenha de ser relocado para um novo servidor
+    //Funções a usar caso o Cliente tenha de ser relocado para um novo servidor TCP
     public void setPort(String Port) {
         this.Port = Port;
     }
@@ -111,9 +111,12 @@ public class ClientStart extends Thread {
                     continue;
                 }
                 
-                SendJsonObj = tratmentOfCommands(Command);
+                if((SendJsonObj = tratmentOfCommands(Command)) == null){
+                    System.out.println("> Listagem de comandos inválida.");
+                    continue;
+                }
                 
-                //Local de inicío de envio e resposta do Cliente-Servidor
+                // <- Local de inicío de envio e resposta do Cliente-Servidor
                 
                 //******************************************************
             }
@@ -137,28 +140,68 @@ public class ClientStart extends Thread {
         super.start();
     }
 
+    //Função para tratamento dos comandos para o JSONObject
     private JSONObject tratmentOfCommands(String[] Command) {
         
         JSONObject AuxJsonObj = new JSONObject();
+        int count = 0;
+        int order = 0;
+        boolean hasItens = true;
+        boolean hasLog = true;
+        boolean hasPass = true;
         
         for(String comando : Command){
             
             String [] div = comando.split("|");
             
             if(div[0].equalsIgnoreCase("Tipo")){
-                
+                count++;
                 if(div[1].equalsIgnoreCase("login")){
                     AuxJsonObj.put("Tipo", "login");
+                    hasPass = false;
                 }
-                else if(div[1].equalsIgnoreCase("Logout")){
+                else if(div[1].equalsIgnoreCase("logout")){
                     AuxJsonObj.put("Tipo", "logout");
+                    hasLog = false;
+                }else if(div[1].equalsIgnoreCase("lista")){
+                    AuxJsonObj.put("Tipo", "lista");
+                }else if(div[1].equalsIgnoreCase("resposta")){
+                    AuxJsonObj.put("Tipo", "resposta");
                 }
             }
-            //else if(div[0])
-            //Falta a continuação da realização desta função!
+            else if(div[0].equalsIgnoreCase("N_itens")){
+                AuxJsonObj.put("N_itens", Integer.parseInt(div[1]));
+                hasItens = false;
+            }
+            else if(div[0].contains("item_")){
+                //Tenho dúvida se o contains verifica se a palavra tem pelo menos um caracter de cada tipo
+                //Discutir se é necessário verificação correta dos itens da playlist
+                AuxJsonObj.put("item_" + order, div[1]);
+                order++;
+                hasItens = true;
+            }
+            else if(div[0].equalsIgnoreCase("username")){
+                AuxJsonObj.put("username", div[1]);
+                hasLog = true;
+                hasPass = false;
+            }
+            else if(div[0].equalsIgnoreCase("password")){
+                AuxJsonObj.put("password", div[1]);
+                hasPass = true;
+            }
+            else if(div[0].equalsIgnoreCase("sucesso")){
+                AuxJsonObj.put("sucesso", div[1]);
+            }
+            else if(div[0].equalsIgnoreCase("msg")){
+                AuxJsonObj.put("msg", div[1]);
+            }
         }
         
-        return AuxJsonObj;
+        if(hasItens && hasLog && hasPass && count == 1){
+            return AuxJsonObj;
+        }
+        
+        return null;
     }
     
 }
