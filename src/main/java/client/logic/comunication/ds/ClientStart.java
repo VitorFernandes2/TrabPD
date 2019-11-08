@@ -64,7 +64,7 @@ public class ClientStart {
             JSONObject JObj = (JSONObject) JsonParser.parse(strObj);
 
             System.out.println(JObj.toString());
-            
+
             //Colocar aqui tratamento do servidor agregado
 
         } catch (SocketException e) {
