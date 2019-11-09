@@ -9,14 +9,16 @@ public class SendDataDs{
 
     private String DsIP;
     private String DsPort;
-    private String ServerIp;
-    private String ServerPort;
 
-    public SendDataDs(String dsIP, String dsPort, String serverIp, String serverPort) {
-        DsIP = dsIP;
+    public SendDataDs(String dsIP, String dsPort) {
+
+        try {
+            DsIP = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         DsPort = dsPort;
-        ServerIp = serverIp;
-        ServerPort = serverPort;
     }
 
     public void run() {
@@ -28,8 +30,8 @@ public class SendDataDs{
 
             JSONObject ObjSend =  new JSONObject();
 
-            ObjSend.put("IP", ServerIp);
-            ObjSend.put("Port", ServerPort);
+            ObjSend.put("msg", "dataSubmitServer");
+            ObjSend.put("Port", "9998");
 
             String StrToSend = ObjSend.toString();
             byte []buf = StrToSend.getBytes();

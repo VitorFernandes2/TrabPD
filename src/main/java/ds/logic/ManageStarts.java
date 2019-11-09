@@ -62,6 +62,7 @@ public class ManageStarts extends Thread{
                 if ("dataSubmitClient".equals(msg)) {
 
                     //Cliente
+                    String Port = (String) JObj.get("Port");
                     System.out.println("Encontrei um cliente");
                     tratamentoClientes(Socket, Packet.getAddress(),
                             ("" + Packet.getPort()));
@@ -69,8 +70,11 @@ public class ManageStarts extends Thread{
                 } else if ("dataSubmitServer".equals(msg)) {
 
                     //Servidor
+                    String Port = (String) JObj.get("Port");
+                    System.out.println(Port);
+
                     System.out.println("Encontrei um servidor");
-                    tratamentoServidores(Packet);
+                    tratamentoServidores(Packet, Port);
 
                 }
 
@@ -88,16 +92,16 @@ public class ManageStarts extends Thread{
         finish = true;
     }
 
-    private void tratamentoServidores(DatagramPacket packet){
+    private void tratamentoServidores(DatagramPacket packet, String Port){
 
-        String IP = packet.getAddress().toString();
-        int Port = packet.getPort();
-        String sPort = ("" + Port);
+        String IP = packet.getAddress().getHostAddress();
+
+        System.out.println(IP);
 
         if (servers.size() == 0)
-            servers.add(new Server(IP,sPort,0, true,true));
+            servers.add(new Server(IP, Port,0, true,true));
         else
-            servers.add(new Server(IP,sPort,0, true,false));
+            servers.add(new Server(IP, Port,0, true,false));
 
     }
 
@@ -127,7 +131,7 @@ public class ManageStarts extends Thread{
 
             }
 
-            System.out.println(Ip);
+            System.out.println(Ip.getHostAddress());
             DatagramPacket packet = new DatagramPacket(obj.toString().getBytes(),
                     obj.toString().getBytes().length,
                     Ip, Integer.parseInt(Port));
