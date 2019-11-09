@@ -56,7 +56,7 @@ public class ManageClients {
     }
 
     //Thread para receber todos os novos servidores
-    public void run() {
+    public Server run() {
         
         
         
