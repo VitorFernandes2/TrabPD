@@ -32,7 +32,7 @@ public class Main {
                 else{
                     System.out.println(returnado);
                     ServerTCPconnect startserver = new ServerTCPconnect(returnado); 
-                    startserver.run();
+                    startserver.start();
                     
                     Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
                     String userName = myObj.nextLine();      
