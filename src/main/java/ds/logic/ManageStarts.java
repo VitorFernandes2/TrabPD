@@ -119,37 +119,24 @@ public class ManageStarts extends Thread{
                 obj.put("msg","sair");
             }
             else{
+                //Se houver servidores
 
-                /*Server serverToCli = servers.get(0); ALGORITMO ANTIGO- MANTER?
-                int min = 0;
+                Server serverToCli = servers.get(0);
+                int min = serverToCli.getNumberClients();
 
+                //Verifica todos os servidores e vê aquele que tiver menos clientes
                 for (Server item: servers)
-                    if (item.getNumberClients() < min)
-                        serverToCli = item;*/
+                    if (item.isOn())
+                        if (item.getNumberClients() < min){
+                            serverToCli = item;
+                            min = item.getNumberClients();
+                        }
 
-                // novo algoritmo           
-                
-                Server escolhido = null;
-                
-                for (Server item: servers){
-                    if (item.isbeingused() == false){
-                        item.addClient(new Client(Arrays.toString(Ip.getAddress()),Port));
-                        escolhido = item;
-                        break;
-                    }
-                }
-                
-                if(escolhido == null){ // fazer exec para adicionar mais um servidor?
-                    System.out.println("[ERROR] Não foi encontrado nenhum servidor (servidores todos ocupados)");
-                    obj.put("msg","sair");
-                    
-                }
-                else{
                 //Servidor atribuido
                 obj.put("msg", "serverAtr");
-                obj.put("IP", escolhido.getIP());
-                obj.put("Port", escolhido.getPort());
-                }
+                obj.put("IP", serverToCli.getIP());
+                obj.put("Port", serverToCli.getPort());
+                
             }
 
             System.out.println(Ip.getHostAddress());
