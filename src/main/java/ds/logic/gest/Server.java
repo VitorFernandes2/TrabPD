@@ -1,5 +1,7 @@
 package ds.logic.gest;
 
+import java.util.ArrayList;
+
 public class Server {
 
     private String IP;
@@ -7,6 +9,7 @@ public class Server {
     private int numberClients;
     private boolean On;
     private boolean Princi;
+    private ArrayList<Client> clientsServer;
 
     public Server(String IP, String port, int numberClients, boolean on, boolean Princi) {
         this.IP = IP;
@@ -14,6 +17,7 @@ public class Server {
         this.numberClients = numberClients;
         On = on;
         this.Princi = Princi;
+        this.clientsServer = new ArrayList<Client>();
     }
 
     public String getIP() {
@@ -35,4 +39,9 @@ public class Server {
     public boolean isPrinci() {
         return Princi;
     }
+
+    public void addClient(Client client){
+        clientsServer.add(client);
+    }
+
 }
