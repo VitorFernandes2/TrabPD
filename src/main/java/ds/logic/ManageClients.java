@@ -1,5 +1,6 @@
 package ds.logic;
 
+import ds.logic.gest.Server;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -58,10 +59,9 @@ public class ManageClients {
     //Thread para receber todos os novos servidores
     public Server run() {
 
-
-
         DatagramSocket Socket;
         DatagramPacket Packet;
+        Server server = null;
 
         try {
 
@@ -113,6 +113,8 @@ public class ManageClients {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        return server;
 
     }
 
