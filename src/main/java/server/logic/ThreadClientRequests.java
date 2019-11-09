@@ -13,6 +13,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -29,7 +32,7 @@ public class ThreadClientRequests implements Runnable{
         Socket s = null;
         
         try {
-            ss = new ServerSocket(4999);
+            ss = new ServerSocket(9999);
             s = ss.accept(); // é ma pratica meter um accept dentro de um try??
         } catch (IOException ex) {
             System.out.println("[ERROR] não foi possivel criar o socket");
@@ -39,27 +42,39 @@ public class ThreadClientRequests implements Runnable{
         
         while(runstatus){
  
-        System.out.println("client connected");
+        System.out.println("client connected to tcp");
 
         InputStreamReader in = null;
         
             try {
-                in = new InputStreamReader(s.getInputStream());
+                in = new InputStreamReader(s.getInputStream()); // OTMIZAR CODIGO? METER OS NEWS POR FORA?
                 
-                    BufferedReader bf = new BufferedReader(in);
-        
-                    String str = bf.readLine();
-                    System.out.println("client : " + str);
+                BufferedReader bf = new BufferedReader(in);
 
-                    // MUDAR PARA JSON
-                    PrintWriter pr = new PrintWriter(s.getOutputStream());
-                    pr.println("yes");
-                    pr.flush();
+                String str = bf.readLine();
+                
+                JSONParser JsonParser = new JSONParser();
+                JSONObject JObj = (JSONObject) JsonParser.parse(str);
+                
+                System.out.println(JObj.toString());
+               
+                JSONObject obj = new JSONObject();
+
+                obj.put("Data", "xxx");
+                obj.put("Mp3", "music");
+                
+                PrintWriter pr = new PrintWriter(s.getOutputStream());
+                pr.println(obj.toString());
+                pr.flush();
                   
             } catch (IOException ex) {
-                    System.out.println("[ERROR] Erro no ciclo");
-                    runstatus = false;
-                    return;
+                System.out.println("[ERROR] Erro no ciclo");
+                runstatus = false;
+                return;
+            } catch (ParseException ex) {
+                System.out.println("[ERROR] Erro na tradução do Json");
+                runstatus = false;
+                return;
             }
 
         }

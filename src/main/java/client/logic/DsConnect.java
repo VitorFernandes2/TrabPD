@@ -45,7 +45,7 @@ public class DsConnect {
         Serve para mandar ao Ds a informação acerca do cliente e coseguir receber informação
         relativa ao servidor que este cliente se vai alistar
      */
-    public void run() {
+    public String run() {
 
         DatagramSocket socket;
         DatagramPacket packet;
@@ -91,6 +91,7 @@ public class DsConnect {
 
             System.out.println(JObj.toString()); // Testar que objeto � returnado
 
+            return JObj.toString();
             //Colocar aqui tratamento do servidor agregado
 
         } catch (SocketException e) {
@@ -103,6 +104,7 @@ public class DsConnect {
             e.printStackTrace();
         }
 
+        return "error";
     }
 
 }

@@ -10,7 +10,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
-public class ClientStartServer extends Thread {
+public class ClientStartServer_OLD extends Thread {
 
     //Objetos para os comandos do utilizador
     private Scanner Sc;
@@ -37,7 +37,7 @@ public class ClientStartServer extends Thread {
     private JSONObject ReceiveJsonObj;
     private JSONObject SendJsonObj;
 
-    public ClientStartServer(String Port, String IP) {
+    public ClientStartServer_OLD(String Port, String IP) {
         this.Port = Port;
         this.IP = IP;
         this.Sc = new Scanner(System.in);
