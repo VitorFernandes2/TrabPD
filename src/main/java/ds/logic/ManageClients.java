@@ -57,9 +57,7 @@ public class ManageClients {
 
     //Thread para receber todos os novos servidores
     public void run() {
-        
-        
-        
+
         DatagramSocket Socket;
         DatagramPacket Packet;
 
