@@ -63,7 +63,7 @@ public class ManageStarts extends Thread{
 
                     //Cliente
                     System.out.println("Encontrei um cliente");
-                    tratamentoClientes(Socket, Packet.getAddress().toString(),
+                    tratamentoClientes(Socket, Packet.getAddress(),
                             ("" + Packet.getPort()));
 
                 } else if ("dataSubmitServer".equals(msg)) {
@@ -94,40 +94,43 @@ public class ManageStarts extends Thread{
         int Port = packet.getPort();
         String sPort = ("" + Port);
 
-        if (servers.isEmpty())
+        if (servers.size() == 0)
             servers.add(new Server(IP,sPort,0, true,true));
         else
             servers.add(new Server(IP,sPort,0, true,false));
 
     }
 
-    private void tratamentoClientes(DatagramSocket socket, String Ip, String Port){
+    private void tratamentoClientes(DatagramSocket socket, InetAddress Ip, String Port){
 
         try {
 
             //Tratar do envio ao cliente dos dados do servidor atribuido
             JSONObject obj = new JSONObject();
 
-            if (servers.isEmpty()){
+            if (servers.size() == 0){
                 obj.put("msg","sair");
             }
+            else{
 
-            Server serverToCli = servers.get(0);
-            int min = 0;
+                Server serverToCli = servers.get(0);
+                int min = 0;
 
-            for (Server item: servers)
-                if (item.getNumberClients() < min)
-                    serverToCli = item;
+                for (Server item: servers)
+                    if (item.getNumberClients() < min)
+                        serverToCli = item;
 
-            //Servidor atribuido
-            obj.put("msg", "serverAtr");
-            obj.put("IP", serverToCli.getIP());
-            obj.put("Port", serverToCli.getPort());
+                //Servidor atribuido
+                obj.put("msg", "serverAtr");
+                obj.put("IP", serverToCli.getIP());
+                obj.put("Port", serverToCli.getPort());
 
-            InetAddress address = InetAddress.getByName(Ip);
+            }
+
+            System.out.println(Ip);
             DatagramPacket packet = new DatagramPacket(obj.toString().getBytes(),
                     obj.toString().getBytes().length,
-                    address, Integer.parseInt(Port));
+                    Ip, Integer.parseInt(Port));
 
             socket.send(packet);
 
