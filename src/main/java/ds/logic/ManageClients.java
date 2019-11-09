@@ -82,7 +82,7 @@ public class ManageClients {
 
                 // ------------------ TEMP -----------------
 
-                ServerList.add(new ManageServer((Packet.getAddress()).getHostAddress()));
+                //ServerList.add(new ManageServer((Packet.getAddress()).getHostAddress()));
 
 
 

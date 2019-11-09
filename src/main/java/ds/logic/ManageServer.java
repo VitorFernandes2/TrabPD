@@ -2,14 +2,16 @@ package ds.logic;
 
 public class ManageServer {
   
-    private String clientip;
+    //private String clientip;
     private boolean threadrunning = false;
 
-    public ManageServer(String clientip) {
-        this.clientip = clientip;
+    public ManageServer() {
+        //this.clientip = clientip;
     }
 
     public static void LoginConnectServer(){
+        
+        
         
         
     }

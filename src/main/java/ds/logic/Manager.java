@@ -5,6 +5,7 @@
  */
 package ds.logic;
 
+import ds.logic.gest.Server;
 import java.util.ArrayList;
 
 /**
@@ -27,17 +28,11 @@ public class Manager {
         
         ListaServidores.add(mg.run());
         
+        ManageServer ms = new ManageServer();
+        ms.LoginConnectServer();
+        
         
     }
     
-    new manage client mg;
-    arraylist<Servidor> servidoreativos;
 
-    servidoreativos.add(mg.run); // o manage client passa a devolver info sobre o servidor, e se se ligou bem ou não
-
-    new manageserver ms;
-    ms.runthread(servidoreativos); // dentro do manageserver inicia-se as threads de gestão dos servers
-
-    
-    
 }
