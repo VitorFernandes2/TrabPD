@@ -49,17 +49,17 @@ public class ManageClients {
         //this.ServerMaps = ServerMaps;
 
     }
-    
-    
+
+
     public int getThreadNumber() {
         return ThreadNumber;
     }
 
     //Thread para receber todos os novos servidores
     public Server run() {
-        
-        
-        
+
+
+
         DatagramSocket Socket;
         DatagramPacket Packet;
 
@@ -68,7 +68,7 @@ public class ManageClients {
             Socket = new DatagramSocket(Integer.parseInt(Port));
 
             while (!finish) {
-                
+
                 System.out.println("Estou a espera de Clientes"); // TEMP
                 byte[] buf = new byte[TotalBytes];
                 Packet = new DatagramPacket(buf, buf.length);
@@ -81,31 +81,31 @@ public class ManageClients {
                 System.out.println(JObj);
 
                 // ------------------ TEMP -----------------
-                
+
                 ServerList.add(new ManageServer((Packet.getAddress()).getHostAddress()));
-                
-                
-                
-                
+
+
+
+
                 JSONObject obj = new JSONObject();
                 obj.put("IP", "recebi");
                 obj.put("Port", "info");
-                
-                InetAddress endreclient = Packet.getAddress(); // endereço do client;
+
+                InetAddress endreclient = Packet.getAddress(); // endereï¿½o do client;
                 
                 DatagramPacket packetresp = new DatagramPacket(obj.toString().getBytes(),
                     obj.toString().getBytes().length, endreclient, Packet.getPort());
-        
+
                 Socket.send(packetresp);
-                
+
                 System.out.println("Enviei coisas devolta ao Cliente");
-                /*Socket.close(); Não fechar o programa
+                /*Socket.close(); Nï¿½o fechar o programa
 
                 finish = true;
                 */
-                
+
                 // ---------------------ENDTEMP------------------
-                
+
             }
 
         } catch(IOException e){
