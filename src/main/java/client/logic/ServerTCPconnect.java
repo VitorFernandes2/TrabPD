@@ -16,11 +16,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-/**
- *
- * @author a21270909
- */
-public class ServerTCPconnect implements Runnable{
+public class ServerTCPconnect extends Thread{
     
     private String ip;
     private String port;
@@ -29,21 +25,27 @@ public class ServerTCPconnect implements Runnable{
     public ServerTCPconnect(String json){
         
         try{
-        JSONParser JsonParser = new JSONParser();
-        JSONObject JObj = (JSONObject) JsonParser.parse(json);
-        
-        ip = (String) JObj.get("IP");
-        port = (String) JObj.get("Port");
+
+            JSONParser JsonParser = new JSONParser();
+            JSONObject JObj = (JSONObject) JsonParser.parse(json);
+
+            ip = (String) JObj.get("IP");
+            port = (String) JObj.get("Port");
+
+            System.out.println(ip);
+            System.out.println(port);
+
         }
         catch (ParseException e){
             System.out.println("[ERROR] unable to parse json from tcp connect");
         }
     }
-    
+
     @Override
     public void run() {
     
         try {
+
             Socket  s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
             
             while(stopthread){

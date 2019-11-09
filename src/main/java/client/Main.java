@@ -30,9 +30,9 @@ public class Main {
                     System.out.println("[ERROR] exception found or unknown error");
                 }
                 else{
+                    System.out.println(returnado);
                     ServerTCPconnect startserver = new ServerTCPconnect(returnado); 
-                    Thread servethread = new Thread(startserver);
-                    servethread.start();
+                    startserver.run();
                     
                     Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
                     String userName = myObj.nextLine();      

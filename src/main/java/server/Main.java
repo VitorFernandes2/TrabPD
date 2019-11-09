@@ -18,14 +18,12 @@ public class Main {
         manage.run();
         
         ThreadClientRequests threadclass = new ThreadClientRequests(); // pode ser mai pratica REVER
-        Thread servethread = new Thread(threadclass);
-        servethread.start();
+        threadclass.run();
                 
         Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
         String userName = myObj.nextLine();      
         
         threadclass.stopthread();
-        
 
     }
     

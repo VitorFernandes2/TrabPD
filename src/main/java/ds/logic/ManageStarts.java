@@ -136,7 +136,7 @@ public class ManageStarts extends Thread{
                 obj.put("msg", "serverAtr");
                 obj.put("IP", serverToCli.getIP());
                 obj.put("Port", serverToCli.getPort());
-                
+
             }
 
             System.out.println(Ip.getHostAddress());

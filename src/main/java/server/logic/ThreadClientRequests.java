@@ -21,7 +21,7 @@ import org.json.simple.parser.ParseException;
  *
  * @author a21270909
  */
-public class ThreadClientRequests implements Runnable{
+public class ThreadClientRequests extends Thread{
 
     private boolean runstatus = true;
     
@@ -32,7 +32,7 @@ public class ThreadClientRequests implements Runnable{
         Socket s = null;
         
         try {
-            ss = new ServerSocket(9999);
+            ss = new ServerSocket(9998);
             s = ss.accept(); // é ma pratica meter um accept dentro de um try??
         } catch (IOException ex) {
             System.out.println("[ERROR] não foi possivel criar o socket");
