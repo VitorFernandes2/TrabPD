@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ManageClients {
+public class ManageClients extends Thread{
 
     private final int TotalBytes = 4096;
 
@@ -26,17 +26,13 @@ public class ManageClients {
     private String IP;
     private String Port;
 
-    //ArrayList de classes server
-    private ArrayList<ManageServer> ServerList =  new ArrayList<ManageServer>();
-
-    public ManageClients(String IP, String Port, ArrayList<ManageServer> ServerMaps)
+    public ManageClients(String IP, String Port)
     {
 
         this.ThreadNumber = ++NumberOfThreads;
         this.finish = false;
         this.IP = IP;
         this.Port = Port;
-        this.ServerList = ServerMaps;
 
     }
 
@@ -57,7 +53,8 @@ public class ManageClients {
     }
 
     //Thread para receber todos os novos servidores
-    public Server run() {
+    @Override
+    public void run() {
 
         DatagramSocket Socket;
         DatagramPacket Packet;
@@ -80,32 +77,6 @@ public class ManageClients {
 
                 System.out.println(JObj);
 
-                // ------------------ TEMP -----------------
-
-                //ServerList.add(new ManageServer((Packet.getAddress()).getHostAddress()));
-
-
-
-
-                JSONObject obj = new JSONObject();
-                obj.put("IP", "recebi");
-                obj.put("Port", "info");
-
-                InetAddress endreclient = Packet.getAddress(); // endere�o do client;
-                
-                DatagramPacket packetresp = new DatagramPacket(obj.toString().getBytes(),
-                    obj.toString().getBytes().length, endreclient, Packet.getPort());
-
-                Socket.send(packetresp);
-
-                System.out.println("Enviei coisas devolta ao Cliente");
-                /*Socket.close(); N�o fechar o programa
-
-                finish = true;
-                */
-
-                // ---------------------ENDTEMP------------------
-
             }
 
         } catch(IOException e){
@@ -113,8 +84,6 @@ public class ManageClients {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        return server;
 
     }
 
