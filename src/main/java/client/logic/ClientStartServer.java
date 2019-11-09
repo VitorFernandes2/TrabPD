@@ -52,7 +52,7 @@ public class ClientStartServer extends Thread {
             //Código de ligação inicial com o DS:
             
             DSocket = new DatagramSocket(Integer.parseInt(Port));
-            
+
             SendJsonObj.put("IP", String.valueOf(InetAddress.getLocalHost()));
             SendJsonObj.put("Port", String.valueOf(DSocket.getLocalPort()));
             

@@ -58,6 +58,8 @@ public class DsConnect {
             address = InetAddress.getByName(DsIp);
 
             JSONObject obj = new JSONObject();
+
+            obj.put("msg", "dataSubmitClient");
             obj.put("IP", IP);
             obj.put("Port", Port);
 

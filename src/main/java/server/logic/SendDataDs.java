@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.net.*;
 
-public class SendDataDs extends Thread{
+public class SendDataDs{
 
     private String DsIP;
     private String DsPort;
@@ -19,7 +19,6 @@ public class SendDataDs extends Thread{
         ServerPort = serverPort;
     }
 
-    @Override
     public void run() {
 
         try {

@@ -14,42 +14,24 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ManageClients extends Thread{
+public class ManageStarts extends Thread{
 
     private final int TotalBytes = 4096;
 
-    private static int NumberOfThreads = 0;
-    private int ThreadNumber;
     private boolean finish;
 
     //Dados do DS
     private String IP;
     private String Port;
 
-    public ManageClients(String IP, String Port)
-    {
+    //Variável de gestão de servidores
+    private ArrayList<Server> servers;
 
-        this.ThreadNumber = ++NumberOfThreads;
+    public ManageStarts(String IP, String port, ArrayList<Server> servers) {
         this.finish = false;
         this.IP = IP;
-        this.Port = Port;
-
-    }
-
-    public ManageClients() throws UnknownHostException
-    {
-        // temp
-        this.ThreadNumber = ++NumberOfThreads;
-        this.finish = false;
-        this.IP = (InetAddress.getLocalHost()).getHostAddress();
-        this.Port = "9999";
-        //this.ServerMaps = ServerMaps;
-
-    }
-
-
-    public int getThreadNumber() {
-        return ThreadNumber;
+        Port = port;
+        this.servers = servers;
     }
 
     //Thread para receber todos os novos servidores
@@ -58,7 +40,6 @@ public class ManageClients extends Thread{
 
         DatagramSocket Socket;
         DatagramPacket Packet;
-        Server server = null;
 
         try {
 
@@ -66,7 +47,7 @@ public class ManageClients extends Thread{
 
             while (!finish) {
 
-                System.out.println("Estou a espera de Clientes"); // TEMP
+                System.out.println("Estou a espera de Objectos: "); // TEMP
                 byte[] buf = new byte[TotalBytes];
                 Packet = new DatagramPacket(buf, buf.length);
                 Socket.receive(Packet);
@@ -76,6 +57,8 @@ public class ManageClients extends Thread{
                 JSONObject JObj = (JSONObject) JsonParser.parse(SObj);
 
                 System.out.println(JObj);
+
+                //fazer Tratamento de dados
 
             }
 
@@ -87,5 +70,20 @@ public class ManageClients extends Thread{
 
     }
 
+    public void terminate(){
+        finish = true;
+    }
+
+    private void tratamentoServidores(){
+
+
+
+    }
+
+    private void tratamentoClientes(DatagramSocket socket){
+
+
+
+    }
 
 }
