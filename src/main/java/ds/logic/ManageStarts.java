@@ -56,9 +56,18 @@ public class ManageStarts extends Thread{
                 JSONParser JsonParser = new JSONParser();
                 JSONObject JObj = (JSONObject) JsonParser.parse(SObj);
 
-                System.out.println(JObj);
+                String msg = (String) JObj.get("msg");
 
-                //fazer Tratamento de dados
+                //Tratamento de mensagens
+                if ("dataSubmitClient".equals(msg)) {
+                    //Cliente
+                    System.out.println("Encontrei um cliente");
+                    tratamentoClientes(Socket);
+                } else if ("dataSubmitServer".equals(msg)) {
+                    //Servidor
+                    System.out.println("Encontrei um servidor");
+                    tratamentoServidores(Packet);
+                }
 
             }
 
@@ -74,15 +83,21 @@ public class ManageStarts extends Thread{
         finish = true;
     }
 
-    private void tratamentoServidores(){
+    private void tratamentoServidores(DatagramPacket packet){
 
-
+        String IP = packet.getAddress().toString();
+        int Port = packet.getPort();
+        String sPort = ("" + Port);
+        servers.add(new Server(IP,sPort,0, true));
 
     }
 
     private void tratamentoClientes(DatagramSocket socket){
 
-
+        //Tratar do envio ao cliente dos dados do servidor atribuido
+        int min = 0;
+        Server servermin = null;
+        
 
     }
 
