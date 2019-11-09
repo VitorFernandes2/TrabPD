@@ -1,5 +1,6 @@
 package ds.logic;
 
+import ds.logic.gest.Client;
 import ds.logic.gest.Server;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,6 +13,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ManageStarts extends Thread{
@@ -99,9 +101,9 @@ public class ManageStarts extends Thread{
         System.out.println(IP);
 
         if (servers.size() == 0)
-            servers.add(new Server(IP, Port,0, true,true));
+            servers.add(new Server(IP, Port, true,true));
         else
-            servers.add(new Server(IP, Port,0, true,false));
+            servers.add(new Server(IP, Port, true,false));
 
     }
 
@@ -113,22 +115,41 @@ public class ManageStarts extends Thread{
             JSONObject obj = new JSONObject();
 
             if (servers.size() == 0){
+                System.out.println("[ERROR] Não foi encontrado nenhum servidor (nenhum servidor ativo)");
                 obj.put("msg","sair");
             }
             else{
 
-                Server serverToCli = servers.get(0);
+                /*Server serverToCli = servers.get(0); ALGORITMO ANTIGO- MANTER?
                 int min = 0;
 
                 for (Server item: servers)
                     if (item.getNumberClients() < min)
-                        serverToCli = item;
+                        serverToCli = item;*/
 
+                // novo algoritmo           
+                
+                Server escolhido = null;
+                
+                for (Server item: servers){
+                    if (item.isbeingused() == false){
+                        item.addClient(new Client(Arrays.toString(Ip.getAddress()),Port));
+                        escolhido = item;
+                        break;
+                    }
+                }
+                
+                if(escolhido == null){ // fazer exec para adicionar mais um servidor?
+                    System.out.println("[ERROR] Não foi encontrado nenhum servidor (servidores todos ocupados)");
+                    obj.put("msg","sair");
+                    
+                }
+                else{
                 //Servidor atribuido
                 obj.put("msg", "serverAtr");
-                obj.put("IP", serverToCli.getIP());
-                obj.put("Port", serverToCli.getPort());
-
+                obj.put("IP", escolhido.getIP());
+                obj.put("Port", escolhido.getPort());
+                }
             }
 
             System.out.println(Ip.getHostAddress());

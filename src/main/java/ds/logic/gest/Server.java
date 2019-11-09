@@ -4,22 +4,30 @@ import java.util.ArrayList;
 
 public class Server {
 
-    private String IP;
-    private String Port;
-    private int numberClients;
-    private boolean On;
-    private boolean Princi;
-    private ArrayList<Client> clientsServer;
-
-    public Server(String IP, String port, int numberClients, boolean on, boolean Princi) {
+    private String IP; // ip do servidor
+    private String Port; // porta do servidor
+    private boolean isbeingused; // numero de clientes
+    private boolean On; // estado do servidor
+    private boolean Princi; // servidor 
+    private Client connectedclient; // client ligado ao servidor
+    
+    
+    public Server(String IP, String port, boolean on, boolean Princi) {
         this.IP = IP;
         Port = port;
-        this.numberClients = numberClients;
+        this.isbeingused = false;
         On = on;
         this.Princi = Princi;
-        this.clientsServer = new ArrayList<Client>();
     }
 
+    public Server(String IP, String Port, boolean On,Client cli) {
+        this.IP = IP;
+        this.Port = Port;
+        this.isbeingused = false;
+        this.On = false;
+        this.connectedclient = cli;
+    }
+    
     public String getIP() {
         return IP;
     }
@@ -28,20 +36,34 @@ public class Server {
         return Port;
     }
 
-    public int getNumberClients() {
-        return numberClients;
+    public boolean isbeingused() {
+        return isbeingused;
     }
-
-    public boolean isOn() {
+    
+    public void exitClient(){
+        isbeingused = false;
+        connectedclient = null;
+    }
+    
+    public boolean isOn() {      
         return On;
     }
 
+    public void turnOn() {      
+        On = true;
+    }
+        
+    public void turnOff() {      
+        On = false;
+    }
+    
     public boolean isPrinci() {
         return Princi;
     }
 
     public void addClient(Client client){
-        clientsServer.add(client);
+        this.connectedclient = client;
+        isbeingused = true;
     }
 
 }
