@@ -7,7 +7,7 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.*;
 
-public class ClientStart {
+public class DsConnect {
 
     private String DsIp;
     private String DsPort;
@@ -16,7 +16,7 @@ public class ClientStart {
     private String IP;
     private String Port;
 
-    public ClientStart(String dsIp, String dsPort, String serverPort,
+    public DsConnect(String dsIp, String dsPort, String serverPort,
                        String serverIp, String IP, String port) {
         DsIp = dsIp;
         DsPort = dsPort;
@@ -26,7 +26,7 @@ public class ClientStart {
         Port = port;
     }
 
-    public ClientStart(String dsIp, String dsPort){
+    public DsConnect(String dsIp, String dsPort){
         
         this.IP = dsIp;
         DsPort = dsPort;

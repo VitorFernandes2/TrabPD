@@ -22,7 +22,7 @@ public class Main {
     public static void tempstart(){
         // CLASSE TEMPORARIA
         
-                ClientStart start = new ClientStart("9999","9999"); // temp
+                DsConnect start = new DsConnect("9999","9999"); // temp
                 start.run();
         
     }
