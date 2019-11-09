@@ -60,13 +60,18 @@ public class ManageStarts extends Thread{
 
                 //Tratamento de mensagens
                 if ("dataSubmitClient".equals(msg)) {
+
                     //Cliente
                     System.out.println("Encontrei um cliente");
-                    tratamentoClientes(Socket);
+                    tratamentoClientes(Socket, Packet.getAddress().toString(),
+                            ("" + Packet.getPort()));
+
                 } else if ("dataSubmitServer".equals(msg)) {
+
                     //Servidor
                     System.out.println("Encontrei um servidor");
                     tratamentoServidores(Packet);
+
                 }
 
             }
@@ -88,16 +93,49 @@ public class ManageStarts extends Thread{
         String IP = packet.getAddress().toString();
         int Port = packet.getPort();
         String sPort = ("" + Port);
-        servers.add(new Server(IP,sPort,0, true));
+
+        if (servers.isEmpty())
+            servers.add(new Server(IP,sPort,0, true,true));
+        else
+            servers.add(new Server(IP,sPort,0, true,false));
 
     }
 
-    private void tratamentoClientes(DatagramSocket socket){
+    private void tratamentoClientes(DatagramSocket socket, String Ip, String Port){
 
-        //Tratar do envio ao cliente dos dados do servidor atribuido
-        int min = 0;
-        Server servermin = null;
-        
+        try {
+
+            //Tratar do envio ao cliente dos dados do servidor atribuido
+            JSONObject obj = new JSONObject();
+
+            if (servers.isEmpty()){
+                obj.put("msg","sair");
+            }
+
+            Server serverToCli = servers.get(0);
+            int min = 0;
+
+            for (Server item: servers)
+                if (item.getNumberClients() < min)
+                    serverToCli = item;
+
+            //Servidor atribuido
+            obj.put("msg", "serverAtr");
+            obj.put("IP", serverToCli.getIP());
+            obj.put("Port", serverToCli.getPort());
+
+            InetAddress address = InetAddress.getByName(Ip);
+            DatagramPacket packet = new DatagramPacket(obj.toString().getBytes(),
+                    obj.toString().getBytes().length,
+                    address, Integer.parseInt(Port));
+
+            socket.send(packet);
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

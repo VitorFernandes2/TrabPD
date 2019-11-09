@@ -6,12 +6,14 @@ public class Server {
     private String Port;
     private int numberClients;
     private boolean On;
+    private boolean Princi;
 
-    public Server(String IP, String port, int numberClients, boolean on) {
+    public Server(String IP, String port, int numberClients, boolean on, boolean Princi) {
         this.IP = IP;
         Port = port;
         this.numberClients = numberClients;
         On = on;
+        this.Princi = Princi;
     }
 
     public String getIP() {
@@ -28,5 +30,9 @@ public class Server {
 
     public boolean isOn() {
         return On;
+    }
+
+    public boolean isPrinci() {
+        return Princi;
     }
 }
