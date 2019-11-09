@@ -75,6 +75,8 @@ public class ServerTCPconnect extends Thread{
             Logger.getLogger(ServerTCPconnect.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
             Logger.getLogger(ServerTCPconnect.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullPointerException ex) {
+            System.out.println("[ERROR] Erro de Nullpointer");
         }
 
     }

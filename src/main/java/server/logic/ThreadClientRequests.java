@@ -75,6 +75,10 @@ public class ThreadClientRequests extends Thread{
                 System.out.println("[ERROR] Erro na tradução do Json");
                 runstatus = false;
                 return;
+            } catch (NullPointerException ex) {
+                System.out.println("[ERROR] Erro de Nullpointer. Provavelmente o client se desconectou");
+                runstatus = false;
+                return;
             }
 
         }
