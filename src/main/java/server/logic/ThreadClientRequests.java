@@ -47,7 +47,7 @@ public class ThreadClientRequests implements Runnable{
         InputStreamReader in = null;
         
             try {
-                in = new InputStreamReader(s.getInputStream()); // OTMIZAR CODIGO? METER OS NEWS POR FORA?
+                in = new InputStreamReader(s.getInputStream()); // DUMMY CODE : modificar para enviar o q é preciso
                 
                 BufferedReader bf = new BufferedReader(in);
 
