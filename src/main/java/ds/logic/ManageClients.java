@@ -1,4 +1,4 @@
-package ds.logic.comunication.server;
+package ds.logic;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -9,9 +9,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
-public class ServerStart {
+public class ManageClients {
 
     private final int TotalBytes = 4096;
 
@@ -26,7 +27,7 @@ public class ServerStart {
     //Mapa de IP'S/Portos dos Servidores
     private HashMap<String, String> ServerMaps;
 
-    public ServerStart(String IP, String Port, HashMap<String, String> ServerMaps)
+    public ManageClients(String IP, String Port, HashMap<String, String> ServerMaps)
     {
 
         this.ThreadNumber = ++NumberOfThreads;
@@ -37,13 +38,27 @@ public class ServerStart {
 
     }
 
+    public ManageClients() throws UnknownHostException
+    {
+        // temp
+        this.ThreadNumber = ++NumberOfThreads;
+        this.finish = false;
+        this.IP = (InetAddress.getLocalHost()).getHostAddress();
+        this.Port = "9999";
+        //this.ServerMaps = ServerMaps;
+
+    }
+    
+    
     public int getThreadNumber() {
         return ThreadNumber;
     }
 
     //Thread para receber todos os novos servidores
     public void run() {
-
+        
+        System.out.println("estou a correr"); // TEMP
+        
         DatagramSocket Socket;
         DatagramPacket Packet;
 
@@ -63,10 +78,28 @@ public class ServerStart {
 
                 System.out.println(JObj);
 
-                Socket.close();
+                
+                
+                // ------------------ TEMP -----------------
+                JSONObject obj = new JSONObject();
+                obj.put("IP", "recebi");
+                obj.put("Port", "info");
+                
+                InetAddress endreclient = Packet.getAddress(); // enderesso do client;
+                
+                DatagramPacket packetresp = new DatagramPacket(obj.toString().getBytes(),
+                    obj.toString().getBytes().length, endreclient, Packet.getPort());
+        
+                Socket.send(packetresp);
+                
+                System.out.println("Enviei coisas devolta");
+                /*Socket.close(); Não fechar o programa
 
                 finish = true;
-
+                */
+                
+                // ---------------------ENDTEMP------------------
+                
             }
 
         } catch(IOException e){

@@ -1,4 +1,4 @@
-package client.logic.comunication.server;
+package client.logic;
 
 import java.io.IOException;
 import java.net.*;
@@ -10,7 +10,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
-public class ClientStart extends Thread {
+public class ClientStartServer extends Thread {
 
     //Objetos para os comandos do utilizador
     private Scanner Sc;
@@ -37,7 +37,7 @@ public class ClientStart extends Thread {
     private JSONObject ReceiveJsonObj;
     private JSONObject SendJsonObj;
 
-    public ClientStart(String Port, String IP) {
+    public ClientStartServer(String Port, String IP) {
         this.Port = Port;
         this.IP = IP;
         this.Sc = new Scanner(System.in);

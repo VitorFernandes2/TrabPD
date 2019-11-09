@@ -1,4 +1,4 @@
-package ds.logic.comunication.client;
+package ds.logic;
 
 public class ClientStart extends Thread{
 

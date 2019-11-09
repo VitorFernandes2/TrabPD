@@ -1,7 +1,8 @@
 package ds;
 
-import static ds.logic.Ds.start;
-
+import ds.logic.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class Main {
 
@@ -9,7 +10,21 @@ public class Main {
 
         start();
         
-        
     }
 
+    public static void start(){
+            // temp
+            
+        ManageClients servertemp = null;
+        try{
+            servertemp = new ManageClients();
+        }catch (Exception e)
+        {
+            System.out.println("Erra ao detetar o IP");
+        }
+        
+        servertemp.run();
+        
+    }
+    
 }

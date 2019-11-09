@@ -1,4 +1,4 @@
-package server.logic.comunication.ds;
+package server.logic;
 
 import org.json.simple.JSONObject;
 
