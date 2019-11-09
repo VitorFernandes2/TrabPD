@@ -79,7 +79,7 @@ public class DsConnect {
             socket.receive(packet);
 
             // --------------- TEMP ---------------------
-            System.out.println("Envio packet pra ligação ao ds");
+            System.out.println("Recebi packet do ds");
             // ----------------endTEMP------------------
             
             String strObj = new String(packet.getData(), 0, packet.getLength());

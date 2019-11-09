@@ -10,6 +10,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ManageClients {
@@ -24,17 +25,17 @@ public class ManageClients {
     private String IP;
     private String Port;
 
-    //Mapa de IP'S/Portos dos Servidores
-    private HashMap<String, String> ServerMaps;
+    //ArrayList de classes server
+    private ArrayList<ManageServer> ServerList =  new ArrayList<ManageServer>();
 
-    public ManageClients(String IP, String Port, HashMap<String, String> ServerMaps)
+    public ManageClients(String IP, String Port, ArrayList<ManageServer> ServerMaps)
     {
 
         this.ThreadNumber = ++NumberOfThreads;
         this.finish = false;
         this.IP = IP;
         this.Port = Port;
-        this.ServerMaps = ServerMaps;
+        this.ServerList = ServerMaps;
 
     }
 
@@ -57,7 +58,7 @@ public class ManageClients {
     //Thread para receber todos os novos servidores
     public void run() {
         
-        System.out.println("estou a correr"); // TEMP
+        
         
         DatagramSocket Socket;
         DatagramPacket Packet;
@@ -67,7 +68,8 @@ public class ManageClients {
             Socket = new DatagramSocket(Integer.parseInt(Port));
 
             while (!finish) {
-
+                
+                System.out.println("Estou a espera de Clientes"); // TEMP
                 byte[] buf = new byte[TotalBytes];
                 Packet = new DatagramPacket(buf, buf.length);
                 Socket.receive(Packet);
@@ -78,21 +80,25 @@ public class ManageClients {
 
                 System.out.println(JObj);
 
-                
-                
                 // ------------------ TEMP -----------------
+                
+                ServerList.add(new ManageServer());
+                
+                
+                
+                
                 JSONObject obj = new JSONObject();
                 obj.put("IP", "recebi");
                 obj.put("Port", "info");
                 
-                InetAddress endreclient = Packet.getAddress(); // enderesso do client;
+                InetAddress endreclient = Packet.getAddress(); // endereço do client;
                 
                 DatagramPacket packetresp = new DatagramPacket(obj.toString().getBytes(),
                     obj.toString().getBytes().length, endreclient, Packet.getPort());
         
                 Socket.send(packetresp);
                 
-                System.out.println("Enviei coisas devolta");
+                System.out.println("Enviei coisas devolta ao Cliente");
                 /*Socket.close(); Não fechar o programa
 
                 finish = true;

@@ -1,6 +1,6 @@
 package ds.logic;
 
-public class ClientStart extends Thread{
+public class ManageServer extends Thread{
 
     @Override
     public void run() {
