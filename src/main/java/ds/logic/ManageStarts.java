@@ -36,6 +36,11 @@ public class ManageStarts extends Thread{
         this.servers = servers;
     }
 
+    @Override
+    public synchronized void start() {
+        super.start();
+    }
+
     //Thread para receber todos os novos servidores
     @Override
     public void run() {

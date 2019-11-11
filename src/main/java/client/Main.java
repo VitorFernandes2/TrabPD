@@ -27,7 +27,7 @@ public class Main {
                 String returnado = start.run();
         
                 if("error".equals(returnado)){
-                    System.out.println("[ERROR] exception found or unknown error");
+                    System.out.println("[ERROR] exception found or unknown error connecting to ds");
                 }
                 else{
                     System.out.println(returnado);

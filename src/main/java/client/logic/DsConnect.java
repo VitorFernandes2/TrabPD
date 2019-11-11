@@ -18,12 +18,12 @@ public class DsConnect {
 
     public DsConnect(String dsIp, String dsPort, String serverPort,
                        String serverIp, String IP, String port) {
-        DsIp = dsIp;
-        DsPort = dsPort;
-        ServerPort = serverPort;
-        ServerIp = serverIp;
+        this.DsIp = dsIp;
+        this.DsPort = dsPort;
+        this.ServerPort = serverPort;
+        this.ServerIp = serverIp;
         this.IP = IP;
-        Port = port;
+        this.Port = port;
     }
 
     public DsConnect(String dsIp, String dsPort){
@@ -35,14 +35,15 @@ public class DsConnect {
         }catch (Exception e)
         {
             System.out.println("Erra ao detetar o IP");
-            this.IP = "999";
+            System.out.println("IP default 9999 atribuido");
+            this.IP = "9999";
         }
         Port = "9999";
     }
     
     
     /*
-        Serve para mandar ao Ds a informaÃ§Ã£o acerca do cliente e coseguir receber informaÃ§Ã£o
+        Serve para mandar ao Ds a informação acerca do cliente e coseguir receber informação
         relativa ao servidor que este cliente se vai alistar
      */
     public String run() {
@@ -53,7 +54,7 @@ public class DsConnect {
 
         try {
 
-            //CriaÃ§Ã£o da socket UDP
+            //Criação da socket UDP
             socket = new DatagramSocket();
             address = InetAddress.getByName(DsIp);
 
@@ -63,14 +64,14 @@ public class DsConnect {
             obj.put("IP", IP);
             obj.put("Port", Port);
 
-            //CriaÃ§Ã£o do packet de envio dos dados relativos ao cliente para o DS
+            //Criação do packet de envio dos dados relativos ao cliente para o DS
             packet = new DatagramPacket(obj.toString().getBytes(),
                     obj.toString().getBytes().length, address, Integer.parseInt(DsPort));
         
             socket.send(packet);
             
             // --------------- TEMP ---------------------
-            System.out.println("Envio packet pra ligação ao ds");
+            System.out.println("Envio packet para ligação ao ds");
             this.IP = packet.getAddress().getHostAddress(); // voltar a adicionar o ip, pois pode ter mudado
             // ----------------endTEMP------------------
             
