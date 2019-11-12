@@ -90,5 +90,12 @@ public class ServerTCPconnect extends Thread{
         stopthread = false;
     }
     
+    public JSONObject commandParser(String command){
+        JSONObject Aux = new JSONObject();
+        //Tradução e verificação de comando
+        
+        //*********************************
+        return Aux;
+    }
     
 }
