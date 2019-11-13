@@ -21,7 +21,7 @@ public class Main {
         threadclass.start();
                 
         Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
-        String userName = myObj.nextLine();      
+        String userName = myObj.nextLine();
         
         threadclass.stopthread();
 

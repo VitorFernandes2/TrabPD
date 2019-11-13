@@ -17,27 +17,27 @@ public class Client {
         this.loginid = loginid;
     }
 
-    public String getIp() {
+    public synchronized String getIp() {
         return ip;
     }
 
-    public void setIp(String ip) {
+    public synchronized void setIp(String ip) {
         this.ip = ip;
     }
 
-    public String getPort() {
+    public synchronized String getPort() {
         return port;
     }
 
-    public void setPort(String port) {
+    public synchronized void setPort(String port) {
         this.port = port;
     }
 
-    public String getLoginid() {
+    public synchronized String getLoginid() {
         return loginid;
     }
 
-    public void setLoginid(String loginid) {
+    public synchronized void setLoginid(String loginid) {
         this.loginid = loginid;
     }
 

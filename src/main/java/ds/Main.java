@@ -1,10 +1,9 @@
 package ds;
 
 import ds.logic.*;
-import ds.logic.gest.Server;
+import ds.logic.gest.ServerList;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 
 public class Main {
 
@@ -17,7 +16,7 @@ public class Main {
     public static void start(){
             // temp
 
-        ArrayList<Server> servers = new ArrayList<Server>();
+        ServerList servers = new ServerList();
             
         ManageStarts servertemp = null;
         try{
@@ -28,7 +27,7 @@ public class Main {
             System.out.println("Erra ao detetar o IP");
         }
         
-        servertemp.start();
+        servertemp.run();
         
     }
     

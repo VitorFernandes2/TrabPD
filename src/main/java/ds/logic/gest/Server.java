@@ -20,35 +20,35 @@ public class Server {
         clients = new ArrayList<Client>();
     }
     
-    public String getIP() {
+    public synchronized String getIP() {
         return IP;
     }
 
-    public String getPort() {
+    public synchronized String getPort() {
         return Port;
     }
 
-    public int getNumberClients() {
+    public synchronized int getNumberClients() {
         return numberClients;
     }
     
-    public boolean isOn() {      
+    public synchronized boolean isOn() {      
         return On;
     }
 
-    public void turnOn() {      
+    public synchronized void turnOn() {      
         On = true;
     }
         
-    public void turnOff() {      
+    public synchronized void turnOff() {      
         On = false;
     }
     
-    public boolean isPrinci() {
+    public synchronized boolean isPrinci() {
         return Princi;
     }
 
-    public void addClient(Client client){
+    public synchronized void addClient(Client client){
         this.clients.add(client);
         this.numberClients++;
     }

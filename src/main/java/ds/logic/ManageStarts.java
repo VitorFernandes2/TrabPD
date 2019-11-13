@@ -1,7 +1,7 @@
 package ds.logic;
 
-import ds.logic.gest.Client;
 import ds.logic.gest.Server;
+import ds.logic.gest.ServerList;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -10,11 +10,7 @@ import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class ManageStarts extends Thread{
 
@@ -27,9 +23,9 @@ public class ManageStarts extends Thread{
     private String Port;
 
     //Variável de gestão de servidores
-    private ArrayList<Server> servers;
+    private ServerList servers;
 
-    public ManageStarts(String IP, String port, ArrayList<Server> servers) {
+    public ManageStarts(String IP, String port, ServerList servers) {
         this.finish = false;
         this.IP = IP;
         Port = port;
