@@ -10,13 +10,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class ServerTCPconnect extends Thread{
+public class ServerTCPconnect extends Observable implements Runnable{
     
     private String ip;
     private String port;
@@ -34,16 +35,15 @@ public class ServerTCPconnect extends Thread{
 
             System.out.println(ip);
             System.out.println(port);
-
+            
         }
         catch (ParseException e){
             System.out.println("[ERROR] unable to parse json from tcp connect");
         }
     }
-
-    @Override
+    
     public synchronized void start() {
-        super.start();
+        new Thread(this).start();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ServerTCPconnect extends Thread{
             Socket  s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
             
             while(stopthread){
- 
+                
                 JSONObject obj = new JSONObject();
                 obj.put("Login", "xxx");
                 obj.put("Password", "YYY");
@@ -72,7 +72,7 @@ public class ServerTCPconnect extends Thread{
                 JSONObject JObj = (JSONObject) JsonParser.parse(str);
                 
                 System.out.println(JObj.toString());
-            
+                
             }
             s.close();
 

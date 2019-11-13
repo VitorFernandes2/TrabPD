@@ -27,7 +27,7 @@ public class Main {
             System.out.println("Erra ao detetar o IP");
         }
         
-        servertemp.run();
+        servertemp.start();
         
     }
     

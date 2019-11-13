@@ -12,7 +12,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class ManageStarts extends Thread{
+public class ManageStarts implements Runnable {
 
     private final int TotalBytes = 4096;
 
@@ -31,10 +31,9 @@ public class ManageStarts extends Thread{
         Port = port;
         this.servers = servers;
     }
-
-    @Override
+    
     public synchronized void start() {
-        super.start();
+        new Thread(this).start();
     }
 
     //Thread para receber todos os novos servidores

@@ -14,9 +14,13 @@ import org.json.simple.parser.ParseException;
  *
  * @author a21270909
  */
-public class ThreadClientRequests extends Thread{
+public class ThreadClientRequests implements Runnable {
 
     private boolean runstatus = true;
+    
+    public synchronized void start() {
+        new Thread(this).start();
+    }
     
     @Override
     public void run() {
