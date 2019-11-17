@@ -56,6 +56,7 @@ public class DsConnect {
 
             //Criação da socket UDP
             socket = new DatagramSocket();
+            socket.setSoTimeout(10000);
             address = InetAddress.getByName(DsIp);
 
             JSONObject obj = new JSONObject();
@@ -71,7 +72,7 @@ public class DsConnect {
             socket.send(packet);
             
             // --------------- TEMP ---------------------
-            System.out.println("Envio packet para ligação ao ds");
+            System.out.println("DEBUG - Envio packet para ligação ao ds");
             this.IP = packet.getAddress().getHostAddress(); // voltar a adicionar o ip, pois pode ter mudado
             // ----------------endTEMP------------------
             
@@ -82,7 +83,7 @@ public class DsConnect {
             socket.receive(packet);
 
             // --------------- TEMP ---------------------
-            System.out.println("Recebi packet do ds");
+            System.out.println("DEBUG - Recebi packet do ds");
             // ----------------endTEMP------------------
             
             String strObj = new String(packet.getData(), 0, packet.getLength());
@@ -90,21 +91,20 @@ public class DsConnect {
             JSONParser JsonParser = new JSONParser();
             JSONObject JObj = (JSONObject) JsonParser.parse(strObj);
 
-            System.out.println(JObj.toString()); // Testar que objeto é returnado
+            System.out.println("DEBUG - " + JObj.toString()); // Testar que objeto é returnado
 
             return JObj.toString();
             //Colocar aqui tratamento do servidor agregado
 
         } catch (SocketException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (ParseException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
-
         return "error";
     }
 

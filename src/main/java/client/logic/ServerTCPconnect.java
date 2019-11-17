@@ -5,24 +5,27 @@
  */
 package client.logic;
 
+import client.InterfaceGrafica.Interfacemain;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class ServerTCPconnect extends Observable implements Runnable{
+public class ServerTCPconnect implements Runnable{
     
     private String ip;
     private String port;
     private boolean stopthread = true;
 
+    ConnectData data;
+    Interfacemain upperclass;
+    
     public ServerTCPconnect(String json){
         
         try{
@@ -41,6 +44,30 @@ public class ServerTCPconnect extends Observable implements Runnable{
             System.out.println("[ERROR] unable to parse json from tcp connect");
         }
     }
+
+    public ServerTCPconnect(String json, ConnectData datacomun,Interfacemain man) {
+
+        try{
+
+            JSONParser JsonParser = new JSONParser();
+            JSONObject JObj = (JSONObject) JsonParser.parse(json);
+
+            ip = (String) JObj.get("IP");
+            port = (String) JObj.get("Port");
+
+            System.out.println(ip);
+            System.out.println(port);
+            
+            this.data = datacomun;
+            this.upperclass = man;
+            
+        }
+        catch (ParseException e){
+            //System.out.println("[ERROR] unable to parse json from tcp connect");
+            upperclass.update(444, data);
+            //this.upperclass.notifyObserver(444);
+        }
+    }
     
     public synchronized void start() {
         new Thread(this).start();
@@ -56,8 +83,8 @@ public class ServerTCPconnect extends Observable implements Runnable{
             while(stopthread){
                 
                 JSONObject obj = new JSONObject();
-                obj.put("Login", "xxx");
-                obj.put("Password", "YYY");
+                obj.put("Login", data.getUsername());
+                obj.put("Password", data.getPassword());
             
                 PrintWriter pr = new PrintWriter(s.getOutputStream());
                 pr.println(obj.toString());
@@ -70,18 +97,20 @@ public class ServerTCPconnect extends Observable implements Runnable{
                 
                 JSONParser JsonParser = new JSONParser();
                 JSONObject JObj = (JSONObject) JsonParser.parse(str);
-                
-                System.out.println(JObj.toString());
+                data.setJObj(JObj);
+                //System.out.println(JObj.toString());
+                this.upperclass.update(3, data);
                 
             }
             s.close();
 
         } catch (IOException ex) {
-            Logger.getLogger(ServerTCPconnect.class.getName()).log(Level.SEVERE, null, ex);
+            this.upperclass.update(444,null);
         } catch (ParseException ex) {
-            Logger.getLogger(ServerTCPconnect.class.getName()).log(Level.SEVERE, null, ex);
+            this.upperclass.update(444,null);
         } catch (NullPointerException ex) {
             System.out.println("[ERROR] Erro de Nullpointer");
+            this.upperclass.update(444,null);
         }
 
     }

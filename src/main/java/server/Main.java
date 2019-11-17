@@ -14,6 +14,9 @@ public class Main {
 
     public static void tempserverudp(){
         // TEMP -> PRA REMOVER
+        
+        System.out.println("Server a correr"); // temp
+        
         SendDataDs manage = new SendDataDs("9999", "9999");
         manage.run();
         
