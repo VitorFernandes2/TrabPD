@@ -25,6 +25,7 @@ public class ServerTCPconnect implements Runnable{
 
     ConnectData data;
     Interfacemain upperclass;
+    JSONObject JObjE;
     
     public ServerTCPconnect(String json){
         
@@ -64,6 +65,9 @@ public class ServerTCPconnect implements Runnable{
         }
         catch (ParseException e){
             //System.out.println("[ERROR] unable to parse json from tcp connect");
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            data.setJObj(JObjE);
             upperclass.update(444, data);
             //this.upperclass.notifyObserver(444);
         }
@@ -104,13 +108,20 @@ public class ServerTCPconnect implements Runnable{
             }
             s.close();
 
-        } catch (IOException ex) {
-            this.upperclass.update(444,null);
-        } catch (ParseException ex) {
-            this.upperclass.update(444,null);
-        } catch (NullPointerException ex) {
-            System.out.println("[ERROR] Erro de Nullpointer");
-            this.upperclass.update(444,null);
+        } catch (IOException e) {
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            data.setJObj(JObjE);
+            upperclass.update(444, data);
+        } catch (ParseException e) {
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            data.setJObj(JObjE);
+            upperclass.update(444, data);
+        } catch (NullPointerException e) {JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            data.setJObj(JObjE);
+            upperclass.update(444, data);
         }
 
     }

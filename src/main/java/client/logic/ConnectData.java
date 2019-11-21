@@ -18,7 +18,7 @@ public class ConnectData {
     private String username;
     private String password;
     private JSONObject JObj;
-
+    
     public JSONObject getJObj() {
         return JObj;
     }

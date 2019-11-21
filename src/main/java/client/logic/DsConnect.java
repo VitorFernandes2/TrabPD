@@ -1,5 +1,6 @@
 package client.logic;
 
+import client.InterfaceGrafica.Interfacemain;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,6 +16,9 @@ public class DsConnect {
     private String ServerIp;
     private String IP;
     private String Port;
+    private Interfacemain inter;
+    private ConnectData datacomun;
+    private JSONObject JObjE;
 
     public DsConnect(String dsIp, String dsPort, String serverPort,
                        String serverIp, String IP, String port) {
@@ -39,6 +43,22 @@ public class DsConnect {
             this.IP = "9999";
         }
         Port = "9999";
+    }
+
+    DsConnect(String dsIp, String dsPort, Interfacemain inter, ConnectData datacomun) {
+        this.IP = dsIp;
+        DsPort = dsPort;
+        try{
+            DsIp = (InetAddress.getLocalHost()).getHostAddress();
+        }catch (Exception e)
+        {
+            System.out.println("Erra ao detetar o IP");
+            System.out.println("IP default 9999 atribuido");
+            this.IP = "9999";
+        }
+        Port = "9999";
+        this.inter = inter;
+        this.datacomun = datacomun;
     }
     
     
@@ -90,20 +110,32 @@ public class DsConnect {
 
             JSONParser JsonParser = new JSONParser();
             JSONObject JObj = (JSONObject) JsonParser.parse(strObj);
-
+            
             System.out.println("DEBUG - " + JObj.toString()); // Testar que objeto é returnado
 
             return JObj.toString();
             //Colocar aqui tratamento do servidor agregado
 
         } catch (SocketException e) {
-            //e.printStackTrace();
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            datacomun.setJObj(JObjE);
+            inter.update(444, datacomun);
         } catch (UnknownHostException e) {
-            //e.printStackTrace();
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            datacomun.setJObj(JObjE);
+            inter.update(444, datacomun);
         } catch (IOException e) {
-            //e.printStackTrace();
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            datacomun.setJObj(JObjE);
+            inter.update(444, datacomun);
         } catch (ParseException e) {
-            //e.printStackTrace();
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            datacomun.setJObj(JObjE);
+            inter.update(444, datacomun);
         }
         return "error";
     }

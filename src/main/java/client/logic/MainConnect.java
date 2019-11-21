@@ -67,10 +67,10 @@ public class MainConnect implements subject{
 
     public void begin() {
 
-        DsConnect start = new DsConnect("9999","9999"); // temp
+        DsConnect start = new DsConnect("9999","9999",inter,datacomun); // temp
         String returnado = start.run();
 
-        if("error".equals(returnado)){
+        if("error".equalsIgnoreCase(returnado)){
             this.notifyObserver(1);
         }
         else{

@@ -9,8 +9,6 @@ import client.Interfaces.observer;
 import client.logic.ConnectData;
 import client.logic.DsConnect;
 import client.logic.ServerTCPconnect;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Scanner;
 
 /**
@@ -28,9 +26,6 @@ public class Interfacemain implements observer{
         String userName = myObj.nextLine();
         System.out.println( userName + " insira a sua palavra passe: \n");
         String password = myObj.nextLine();
-        
-        
-        
     }
 
     public void begin() {
@@ -78,13 +73,12 @@ public class Interfacemain implements observer{
             
                 
             case 444:
-                System.out.println("[Error] erro desconhecido na comunicação");
+                String exc = (String) data.getJObj().get("exception");
+                System.out.println("Excepção lançada aqui no notifier: " + exc);
                 break;
-            
+                
         }
         
-    
-    
     }
 
     private void logininter(ConnectData data) {
