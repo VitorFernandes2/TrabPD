@@ -2,8 +2,6 @@ package client;
 
 import client.InterfaceGrafica.Interfacemain;
 import client.logic.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Main {
