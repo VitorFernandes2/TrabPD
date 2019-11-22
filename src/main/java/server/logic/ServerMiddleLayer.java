@@ -16,7 +16,6 @@ import server.interfaces.observerServer;
 public class ServerMiddleLayer implements observerServer{
 
     private ServerData sd;
-    private JSONObject ObjMudance;
 
     public ServerMiddleLayer(ServerData sd) {
         this.sd = sd;
@@ -28,14 +27,6 @@ public class ServerMiddleLayer implements observerServer{
 
     public void setSd(ServerData sd) {
         this.sd = sd;
-    }
-
-    public JSONObject getObjMudance() {
-        return ObjMudance;
-    }
-
-    public void setObjMudance(JSONObject ObjMudance) {
-        this.ObjMudance = ObjMudance;
     }
     
     @Override
@@ -74,8 +65,9 @@ public class ServerMiddleLayer implements observerServer{
                     ex.printStackTrace();
                 }
                 break;
-
-
+            case 3:
+                
+                break;
             case 4:
                 String excepcao = (String) sd.getObjMudance().get("exception");
                 System.out.println(excepcao);

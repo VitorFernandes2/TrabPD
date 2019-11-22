@@ -13,12 +13,11 @@ import server.logic.ThreadClientRequests;
 public class ServerIterface implements subjectServer{
 
     private ServerMiddleLayer sml;
-
-    public ServerIterface(ServerMiddleLayer sml) {
-        this.sml = sml;
-    }
     
     public void connect(){
+        
+        this.notifyObserver(2);
+        
         //System.out.println("Server a correr"); // temp
         JSONObject Ob = new JSONObject();
         Ob.put("output", "Server a correr.");
@@ -33,26 +32,39 @@ public class ServerIterface implements subjectServer{
         
         threadclass.stopthread();
     }
-
-    public ServerMiddleLayer getSml() {
-        return sml;
+    
+    public String getDsIP() {
+        return sml.getSd().getDsIP();
     }
 
-    public void setSml(ServerMiddleLayer sml) {
-        this.sml = sml;
+    public void setDsIP(String DsIP) {
+        sml.getSd().setDsIP(DsIP);
+    }
+
+    public String getDsPort() {
+        return sml.getSd().getDsPort();
+    }
+
+    public void setDsPort(String DsPort) {
+        sml.getSd().setDsPort(DsPort);
     }
 
     public JSONObject getObjMudance() {
-        return sml.getObjMudance();
+        return sml.getSd().getObjMudance();
     }
 
     public void setObjMudance(JSONObject ObjMudance) {
-        this.sml.setObjMudance(ObjMudance);
+        sml.getSd().setObjMudance(ObjMudance);
     }
 
     @Override
     public void notifyObserver(int acao) {
         sml.update(acao);
+    }
+
+    @Override
+    public void addinterface(ServerMiddleLayer sml) {
+        this.sml = sml;
     }
     
 }
