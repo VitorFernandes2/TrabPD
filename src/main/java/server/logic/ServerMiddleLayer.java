@@ -6,7 +6,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 import org.json.simple.JSONObject;
+import server.graphicInterface.ServerIterface;
 import server.interfaces.observerServer;
 
 /**
@@ -33,7 +35,7 @@ public class ServerMiddleLayer implements observerServer{
     public void update(int acao) {
         switch(acao){
             case 1:
-                String output = (String) sd.getObjMudance().get("output");
+                String output = (String) this.sd.getObjMudance().get("output");
                 System.out.println(output);
                 break;
             case 2:
@@ -42,7 +44,7 @@ public class ServerMiddleLayer implements observerServer{
                 try {
                     socket = new DatagramSocket();
                 
-                    InetAddress address = InetAddress.getByName(sd.getDsIP());
+                    InetAddress address = InetAddress.getByName(this.sd.getDsIP());
 
                     JSONObject ObjSend =  new JSONObject();
 
@@ -52,7 +54,7 @@ public class ServerMiddleLayer implements observerServer{
                     String StrToSend = ObjSend.toString();
                     byte []buf = StrToSend.getBytes();
                     DatagramPacket packet = new DatagramPacket(buf, buf.length, address,
-                            Integer.parseInt(sd.getDsPort()));
+                            Integer.parseInt(this.sd.getDsPort()));
 
                     socket.send(packet);
 
@@ -66,10 +68,17 @@ public class ServerMiddleLayer implements observerServer{
                 }
                 break;
             case 3:
-                
+                ServerIterface si = (ServerIterface) this.sd.getObjMudance().get("ServerIterface");
+                ThreadClientRequests threadclass = new ThreadClientRequests(si); // pode ser mai pratica REVER
+                threadclass.start();
+
+                Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
+                String userName = myObj.nextLine();
+
+                threadclass.stopthread();
                 break;
             case 4:
-                String excepcao = (String) sd.getObjMudance().get("exception");
+                String excepcao = (String) this.sd.getObjMudance().get("exception");
                 System.out.println(excepcao);
                 break;
             default:

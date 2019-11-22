@@ -24,13 +24,11 @@ public class ServerIterface implements subjectServer{
         setObjMudance(Ob);
         this.notifyObserver(1);
         
-        ThreadClientRequests threadclass = new ThreadClientRequests(this); // pode ser mai pratica REVER
-        threadclass.start();
+        Ob.put("ServerIterface", this);
+        setObjMudance(Ob);
+        this.notifyObserver(3);
         
-        Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
-        String userName = myObj.nextLine();
         
-        threadclass.stopthread();
     }
     
     public String getDsIP() {
