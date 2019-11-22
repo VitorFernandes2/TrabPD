@@ -1,20 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package server.graphicInterface;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
-import server.interfaces.observerServer;
 import server.interfaces.subjectServer;
-import server.logic.SendDataDs;
-import server.logic.ServerData;
+import server.logic.ServerMiddleLayer;
 import server.logic.ThreadClientRequests;
 
 /**
@@ -23,20 +12,18 @@ import server.logic.ThreadClientRequests;
  */
 public class ServerIterface implements subjectServer{
 
-    private ServerData sd;
+    private ServerMiddleLayer sml;
 
-    public ServerIterface(ServerData sd) {
-        this.sd = sd;
+    public ServerIterface(ServerMiddleLayer sml) {
+        this.sml = sml;
     }
     
     public void connect(){
         //System.out.println("Server a correr"); // temp
         JSONObject Ob = new JSONObject();
         Ob.put("output", "Server a correr.");
-        this.getSd().setObjMudance(Ob);
+        setObjMudance(Ob);
         this.notifyObserver(1);
-        
-        sd.run();
         
         ThreadClientRequests threadclass = new ThreadClientRequests(this); // pode ser mai pratica REVER
         threadclass.start();
@@ -47,17 +34,25 @@ public class ServerIterface implements subjectServer{
         threadclass.stopthread();
     }
 
-    public ServerData getSd() {
-        return sd;
+    public ServerMiddleLayer getSml() {
+        return sml;
     }
 
-    public void setSd(ServerData sd) {
-        this.sd = sd;
+    public void setSml(ServerMiddleLayer sml) {
+        this.sml = sml;
+    }
+
+    public JSONObject getObjMudance() {
+        return sml.getObjMudance();
+    }
+
+    public void setObjMudance(JSONObject ObjMudance) {
+        this.sml.setObjMudance(ObjMudance);
     }
 
     @Override
     public void notifyObserver(int acao) {
-        sd.update(acao);
+        sml.update(acao);
     }
     
 }

@@ -5,6 +5,7 @@ import server.graphicInterface.ServerIterface;
 import server.logic.ThreadClientRequests;
 import server.logic.SendDataDs;
 import server.logic.ServerData;
+import server.logic.ServerMiddleLayer;
 
 public class Main {
 
@@ -12,7 +13,9 @@ public class Main {
 
         ServerData server = new ServerData("9999", "9999");
         
-        ServerIterface serverItf = new ServerIterface(server);
+        ServerMiddleLayer sml = new ServerMiddleLayer(server);
+        
+        ServerIterface serverItf = new ServerIterface(sml);
         
         serverItf.connect();
         

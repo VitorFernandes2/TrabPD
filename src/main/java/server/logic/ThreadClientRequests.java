@@ -46,7 +46,7 @@ public class ThreadClientRequests implements Runnable {
         } catch (IOException ex) {
             JSONObject Ob = new JSONObject();
             Ob.put("exception", "[ERROR] Não foi possivel criar o socket.\n" + ex.getMessage());
-            si.getSd().setObjMudance(Ob);
+            si.setObjMudance(Ob);
             si.notifyObserver(4);
             runstatus = false;
             return;
@@ -57,7 +57,7 @@ public class ThreadClientRequests implements Runnable {
             //System.out.println("client connected to tcp");
             JSONObject Ob = new JSONObject();
             Ob.put("output", "Client connected to tcp.");
-            si.getSd().setObjMudance(Ob);
+            si.setObjMudance(Ob);
             si.notifyObserver(1);
 
             InputStreamReader in = null;
@@ -74,7 +74,7 @@ public class ThreadClientRequests implements Runnable {
 
                 //System.out.println(JObj.toString());
                 Ob.put("output", JObj.toString());
-                si.getSd().setObjMudance(Ob);
+                si.setObjMudance(Ob);
                 si.notifyObserver(1);
 
                 JSONObject obj = new JSONObject();
@@ -88,19 +88,19 @@ public class ThreadClientRequests implements Runnable {
 
             } catch (IOException ex) {
                 Ob.put("exception", "[ERROR] Erro no ciclo.\n" + ex.getMessage());
-                si.getSd().setObjMudance(Ob);
+                si.setObjMudance(Ob);
                 si.notifyObserver(4);
                 runstatus = false;
                 return;
             } catch (ParseException ex) {
                 Ob.put("exception", "[ERROR] Erro na tradução do Json.\n" + ex.getMessage());
-                si.getSd().setObjMudance(Ob);
+                si.setObjMudance(Ob);
                 si.notifyObserver(4);
                 runstatus = false;
                 return;
             } catch (NullPointerException ex) {
                 Ob.put("exception", "[ERROR] Erro de Nullpointer. Provavelmente o client se desconectou.\n" + ex.getMessage());
-                si.getSd().setObjMudance(Ob);
+                si.setObjMudance(Ob);
                 si.notifyObserver(4);
                 runstatus = false;
                 return;

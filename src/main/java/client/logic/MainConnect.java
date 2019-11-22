@@ -7,7 +7,6 @@ package client.logic;
 
 import client.InterfaceGrafica.Interfacemain;
 import client.Interfaces.subject;
-import java.util.Scanner;
 
 /**
  *
