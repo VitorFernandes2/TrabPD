@@ -30,7 +30,7 @@ public class Main {
         }
         
         servertemp.start();
-        //manageServers.start();
+        manageServers.start();
         
     }
     

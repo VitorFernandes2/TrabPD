@@ -14,10 +14,10 @@ public class PingReply extends Thread {
 
     private DatagramSocket socket;
 
-    public PingReply() {
+    public PingReply(int port) {
 
         try {
-            socket = new DatagramSocket(9998);
+            socket = new DatagramSocket(port);
         } catch (SocketException e) {
             e.printStackTrace();
         }

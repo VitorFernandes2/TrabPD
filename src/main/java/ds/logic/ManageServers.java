@@ -37,6 +37,7 @@ public class ManageServers extends Thread {
             //Corre a lista de servidores e comunica com estes
             for (Server serv: servers) {
 
+                synchronized (servers){
                     //Se o servidor não estiver vivo
                     if (!isAlive(serv)){
 
@@ -44,6 +45,7 @@ public class ManageServers extends Thread {
                         migrateClients(serv);
 
                     }
+                }
 
             }
 
