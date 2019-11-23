@@ -1,14 +1,9 @@
 package server.logic;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import server.graphicInterface.ServerIterface;
 
 /**
@@ -20,14 +15,13 @@ public class ThreadClientRequests implements Runnable {
     private boolean runstatus = true;
     
     private ServerIterface si;
-
-    //para prevenção de erro no temp da main
-    public ThreadClientRequests() {
-        
-    }
+    private JSONObject Ob;
+    private Socket s;
+    private ThreadClientListenTreatment tclt;
     
     public ThreadClientRequests(ServerIterface si) {
         this.si = si;
+        this.Ob = new JSONObject();
     }
     
     public synchronized void start() {
@@ -36,83 +30,45 @@ public class ThreadClientRequests implements Runnable {
     
     @Override
     public void run() {
-
-        ServerSocket ss = null; 
-        Socket s = null;
         
         try {
-            ss = new ServerSocket(9998);
-            s = ss.accept(); // é ma pratica meter um accept dentro de um try??
-        } catch (IOException ex) {
-            JSONObject Ob = new JSONObject();
-            Ob.put("exception", "[ERROR] Não foi possivel criar o socket.\n" + ex.getMessage());
-            si.setObjMudance(Ob);
-            si.notifyObserver(4);
-            runstatus = false;
-            return;
-        }
-        
-        while(runstatus){
-            
-            //System.out.println("client connected to tcp");
-            JSONObject Ob = new JSONObject();
-            Ob.put("output", "Client connected to tcp.");
-            si.setObjMudance(Ob);
-            si.notifyObserver(1);
-
-            InputStreamReader in = null;
-
             try {
-                in = new InputStreamReader(s.getInputStream()); // DUMMY CODE : modificar para enviar o q é preciso
-
-                BufferedReader bf = new BufferedReader(in);
-
-                String str = bf.readLine();
-
-                JSONParser JsonParser = new JSONParser();
-                JSONObject JObj = (JSONObject) JsonParser.parse(str);
-
-                //System.out.println(JObj.toString());
-                Ob.put("output", JObj.toString());
+                si.setServer(new ServerSocket(9998));
+                Ob.put("output", "TCP link started.");
                 si.setObjMudance(Ob);
                 si.notifyObserver(1);
-
-                JSONObject obj = new JSONObject();
                 
-                obj.put("Data", "xxx");
-                obj.put("Mp3", "music");
-
-                PrintWriter pr = new PrintWriter(s.getOutputStream());
-                pr.println(obj.toString());
-                pr.flush();
+                int counter = 0;
+                
+                while(!si.getServer().isClosed()){
+                    s = si.getServer().accept();
+                    si.addClients(s);
+                    tclt = new ThreadClientListenTreatment(s, si);
+                    si.addListners(tclt);
+                    si.getListen(tclt).start();
+                }
 
             } catch (IOException ex) {
-                Ob.put("exception", "[ERROR] Erro no ciclo.\n" + ex.getMessage());
+                Ob.put("exception", "[ERROR] Não foi possivel criar o socket TCP ou Servidor forçado a parar.\n" + ex.getMessage());
                 si.setObjMudance(Ob);
                 si.notifyObserver(4);
-                runstatus = false;
-                return;
-            } catch (ParseException ex) {
-                Ob.put("exception", "[ERROR] Erro na tradução do Json.\n" + ex.getMessage());
-                si.setObjMudance(Ob);
-                si.notifyObserver(4);
-                runstatus = false;
-                return;
-            } catch (NullPointerException ex) {
-                Ob.put("exception", "[ERROR] Erro de Nullpointer. Provavelmente o client se desconectou.\n" + ex.getMessage());
-                si.setObjMudance(Ob);
-                si.notifyObserver(4);
-                runstatus = false;
-                return;
+                si.desconnectAllClients();
+                //runstatus = false;
             }
-
+            
+            si.desconnectAllClients();
+            
+        } catch (IOException ex) {
+            Ob.put("exception", "[ERROR] Não foi possivel desconectar todos os Clientes e/ou as suas Threads.\n" + ex.getMessage());
+            si.setObjMudance(Ob);
+            si.notifyObserver(4);
         }
-        
+
     }
        
     
-    public void stopthread(){ // pode ser ma pratica
-        runstatus = false;
+    public void stopthread() throws IOException{ // pode ser ma pratica
+        si.getServer().close();
     }
     
     

@@ -86,24 +86,26 @@ public class ServerTCPconnect implements Runnable{
             
             while(stopthread){
                 
-                JSONObject obj = new JSONObject();
-                obj.put("Login", data.getUsername());
-                obj.put("Password", data.getPassword());
-            
-                PrintWriter pr = new PrintWriter(s.getOutputStream());
-                pr.println(obj.toString());
-                pr.flush();
-                
-                InputStreamReader in = new InputStreamReader(s.getInputStream());
-                BufferedReader bf = new BufferedReader(in);
+                synchronized(s.getOutputStream()){
+                    JSONObject obj = new JSONObject();
+                    obj.put("Login", data.getUsername());
+                    obj.put("Password", data.getPassword());
 
-                String str = bf.readLine();
-                
-                JSONParser JsonParser = new JSONParser();
-                JSONObject JObj = (JSONObject) JsonParser.parse(str);
-                data.setJObj(JObj);
-                //System.out.println(JObj.toString());
-                this.upperclass.update(3, data);
+                    PrintWriter pr = new PrintWriter(s.getOutputStream());
+                    pr.println(obj.toString());
+                    pr.flush();
+
+                    InputStreamReader in = new InputStreamReader(s.getInputStream());
+                    BufferedReader bf = new BufferedReader(in);
+
+                    String str = bf.readLine();
+
+                    JSONParser JsonParser = new JSONParser();
+                    JSONObject JObj = (JSONObject) JsonParser.parse(str);
+                    data.setJObj(JObj);
+                    //System.out.println(JObj.toString());
+                    this.upperclass.update(3, data);
+                }
                 
             }
             s.close();

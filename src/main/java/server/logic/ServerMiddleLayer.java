@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import server.graphicInterface.ServerIterface;
 import server.interfaces.observerServer;
@@ -74,9 +76,13 @@ public class ServerMiddleLayer implements observerServer{
 
                 Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
                 String userName = myObj.nextLine();
-
-                threadclass.stopthread();
+                try {
+                    threadclass.stopthread();
+                } catch (IOException ex) {
+                    System.out.println("[ERROR] Terminação forçada do Servidor.\n" + ex.getMessage());
+                }
                 break;
+
             case 4:
                 String excepcao = (String) this.sd.getObjMudance().get("exception");
                 System.out.println(excepcao);
