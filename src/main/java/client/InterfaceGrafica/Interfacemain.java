@@ -71,6 +71,9 @@ public class Interfacemain implements observer{
                 String userName = myObj.nextLine();
                 break;
             
+            case 5:
+                System.out.println("[ERROR] Excepção de IO lançada. Provavelmente o servidor desligou/perdeu-se a conecção ao servidor");
+                break;   
                 
             case 444:
                 String exc = (String) data.getJObj().get("exception");
