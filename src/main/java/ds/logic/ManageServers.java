@@ -44,7 +44,7 @@ public class ManageServers extends Thread {
                     if (!isAlive(serv)){
 
                         System.out.println("O servidor " + serv.getIP() + " morreu");
-                        migrateClients(serv);
+                        //migrateClients(serv, serversNew);
 
                     }
                 }
@@ -114,9 +114,35 @@ public class ManageServers extends Thread {
     }
 
     //Esta função migra os clientes de um servidor para outro se existir
-    private void migrateClients(Server server){
+    private void migrateClients(Server server, ArrayList<Server> serverArrayList){
+
+        synchronized (serverArrayList){
+
+            //Mete o servidor como desligado
+            server.turnOff();
+
+            boolean alter = false;
+
+            for (Server item : serverArrayList) {
+
+                //Se o servidor que morreu for o principal, passa o primeiro da lista a
+                //ser o principal
+                if (server.isPrinci() && !alter && item.isOn()){
+                    server.unsetPrinci();
+                    item.setPrinci();
+                    alter = true;
+                }
+
+                //Se não for o mesmo servidor e estiver ativo
+                if (item != server && item.isOn()){
 
 
+
+                }
+
+            }
+
+        }
 
     }
 

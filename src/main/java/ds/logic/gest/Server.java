@@ -53,4 +53,12 @@ public class Server {
         this.numberClients++;
     }
 
+    public synchronized void setPrinci(){
+        this.Princi = true;
+    }
+
+    public synchronized void unsetPrinci(){
+        this.Princi = false;
+    }
+
 }
