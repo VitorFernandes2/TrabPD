@@ -18,6 +18,7 @@ import server.interfaces.observerServer;
 public class ServerMiddleLayer implements observerServer{
 
     private ServerData sd;
+    private PingReply pingReply;
 
     public ServerMiddleLayer(ServerData sd) {
         this.sd = sd;
@@ -66,6 +67,10 @@ public class ServerMiddleLayer implements observerServer{
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
+
+                pingReply = new PingReply();
+                pingReply.start();
+
                 break;
             case 3:
                 ServerIterface si = (ServerIterface) this.sd.getObjMudance().get("ServerIterface");

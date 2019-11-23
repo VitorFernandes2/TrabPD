@@ -71,7 +71,9 @@ public class ManageServers extends Thread {
             //Envio de pedido de respota para saber se está vivo
 
             InetAddress IP = InetAddress.getByName(server.getIP());
-            DatagramPacket packet = new DatagramPacket(buf, buf.length, IP, 9990);
+            int PORT = Integer.parseInt(server.getPort());
+            System.out.println(PORT);
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, IP, PORT);
             socket.send(packet);
 
             //10 segundos de espera
