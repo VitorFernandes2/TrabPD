@@ -34,10 +34,12 @@ public class ManageServers extends Thread {
         //A thread corre enquanto não haver a informação para este terminar
         while (!terminate){
 
-            //Corre a lista de servidores e comunica com estes
-            for (Server serv: servers) {
+            ArrayList<Server> serversNew = new ArrayList<>(servers);
 
-                synchronized (servers){
+            //Corre a lista de servidores e comunica com estes
+            for (Server serv: serversNew) {
+
+                synchronized (serversNew){
                     //Se o servidor não estiver vivo
                     if (!isAlive(serv)){
 
