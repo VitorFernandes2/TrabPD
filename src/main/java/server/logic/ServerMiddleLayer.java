@@ -7,8 +7,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import server.graphicInterface.ServerIterface;
 import server.interfaces.observerServer;
@@ -45,14 +43,16 @@ public class ServerMiddleLayer implements observerServer{
                 System.out.println("Pedido de Ligação ao DS.");
                 DatagramSocket socket;
                 try {
-                    socket = new DatagramSocket();
+                    socket = new DatagramSocket(0);
                 
                     InetAddress address = InetAddress.getByName(this.sd.getDsIP());
 
                     JSONObject ObjSend =  new JSONObject();
 
                     ObjSend.put("msg", "dataSubmitServer");
-                    ObjSend.put("Port", "9998");
+                    ObjSend.put("Port", "" + socket.getLocalPort());
+                    
+                    sd.setServerPort(socket.getLocalPort());
 
                     String StrToSend = ObjSend.toString();
                     byte []buf = StrToSend.getBytes();

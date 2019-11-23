@@ -33,12 +33,10 @@ public class ThreadClientRequests implements Runnable {
         
         try {
             try {
-                si.setServer(new ServerSocket(9998));
+                si.setServer(new ServerSocket(si.getServerPort()));
                 Ob.put("output", "TCP link started.");
                 si.setObjMudance(Ob);
                 si.notifyObserver(1);
-                
-                int counter = 0;
                 
                 while(!si.getServer().isClosed()){
                     s = si.getServer().accept();
@@ -53,7 +51,6 @@ public class ThreadClientRequests implements Runnable {
                 si.setObjMudance(Ob);
                 si.notifyObserver(4);
                 si.desconnectAllClients();
-                //runstatus = false;
             }
             
             si.desconnectAllClients();

@@ -33,6 +33,10 @@ public class ServerIterface implements subjectServer{
         
     }
     
+    public int getServerPort(){
+        return sml.getSd().getServerPort();
+    }
+    
     public ThreadClientListenTreatment getListen(ThreadClientListenTreatment Listen){
         return sml.getSd().getListen(Listen);
     }

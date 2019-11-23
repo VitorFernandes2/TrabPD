@@ -1,12 +1,16 @@
 package server.logic;
 
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 
 /**
@@ -21,6 +25,7 @@ public class ServerData {
     private ServerSocket Server;
     private List<Socket> Clients;
     private List<ThreadClientListenTreatment> Servers;
+    private int ServerPort;
 
     public ServerData(String DsIP, String DsPort) {
         this.DsIP = DsIP;
@@ -32,6 +37,14 @@ public class ServerData {
         this.DsPort = DsPort;
         this.Clients = new ArrayList<>();
         this.Servers = new ArrayList<>();
+    }
+
+    public int getServerPort() {
+        return ServerPort;
+    }
+
+    public void setServerPort(int ServerPort) {
+        this.ServerPort = ServerPort;
     }
     
     public ThreadClientListenTreatment getListen(ThreadClientListenTreatment Listen){
@@ -59,9 +72,6 @@ public class ServerData {
     }
     
     public boolean removeClient(Socket Client) {
-//        //vou colocar aqui já a desligar//
-//        Clients.get(Clients.indexOf(Client)).close();
-//        //------------------------------//
         return Clients.remove(Client);
     }
     
