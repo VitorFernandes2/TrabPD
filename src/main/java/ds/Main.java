@@ -19,15 +19,18 @@ public class Main {
         ServerList servers = new ServerList();
             
         ManageStarts servertemp = null;
+        ManageServers manageServers = null;
         try{
             servertemp = new ManageStarts((InetAddress.getLocalHost()).getHostAddress(),
                     "9999", servers);
+            manageServers = new ManageServers(servers);
         }catch (Exception e)
         {
             System.out.println("Erra ao detetar o IP");
         }
         
         servertemp.start();
+        manageServers.start();
         
     }
     
