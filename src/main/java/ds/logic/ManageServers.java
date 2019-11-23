@@ -34,11 +34,8 @@ public class ManageServers extends Thread {
         //A thread corre enquanto não haver a informação para este terminar
         while (!terminate){
 
-            //sincroniza o método o tratamento da lista de servidores
-            synchronized (this){
-
-                //Corre a lista de servidores e comunica com estes
-                for (Server serv: servers) {
+            //Corre a lista de servidores e comunica com estes
+            for (Server serv: servers) {
 
                     //Se o servidor não estiver vivo
                     if (!isAlive(serv)){
@@ -46,11 +43,7 @@ public class ManageServers extends Thread {
                         System.out.println("O servidor " + serv.getIP() + " morreu");
                         migrateClients(serv);
 
-                    }else{
-                        System.out.println("O servidor " + serv.getIP() + "esta vivo");
                     }
-
-                }
 
             }
 

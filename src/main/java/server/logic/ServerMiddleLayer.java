@@ -70,8 +70,8 @@ public class ServerMiddleLayer implements observerServer{
                     ex.printStackTrace();
                 }
 
-                pingReply = new PingReply();
-                pingReply.start();
+                //pingReply = new PingReply();
+                //pingReply.start();
 
                 break;
             case 3:
