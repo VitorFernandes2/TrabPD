@@ -8,6 +8,9 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ManageServers extends Thread {
 
@@ -78,12 +81,13 @@ public class ManageServers extends Thread {
 
             while (true){
                 try {
-
+                    
+                    TimeUnit.SECONDS.sleep(1);
                     //Espera resposta
                     buf = new byte[256];
                     packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
-
+                    
                     String temp = new String(packet.getData(), 0, packet.getLength());
                     JSONParser JsonParser = new JSONParser();
                     JSONObject object = (JSONObject) JsonParser.parse(temp);
@@ -96,6 +100,8 @@ public class ManageServers extends Thread {
                 }catch (SocketTimeoutException e){
                     return false;
                 }catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
