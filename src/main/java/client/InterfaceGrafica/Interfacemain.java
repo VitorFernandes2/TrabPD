@@ -72,8 +72,8 @@ public class Interfacemain implements observer{
                 break;
             
             case 5:
-                System.out.println("[ERROR] Excepção de IO lançada. Provavelmente o servidor \n desligou/perdeu-se a conecção ao servidor");
-                break;   
+                System.out.println("[ERROR] Excepção de IO lançada. Provavelmente o servidor \n[ERROR]desligou/perdeu-se a conecção ao servidor");
+                break;
                 
             case 444:
                 String exc = (String) data.getJObj().get("exception");

@@ -21,7 +21,6 @@ public class ServerIterface implements subjectServer{
         
         this.notifyObserver(2);
         
-        //System.out.println("Server a correr"); // temp
         JSONObject Ob = new JSONObject();
         Ob.put("output", "Server a correr.");
         setObjMudance(Ob);

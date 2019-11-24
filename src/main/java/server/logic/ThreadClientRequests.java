@@ -11,8 +11,6 @@ import server.graphicInterface.ServerIterface;
  * @author a21270909
  */
 public class ThreadClientRequests implements Runnable {
-
-    private boolean runstatus = true;
     
     private ServerIterface si;
     private JSONObject Ob;
@@ -34,7 +32,7 @@ public class ThreadClientRequests implements Runnable {
         try {
             try {
                 si.setServer(new ServerSocket(si.getServerPort()));
-                Ob.put("output", "TCP link started.");
+                Ob.put("output", "TCP link started in port: " + si.getServerPort() + ".");
                 si.setObjMudance(Ob);
                 si.notifyObserver(1);
                 
@@ -64,7 +62,7 @@ public class ThreadClientRequests implements Runnable {
     }
        
     
-    public void stopthread() throws IOException{ // pode ser ma pratica
+    public void stopthread() throws IOException{
         si.getServer().close();
     }
     
