@@ -170,7 +170,7 @@ public class ManageServers extends Thread {
                     serv.addClient(item);
                     server.removeClient(item);
                     //comunica a cada cliente que o servidor vai mudar
-                    comunicateServerDeathToCli(item, serv);
+                    //comunicateServerDeathToCli(item, serv);
 
                 }
 
