@@ -53,6 +53,11 @@ public class Server {
         this.numberClients++;
     }
 
+    public synchronized void removeClient(Client client){
+        this.clients.remove(client);
+        this.numberClients--;
+    }
+
     public synchronized void setPrinci(){
         this.Princi = true;
     }
@@ -61,4 +66,7 @@ public class Server {
         this.Princi = false;
     }
 
+    public synchronized ArrayList<Client> getClients() {
+        return clients;
+    }
 }
