@@ -1,16 +1,12 @@
 package server.logic;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 
 /**
@@ -84,8 +80,10 @@ public class ServerData {
     }
     
     public void desconnetAllClients() throws IOException{
-        for(Socket Client : Clients){
-            Client.close();
+        if(Clients.size() > 0){
+            for(Socket Client : Clients){
+                Client.close();
+            }
         }
     }
     

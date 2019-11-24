@@ -83,6 +83,7 @@ public class ServerMiddleLayer implements observerServer{
                 String userName = myObj.nextLine();
                 try {
                     threadclass.stopthread();
+                    System.exit(0);//retirar depois para tratamento de morte do servidor
                 } catch (IOException ex) {
                     System.out.println("[ERROR] Terminação forçada do Servidor.\n" + ex.getMessage());
                 }

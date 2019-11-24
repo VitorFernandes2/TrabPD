@@ -1,5 +1,6 @@
 package ds.logic;
 
+import ds.logic.gest.Client;
 import ds.logic.gest.Server;
 import ds.logic.gest.ServerList;
 import org.json.simple.JSONObject;
@@ -131,7 +132,9 @@ public class ManageStarts implements Runnable {
                             serverToCli = item;
                             min = item.getNumberClients();
                         }
-
+                
+                Client client = new Client(String.valueOf(Ip), Port);
+                serverToCli.addClient(client);
                 //Servidor atribuido
                 obj.put("msg", "serverAtr");
                 obj.put("IP", serverToCli.getIP());
