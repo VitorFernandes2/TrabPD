@@ -194,9 +194,10 @@ public class ManageServers extends Thread {
                     InetAddress IP = InetAddress.getByName(item.getIP());
                     int PORT = Integer.parseInt(item.getPort());
 
-                    String msg = server.getIP() + ", foi down";
+                    String msg = server.getIP();
                     JSONObject object = new JSONObject();
-                    object.put("msg",msg);
+                    object.put("msg","serverMorto");
+                    object.put("serv", msg);
 
                     byte[] buf = object.toString().getBytes();
                     DatagramPacket packet = new DatagramPacket(buf, buf.length, IP, PORT);

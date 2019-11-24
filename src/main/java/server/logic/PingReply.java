@@ -43,7 +43,9 @@ public class PingReply extends Thread {
                 JSONParser jsonParser = new JSONParser();
                 JSONObject object = (JSONObject) jsonParser.parse(tmp);
 
-                if (object.get("msg").equals("isAlive")){
+                String msg = (String) object.get("msg");
+
+                if (msg.equals("isAlive")){
 
                     object = new JSONObject();
                     object.put("msg", true);
@@ -53,13 +55,16 @@ public class PingReply extends Thread {
                     packet = new DatagramPacket(buf, buf.length, IP, PORT);
                     socket.send(packet);
 
+                }else if (msg.equals("serverMorto")){
+
+                    //Caso seja necessário tratar algo do server morto
+                    System.out.println("O servidor que morreu, foi " + object.get("serv"));
+
                 }
 
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
 
