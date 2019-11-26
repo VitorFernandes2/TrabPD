@@ -9,13 +9,13 @@ public class Main {
 
         ServerData server = new ServerData("9999", "9999");
         
-        ServerMiddleLayer sml = new ServerMiddleLayer(server);
+        ServerLogic sml = new ServerLogic(server);
         
         ComunicationInterface serverItf = new ComunicationInterface();
         
-        serverItf.addinterface(sml);
+        sml.addinterface(serverItf);
         
-        serverItf.connect();
+        sml.connect();
 
     }
     

@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONObject;
 
-/**
- *
- * @author Luís António Moreira Ferreira da Silva
- */
 public class ServerData {
 
     private String DsIP;

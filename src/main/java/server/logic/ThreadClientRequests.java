@@ -3,8 +3,7 @@ package server.logic;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import org.json.simple.JSONObject;
-import server.comunicationInterface.ComunicationInterface;
+import server.ServerLogic;
 
 /**
  *
@@ -12,14 +11,12 @@ import server.comunicationInterface.ComunicationInterface;
  */
 public class ThreadClientRequests implements Runnable {
     
-    private ComunicationInterface si;
-    private JSONObject Ob;
+    private ServerLogic si;
     private Socket s;
     private ThreadClientListenTreatment tclt;
     
-    public ThreadClientRequests(ComunicationInterface si) {
+    public ThreadClientRequests(ServerLogic si) {
         this.si = si;
-        this.Ob = new JSONObject();
     }
     
     public synchronized void start() {
@@ -31,31 +28,28 @@ public class ThreadClientRequests implements Runnable {
         
         try {
             try {
-                si.setServer(new ServerSocket(si.getServerPort()));
-                Ob.put("output", "TCP link started in port: " + si.getServerPort() + ".");
-                si.setObjMudance(Ob);
+                si.getSd().setServer(new ServerSocket(si.getSd().getServerPort()));
+                si.getOb().put("output", "TCP link started in port: " + si.getSd().getServerPort() + ".");
                 si.notifyObserver(1);
                 
-                while(!si.getServer().isClosed()){
-                    s = si.getServer().accept();
-                    si.addClients(s);
+                while(!si.getSd().getServer().isClosed()){
+                    s = si.getSd().getServer().accept();
+                    si.getSd().addClients(s);
                     tclt = new ThreadClientListenTreatment(s, si);
-                    si.addListners(tclt);
-                    si.getListen(tclt).start();
+                    si.getSd().addListners(tclt);
+                    si.getSd().getListen(tclt).start();
                 }
 
             } catch (IOException ex) {
-                Ob.put("exception", "[ERROR] Não foi possivel criar o socket TCP ou Servidor forçado a parar.\n" + ex.getMessage());
-                si.setObjMudance(Ob);
+                si.getOb().put("exception", "[ERROR] Não foi possivel criar o socket TCP ou Servidor forçado a parar.\n" + ex.getMessage());
                 si.notifyObserver(4);
-                si.desconnectAllClients();
+                si.getSd().desconnetAllClients();
             }
             
-            si.desconnectAllClients();
+            si.getSd().desconnetAllClients();
             
         } catch (IOException ex) {
-            Ob.put("exception", "[ERROR] Não foi possivel desconectar todos os Clientes e/ou as suas Threads.\n" + ex.getMessage());
-            si.setObjMudance(Ob);
+            si.getOb().put("exception", "[ERROR] Não foi possivel desconectar todos os Clientes e/ou as suas Threads.\n" + ex.getMessage());
             si.notifyObserver(4);
         }
 
@@ -63,7 +57,7 @@ public class ThreadClientRequests implements Runnable {
        
     
     public void stopthread() throws IOException{
-        si.getServer().close();
+        si.getSd().getServer().close();
     }
     
     

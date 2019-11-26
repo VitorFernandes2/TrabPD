@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.json.simple.JSONObject;
-import server.comunicationInterface.ComunicationInterface;
+import server.ServerLogic;
 
 /**
  *
@@ -27,18 +27,18 @@ public class DatabaseControler {
    private Connection connect;
    private Statement stmt;
    private String namedb;
-   private final ComunicationInterface si;
+   private final ServerLogic si;
 
     /**
      * ONLY USE TO OVERRIDE USERNAME AND PASSWORD
      */
-    public DatabaseControler(String user, String pass, ComunicationInterface si) {
+    public DatabaseControler(String user, String pass, ServerLogic si) {
         this.user = user;
         this.pass = pass;
         this.si = si;
     }
 
-    public DatabaseControler(ComunicationInterface si) {
+    public DatabaseControler(ServerLogic si) {
         this.si = si;
     }
     
@@ -124,7 +124,7 @@ public class DatabaseControler {
     private String numbtoletter(){
         //tradutor de numero para uma string, para criar o nome da base de dados com o porto
         int num, temp, digit, count = 0;
-        num = si.getServerPort();
+        num = si.getSd().getServerPort();
         char[] array = { 'A', 'B', 'C', 'D', 'E', 'F' , 'G' , 'H' , 'I' , 'J' , 'K'};
         String output = "";
         
@@ -143,7 +143,7 @@ public class DatabaseControler {
             count--;
         }
         
-        si.getServerPort();
+        si.getSd().getServerPort();
         return output;
      
     }

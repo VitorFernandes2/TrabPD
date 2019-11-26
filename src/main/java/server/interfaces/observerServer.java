@@ -1,11 +1,9 @@
 package server.interfaces;
 
-/**
- *
- * @author Luís António Moreira Ferreira da Silva
- */
+import org.json.simple.JSONObject;
+
 public interface observerServer {
     
-    public void update(int acao);
+    public void update(int acao, JSONObject Ob);
     
 }
