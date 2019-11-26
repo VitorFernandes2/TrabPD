@@ -1,4 +1,4 @@
-package server.logic;
+package server;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -8,8 +8,10 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import org.json.simple.JSONObject;
-import server.graphicInterface.ServerIterface;
+import server.comunicationInterface.ComunicationInterface;
 import server.interfaces.observerServer;
+import server.logic.ServerData;
+import server.logic.ThreadClientRequests;
 
 /**
  *
@@ -18,7 +20,6 @@ import server.interfaces.observerServer;
 public class ServerMiddleLayer implements observerServer{
 
     private ServerData sd;
-    private PingReply pingReply;
 
     public ServerMiddleLayer(ServerData sd) {
         this.sd = sd;
@@ -70,12 +71,9 @@ public class ServerMiddleLayer implements observerServer{
                     ex.printStackTrace();
                 }
 
-                pingReply = new PingReply(sd.getServerPort());
-                pingReply.start();
-
                 break;
             case 3:
-                ServerIterface si = (ServerIterface) this.sd.getObjMudance().get("ServerIterface");
+                ComunicationInterface si = (ComunicationInterface) this.sd.getObjMudance().get("ServerIterface");
                 ThreadClientRequests threadclass = new ThreadClientRequests(si); // pode ser mai pratica REVER
                 threadclass.start();
 

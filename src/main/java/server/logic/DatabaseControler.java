@@ -10,10 +10,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.json.simple.JSONObject;
-import server.graphicInterface.ServerIterface;
+import server.comunicationInterface.ComunicationInterface;
 
 /**
  *
@@ -28,18 +27,18 @@ public class DatabaseControler {
    private Connection connect;
    private Statement stmt;
    private String namedb;
-   private final ServerIterface si;
+   private final ComunicationInterface si;
 
     /**
      * ONLY USE TO OVERRIDE USERNAME AND PASSWORD
      */
-    public DatabaseControler(String user,String pass,ServerIterface si) {
+    public DatabaseControler(String user, String pass, ComunicationInterface si) {
         this.user = user;
         this.pass = pass;
         this.si = si;
     }
 
-    public DatabaseControler(ServerIterface si) {
+    public DatabaseControler(ComunicationInterface si) {
         this.si = si;
     }
     

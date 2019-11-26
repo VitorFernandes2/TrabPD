@@ -8,7 +8,7 @@ import java.net.Socket;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import server.graphicInterface.ServerIterface;
+import server.comunicationInterface.ComunicationInterface;
 
 /**
  *
@@ -17,14 +17,14 @@ import server.graphicInterface.ServerIterface;
 public class ThreadClientListenTreatment implements Runnable {
 
     private Socket Client;
-    private final ServerIterface si;
+    private final ComunicationInterface si;
     private JSONObject Ob;
     private static int Counter = 0;
     private int ID;
     private InputStreamReader in;
     private PrintWriter pr;
 
-    public ThreadClientListenTreatment(Socket Client, ServerIterface si) {
+    public ThreadClientListenTreatment(Socket Client, ComunicationInterface si) {
         this.Client = Client;
         this.si = si;
         this.Ob = new JSONObject();

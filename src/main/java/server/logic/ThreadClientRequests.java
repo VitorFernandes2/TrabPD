@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import org.json.simple.JSONObject;
-import server.graphicInterface.ServerIterface;
+import server.comunicationInterface.ComunicationInterface;
 
 /**
  *
@@ -12,12 +12,12 @@ import server.graphicInterface.ServerIterface;
  */
 public class ThreadClientRequests implements Runnable {
     
-    private ServerIterface si;
+    private ComunicationInterface si;
     private JSONObject Ob;
     private Socket s;
     private ThreadClientListenTreatment tclt;
     
-    public ThreadClientRequests(ServerIterface si) {
+    public ThreadClientRequests(ComunicationInterface si) {
         this.si = si;
         this.Ob = new JSONObject();
     }

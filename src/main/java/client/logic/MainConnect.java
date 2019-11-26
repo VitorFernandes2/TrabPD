@@ -76,7 +76,10 @@ public class MainConnect implements subject{
             
             datacomun = new ConnectData();
             this.notifyObserver(2);
-            
+
+            //Comunica com o DS caso alguma alteração aconteça com o servidor
+
+
             //System.out.println(returnado);
             ServerTCPconnect startserver = new ServerTCPconnect(returnado,datacomun,inter);
             startserver.start();
@@ -84,9 +87,9 @@ public class MainConnect implements subject{
             //Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
             //String userName = myObj.nextLine();
             this.notifyObserver(4);
-            
-            
+
             startserver.stopthread();
+
         }
     
     }

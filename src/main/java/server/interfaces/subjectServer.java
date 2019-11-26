@@ -1,6 +1,6 @@
 package server.interfaces;
 
-import server.logic.ServerMiddleLayer;
+import server.ServerMiddleLayer;
 
 /**
  *

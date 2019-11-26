@@ -1,8 +1,7 @@
 package server;
 
-import server.graphicInterface.ServerIterface;
+import server.comunicationInterface.ComunicationInterface;
 import server.logic.ServerData;
-import server.logic.ServerMiddleLayer;
 
 public class Main {
 
@@ -12,7 +11,7 @@ public class Main {
         
         ServerMiddleLayer sml = new ServerMiddleLayer(server);
         
-        ServerIterface serverItf = new ServerIterface();
+        ComunicationInterface serverItf = new ComunicationInterface();
         
         serverItf.addinterface(sml);
         

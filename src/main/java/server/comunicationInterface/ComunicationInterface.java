@@ -1,4 +1,4 @@
-package server.graphicInterface;
+package server.comunicationInterface;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -6,14 +6,14 @@ import java.net.Socket;
 import java.util.List;
 import org.json.simple.JSONObject;
 import server.interfaces.subjectServer;
-import server.logic.ServerMiddleLayer;
+import server.ServerMiddleLayer;
 import server.logic.ThreadClientListenTreatment;
 
 /**
  *
  * @author Luís António Moreira Ferreira da Silva
  */
-public class ServerIterface implements subjectServer{
+public class ComunicationInterface implements subjectServer{
 
     private ServerMiddleLayer sml;
     
