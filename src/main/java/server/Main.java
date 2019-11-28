@@ -11,7 +11,7 @@ public class Main {
         
         ServerLogic sml = new ServerLogic(server);
         
-        ComunicationInterface serverItf = new ComunicationInterface();
+        ComunicationInterface serverItf = new ComunicationInterface(server);
         
         sml.addinterface(serverItf);
         

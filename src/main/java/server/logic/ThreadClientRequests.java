@@ -3,7 +3,7 @@ package server.logic;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import server.ServerLogic;
+import server.comunicationInterface.ComunicationInterface;
 
 /**
  *
@@ -11,11 +11,11 @@ import server.ServerLogic;
  */
 public class ThreadClientRequests implements Runnable {
     
-    private ServerLogic si;
+    private ComunicationInterface si;
     private Socket s;
     private ThreadClientListenTreatment tclt;
     
-    public ThreadClientRequests(ServerLogic si) {
+    public ThreadClientRequests(ComunicationInterface si) {
         this.si = si;
     }
     
@@ -29,8 +29,8 @@ public class ThreadClientRequests implements Runnable {
         try {
             try {
                 si.getSd().setServer(new ServerSocket(si.getSd().getServerPort()));
-                si.getOb().put("output", "TCP link started in port: " + si.getSd().getServerPort() + ".");
-                si.notifyObserver(1);
+                si.getSd().getObjMudance().put("output", "TCP link started in port: " + si.getSd().getServerPort() + ".");
+                si.update(1, si.getSd().getObjMudance());
                 
                 while(!si.getSd().getServer().isClosed()){
                     s = si.getSd().getServer().accept();
@@ -41,16 +41,16 @@ public class ThreadClientRequests implements Runnable {
                 }
 
             } catch (IOException ex) {
-                si.getOb().put("exception", "[ERROR] Não foi possivel criar o socket TCP ou Servidor forçado a parar.\n" + ex.getMessage());
-                si.notifyObserver(4);
+                si.getSd().getObjMudance().put("exception", "[ERROR] Não foi possivel criar o socket TCP ou Servidor forçado a parar.\n" + ex.getMessage());
+                si.update(4, si.getSd().getObjMudance());
                 si.getSd().desconnetAllClients();
             }
             
             si.getSd().desconnetAllClients();
             
         } catch (IOException ex) {
-            si.getOb().put("exception", "[ERROR] Não foi possivel desconectar todos os Clientes e/ou as suas Threads.\n" + ex.getMessage());
-            si.notifyObserver(4);
+            si.getSd().getObjMudance().put("exception", "[ERROR] Não foi possivel desconectar todos os Clientes e/ou as suas Threads.\n" + ex.getMessage());
+            si.update(4, si.getSd().getObjMudance());
         }
 
     }

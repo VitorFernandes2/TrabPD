@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package client.InterfaceGrafica;
 
 import client.Interfaces.observer;
@@ -11,21 +6,16 @@ import client.logic.DsConnect;
 import client.logic.ServerTCPconnect;
 import java.util.Scanner;
 
-/**
- *
- * @author Joao Coelho
- */
 public class Interfacemain implements observer{
-    
     
     public void inicio (){
         
         System.out.println("Bem Vindo \n Insira o seu username: \n");
-        
         Scanner myObj = new Scanner(System.in);
         String userName = myObj.nextLine();
         System.out.println( userName + " insira a sua palavra passe: \n");
         String password = myObj.nextLine();
+        
     }
 
     public void begin() {
@@ -34,9 +24,12 @@ public class Interfacemain implements observer{
         String returnado = start.run();
 
         if("error".equals(returnado)){
-            System.out.println("[ERROR] exception found or unknown error connecting to ds");
+            
+            System.out.println("[ERROR] Exception found or unknown error connecting to DS.");
+            
         }
         else{
+            
             System.out.println(returnado);
             ServerTCPconnect startserver = new ServerTCPconnect(returnado);
             startserver.start();
@@ -45,12 +38,13 @@ public class Interfacemain implements observer{
             String userName = myObj.nextLine();
 
             startserver.stopthread();
+            
         }
     
     }
 
     @Override
-    public void update(int acao,ConnectData data) {
+    public void update(int acao, ConnectData data) {
         
         switch(acao){
             
@@ -72,7 +66,7 @@ public class Interfacemain implements observer{
                 break;
             
             case 5:
-                System.out.println("[ERROR] Excepção de IO lançada. Provavelmente o servidor \n[ERROR]desligou/perdeu-se a conecção ao servidor");
+                System.out.println("[ERROR] Excepção de IO lançada. Provavelmente o servidor" + "\n" + "[ERROR] desligou/perdeu-se a conecção ao servidor");
                 break;
                 
             case 444:
@@ -86,17 +80,16 @@ public class Interfacemain implements observer{
 
     private void logininter(ConnectData data) {
 
-            System.out.println("\n Autenticação: ");
-        
-            System.out.print("\n Login:");
-            Scanner myObj = new Scanner(System.in);
-            data.setUsername(myObj.nextLine());
-            
-            System.out.print(" PassWord:");
-            myObj = new Scanner(System.in);
-            data.setPassword(myObj.nextLine());
-            
-    
+        System.out.println("\n Autenticação: ");
+
+        System.out.print("\n Login:");
+        Scanner myObj = new Scanner(System.in);
+        data.setUsername(myObj.nextLine());
+
+        System.out.print(" PassWord:");
+        myObj = new Scanner(System.in);
+        data.setPassword(myObj.nextLine());
+
     }
 
     private void tempshowreceb(ConnectData data) {

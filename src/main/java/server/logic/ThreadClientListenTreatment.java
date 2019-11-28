@@ -8,22 +8,18 @@ import java.net.Socket;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import server.ServerLogic;
+import server.comunicationInterface.ComunicationInterface;
 
-/**
- *
- * @author Luís António Moreira Ferreira da Silva
- */
 public class ThreadClientListenTreatment implements Runnable {
 
     private Socket Client;
-    private final ServerLogic si;
+    private final ComunicationInterface si;
     private static int Counter = 0;
     private int ID;
     private InputStreamReader in;
     private PrintWriter pr;
 
-    public ThreadClientListenTreatment(Socket Client, ServerLogic si) {
+    public ThreadClientListenTreatment(Socket Client, ComunicationInterface si) {
         this.Client = Client;
         this.si = si;
         this.ID = Counter++;
@@ -38,8 +34,8 @@ public class ThreadClientListenTreatment implements Runnable {
 
         //Tratamento de mensagens
 
-        si.getOb().put("output", "Client " + this.ID + " connected to tcp.");
-        si.notifyObserver(1);
+        si.getSd().getObjMudance().put("output", "Client " + this.ID + " connected to tcp.");
+        si.update(1, si.getSd().getObjMudance());
 
         while(!Client.isClosed()){
             try {
@@ -54,8 +50,8 @@ public class ThreadClientListenTreatment implements Runnable {
                     JSONParser JsonParser = new JSONParser();
                     JSONObject JObj = (JSONObject) JsonParser.parse(str);
 
-                    si.getOb().put("output", JObj.toString());
-                    si.notifyObserver(1);
+                    si.getSd().getObjMudance().put("output", JObj.toString());
+                    si.update(1, si.getSd().getObjMudance());
 
                     JSONObject obj = new JSONObject();
 
@@ -68,14 +64,14 @@ public class ThreadClientListenTreatment implements Runnable {
                 }
 
             } catch (IOException ex) {
-                si.getOb().put("exception", "[ERROR] Erro no ciclo de tratamento de Mensagens do Cliente.\n" + ex.getMessage());
-                si.notifyObserver(4);
+                si.getSd().getObjMudance().put("exception", "[ERROR] Erro no ciclo de tratamento de Mensagens do Cliente.\n" + ex.getMessage());
+                si.update(4, si.getSd().getObjMudance());
             } catch (ParseException ex) {
-                si.getOb().put("exception", "[ERROR] Erro na tradução do Json no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
-                si.notifyObserver(4);
+                si.getSd().getObjMudance().put("exception", "[ERROR] Erro na tradução do Json no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
+                si.update(4, si.getSd().getObjMudance());
             } catch (NullPointerException ex) {
-                si.getOb().put("exception", "[ERROR] Erro de Nullpointer. Provavelmente o Cliente se desconectou no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
-                si.notifyObserver(4);
+                si.getSd().getObjMudance().put("exception", "[ERROR] Erro de Nullpointer. Provavelmente o Cliente se desconectou no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
+                si.update(4, si.getSd().getObjMudance());
                 si.getSd().removeClient(Client);
                 si.getSd().removeListenClient(this);
                 return;
@@ -86,8 +82,8 @@ public class ThreadClientListenTreatment implements Runnable {
         try {
             si.getSd().desconnetClient(Client);
         } catch (IOException ex) {
-            si.getOb().put("exception", "[ERROR] Erro ao tentar desconectar o Cliente.\n" + ex.getMessage());
-            si.notifyObserver(4);
+            si.getSd().getObjMudance().put("exception", "[ERROR] Erro ao tentar desconectar o Cliente.\n" + ex.getMessage());
+            si.update(4, si.getSd().getObjMudance());
         }
         
         si.getSd().removeClient(Client);

@@ -29,6 +29,7 @@ public class ServerData {
         this.DsPort = DsPort;
         this.Clients = new ArrayList<>();
         this.Servers = new ArrayList<>();
+        this.ObjMudance = new JSONObject();
     }
 
     public int getServerPort() {
