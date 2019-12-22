@@ -12,6 +12,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ManageStarts implements Runnable {
 
@@ -77,7 +79,7 @@ public class ManageStarts implements Runnable {
                     System.out.println(Port);
 
                     System.out.println("Encontrei um servidor");
-                    tratamentoServidores(Packet, Port);
+                    tratamentoServidores(Packet, Port, Socket);
 
                 }
 
@@ -95,17 +97,33 @@ public class ManageStarts implements Runnable {
         finish = true;
     }
 
-    private void tratamentoServidores(DatagramPacket packet, String Port){
+    private void tratamentoServidores(DatagramPacket packet, String Port,DatagramSocket socket){
 
         String IP = packet.getAddress().getHostAddress();
 
         System.out.println(IP);
+        int resposta;
 
-        if (servers.size() == 0)
+        if (servers.size() == 0){
             servers.add(new Server(IP, Port, true,true));
-        else
+            resposta = 0;}
+        else{
             servers.add(new Server(IP, Port, true,false));
+            resposta = 1;}
+        
+        /// tratamento de principal
+        byte[] b = String.valueOf(resposta).getBytes();
+        
+        DatagramPacket packete = new DatagramPacket(b,
+                    b.length,
+                    packet.getAddress(), packet.getPort());
 
+        try {
+            socket.send(packete);
+        } catch (IOException ex) {
+            System.out.println("Não foi possivel enviar a role (principal ou não) para o servidor. Erro :" + ex.getLocalizedMessage());
+        }
+        
     }
 
     private void tratamentoClientes(DatagramSocket socket, InetAddress Ip, String Port){

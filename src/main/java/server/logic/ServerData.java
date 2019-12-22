@@ -18,6 +18,19 @@ public class ServerData {
     private List<Socket> Clients;
     private List<ThreadClientListenTreatment> Servers;
     private int ServerPort;
+    private DatabaseControler dbaction;
+
+    public DatabaseControler getDbaction() {
+        return dbaction;
+    }
+
+    public void setDbaction(DatabaseControler dbaction) {
+        this.dbaction = dbaction;
+    }
+    
+    public void startdatabase(boolean pinc){
+        this.dbaction = new DatabaseControler(this.ServerPort,pinc);
+    }
 
     public ServerData(String DsIP, String DsPort) {
         this.DsIP = DsIP;

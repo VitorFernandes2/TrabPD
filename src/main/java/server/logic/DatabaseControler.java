@@ -10,6 +10,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.json.simple.JSONObject;
 import server.ServerLogic;
@@ -20,55 +22,110 @@ import server.ServerLogic;
  */
 public class DatabaseControler {
     
-   static final String BD_URL = "jdbc:mysql://localhost:3306/?useTimezone=true&serverTimezone=UTC&useSSL=false"; 
+   static String BD_URL = "jdbc:mysql://localhost:3306/?useTimezone=true&serverTimezone=UTC&useSSL=false"; 
    //static final String DB_URL = "jdbc:mysql://localhost:3306/EMP?useTimezone=true&serverTimezone=UTC&useSSL=false";
    private String user = "test"; // mudar para o igual ao definido no sql.
    private String pass = "1234";
    private Connection connect;
    private Statement stmt;
    private String namedb;
-   private final ServerLogic si;
+   private int serverport;
+   private boolean principal;
+   
 
     /**
      * ONLY USE TO OVERRIDE USERNAME AND PASSWORD
      */
-    public DatabaseControler(String user, String pass, ServerLogic si) {
+    public DatabaseControler(String user, String pass, int si,boolean pinc) {
         this.user = user;
         this.pass = pass;
-        this.si = si;
+        this.serverport = si;
+        this.principal = pinc;
     }
 
-    public DatabaseControler(ServerLogic si) {
-        this.si = si;
+    public DatabaseControler(int si,boolean pinc) {
+        this.serverport = si;
+        this.principal = pinc;
     }
     
-    public boolean startdatabase(int porto){
+    public boolean startdatabase(){
         
         System.out.println("Connecting to database...");
           
         try {
-            
             if(connect == null)
-                connect = DriverManager.getConnection(BD_URL,user,pass);
-                
-            namedb = numbtoletter();
+                    connect = DriverManager.getConnection(BD_URL,user,pass);
             
-            //TEMP
+            if(principal == true)
+                namedb = "Principal";
+            else
+                namedb = numbtoletter();
+                
             stmt = connect.createStatement();
-            String CreateSql = ("CREATE DATABASE IF NOT EXIST " + namedb);
+            String CreateSql = ("CREATE DATABASE IF NOT EXISTS " + namedb);
             stmt.execute(CreateSql); 
-            
-            String tableSql = "CREATE TABLE IF NOT EXISTS employees"
-            + "(emp_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
-            + "position varchar(30), salary double)";
-            stmt.execute(tableSql);    
-                
-            String insertSql = "INSERT INTO employees(name, position, salary)"
-            + " VALUES('john', 'developer', 2000)";
-            stmt.executeUpdate(insertSql);    
-                
-                
+
+            // REVER: Funcional mas agressivo demais
+            String NewString = "jdbc:mysql://localhost:3306/"+namedb+"?useTimezone=true&serverTimezone=UTC&useSSL=false";
+            BD_URL = NewString;
+            connect.close();stmt.close();
+            connect = DriverManager.getConnection(NewString,user,pass);
+            stmt = connect.createStatement();
+
+            String tableSql = "CREATE TABLE IF NOT EXISTS users"
+            + "(user_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
+            + "username varchar(30), password varchar(30))";
+            stmt.execute(tableSql);
+
+            String tableSql2 = "CREATE TABLE IF NOT EXISTS musics"
+            + "(music_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
+            + "artist varchar(30), album varchar(30), year varchar(30), duration double, genre varchar(30), localname varchar(30))";
+            stmt.execute(tableSql2);
+
+            String tableSql3 = "CREATE TABLE IF NOT EXISTS playlist"
+            + "(play_id int PRIMARY KEY AUTO_INCREMENT, music_id int,"
+            + "user_id int, name varchar(30))";
+            stmt.execute(tableSql3);
+
         } catch (SQLException ex) {
+            System.out.println("Tipo: " + ex);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean insertuser(String name,String username,String password){
+        
+        try {
+            /*String insertSql = "INSERT INTO employees(name, position, salary)"
+            + " VALUES('john', 'developer', 2000)";
+            stmt.executeUpdate(insertSql);*/   
+            String insertSql = "INSERT INTO users(name, username, password)"
+            + " VALUES('"+name+"', '"+username+"', '"+password+"')";
+            stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean insertmusic(String name,String artist,String album, String year, double duration, String genre, String localname){
+        
+        try {
+            String insertSql = "INSERT INTO musics(name, artist, album, year,duration,genre,localname)"
+            + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"', '"+localname+"')";
+            stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean runinsertedcode(String insert){
+        
+        try{
+            stmt.executeUpdate(insert);
+        } catch (SQLException ex){
             return false;
         }
         return true;
@@ -124,7 +181,7 @@ public class DatabaseControler {
     private String numbtoletter(){
         //tradutor de numero para uma string, para criar o nome da base de dados com o porto
         int num, temp, digit, count = 0;
-        num = si.getSd().getServerPort();
+        num = this.serverport;
         char[] array = { 'A', 'B', 'C', 'D', 'E', 'F' , 'G' , 'H' , 'I' , 'J' , 'K'};
         String output = "";
         
@@ -143,7 +200,7 @@ public class DatabaseControler {
             count--;
         }
         
-        si.getSd().getServerPort();
+        //this.serverport;
         return output;
      
     }

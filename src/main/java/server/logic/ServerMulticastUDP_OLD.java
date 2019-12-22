@@ -10,7 +10,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-public class ServerMulticastUDP extends Thread implements Constants{
+public class ServerMulticastUDP_OLD extends Thread implements Constants{
 
     private MulticastSocket socket;
     private boolean terminate;
@@ -18,7 +18,7 @@ public class ServerMulticastUDP extends Thread implements Constants{
     private int groupPORT;
     private ComunicationInterface ci; //Layer de comunicação
 
-    public ServerMulticastUDP(String groupIP, int groupPORT, ComunicationInterface ci) {
+    public ServerMulticastUDP_OLD(String groupIP, int groupPORT, ComunicationInterface ci) {
         this.groupIP = groupIP;
         this.groupPORT = groupPORT;
         this.terminate = false;
