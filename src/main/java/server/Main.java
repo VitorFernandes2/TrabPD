@@ -1,6 +1,7 @@
 package server;
 
 import server.comunicationInterface.ComunicationInterface;
+import server.logic.ServerConnectionStarter;
 import server.logic.ServerData;
 
 public class Main {
@@ -11,11 +12,13 @@ public class Main {
         
         ServerLogic sml = new ServerLogic(server);
         
-        ComunicationInterface serverItf = new ComunicationInterface(server);
+        ComunicationInterface serverItf = new ComunicationInterface();
         
         sml.addinterface(serverItf);
         
-        sml.connect();
+        ServerConnectionStarter scs = new ServerConnectionStarter(sml);
+        
+        scs.connect();
 
     }
     

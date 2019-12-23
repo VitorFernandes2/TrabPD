@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
-import server.comunicationInterface.ComunicationInterface;
+import server.ServerLogic;
 
 /**
  *
@@ -27,14 +27,18 @@ public class MulticastUDP {
     private static MulticastSocket multicastSock;
     private static InetAddress group;
     private boolean duringupdate = false;
-    private ComunicationInterface ci;
+    //Mudado por Luis
+    private ServerLogic ci;
+    //---------------
     private static int port; // TEMPPP
     private static boolean corre;
 
-    public MulticastUDP(ComunicationInterface ci) {
+    //Mudado por Luis
+    public MulticastUDP(ServerLogic ci) {
         this.ci = ci;
         this.port = ci.getSd().getServerPort(); // TEMPPPP
     }
+    //---------------
     
     //public static void main(String[] args) throws UnknownHostException, IOException {
     public void comecamulticast() {
