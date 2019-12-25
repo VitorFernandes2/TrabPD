@@ -107,10 +107,10 @@ public class ServerConnectionStarter {
 
         Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
         
-        String userName = myObj.nextLine();
+        String wait = myObj.nextLine();
         
         try {
-            
+            //Obriga a Thread do Servidor a parar
             threadclass.stopthread();
             
             System.exit(0);//retirar depois para tratamento de morte do servidor

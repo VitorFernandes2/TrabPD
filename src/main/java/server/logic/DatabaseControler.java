@@ -1,20 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package server.logic;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 
 import org.json.simple.JSONObject;
-import server.ServerLogic;
 
 /**
  *
@@ -74,7 +68,8 @@ public class DatabaseControler {
 
             String tableSql = "CREATE TABLE IF NOT EXISTS users"
             + "(user_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
-            + "username varchar(30), password varchar(30))";
+            + "username varchar(30), password varchar(30),"
+            + "online boolean)";
             stmt.execute(tableSql);
 
             String tableSql2 = "CREATE TABLE IF NOT EXISTS musics"
@@ -94,14 +89,14 @@ public class DatabaseControler {
         return true;
     }
     
-    public boolean insertuser(String name,String username,String password){
+    public boolean insertuser(String name,String username,String password,boolean online){
         
         try {
             /*String insertSql = "INSERT INTO employees(name, position, salary)"
             + " VALUES('john', 'developer', 2000)";
             stmt.executeUpdate(insertSql);*/   
-            String insertSql = "INSERT INTO users(name, username, password)"
-            + " VALUES('"+name+"', '"+username+"', '"+password+"')";
+            String insertSql = "INSERT INTO users(name, username, password, online)"
+            + " VALUES('"+name+"', '"+username+"', '"+password+"', '"+online+"')";
             stmt.executeUpdate(insertSql);
         } catch (SQLException ex) {
             return false;
@@ -112,7 +107,7 @@ public class DatabaseControler {
     public boolean insertmusic(String name,String artist,String album, String year, double duration, String genre, String localname){
         
         try {
-            String insertSql = "INSERT INTO musics(name, artist, album, year,duration,genre,localname)"
+            String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre, localname)"
             + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"', '"+localname+"')";
             stmt.executeUpdate(insertSql);
         } catch (SQLException ex) {
@@ -152,13 +147,82 @@ public class DatabaseControler {
             ResultSet resultSet = stmt.executeQuery(selectSql);          
             while(resultSet.next()){
                 //Retrieve by column name
-                String procu  = resultSet.getString(proc);
+                String procu = resultSet.getString(proc);
                 return procu;
             }
         } catch (SQLException ex) {
            return "-1";
         }
         return "-1";
+    }
+    
+    public boolean contaisUser(String username){ 
+        try {
+            String selectSql = ("SELECT username FROM `users` WHERE username = \"" + username + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("username");
+                if(procu.equals(username)){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+           return false;
+        }
+        return false;
+    }
+    
+    public boolean contaisUserOnline(String username){ 
+        try {
+            String selectSql = ("SELECT online FROM `users` WHERE username = \"" + username + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("online");
+                if(procu.equals("1")){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+           return false;
+        }
+        return false;
+    }
+    
+    public boolean verifyUserPassword(String username, String Password){ 
+        try {
+            String selectSql = ("SELECT password FROM `users` WHERE username = \"" + username + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("password");
+                if(procu.equals(Password)){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+           return false;
+        }
+        return false;
+    }
+    
+    public void UserLogin(String username){ 
+        try {
+            String selectSql = ("UPDATE `users` SET `online` = '0' WHERE `users`.`username` = \"" + username + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+        } catch (SQLException ex) {
+            System.out.println("[ERROR] User login " + ex.getMessage());
+        }
+    }
+    
+    public void UserLogout(String username){ 
+        try {
+            String selectSql = ("UPDATE `users` SET `online` = '1' WHERE `users`.`username` = \"" + username + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+        } catch (SQLException ex) {
+            System.out.println("[ERROR] User logout " + ex.getMessage());
+        }
     }
 
     public ResultSet getRawDatabaseinfo(){

@@ -3,7 +3,6 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketImpl;
 import org.json.simple.JSONObject;
 import server.comunicationInterface.ComunicationInterface;
 import server.interfaces.subjectServer;

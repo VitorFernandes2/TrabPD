@@ -2,8 +2,6 @@ package client.InterfaceGrafica;
 
 import client.Interfaces.observer;
 import client.logic.ConnectData;
-import client.logic.DsConnect;
-import client.logic.ServerTCPconnect;
 import java.util.Scanner;
 
 public class Interfacemain implements observer{
@@ -16,31 +14,6 @@ public class Interfacemain implements observer{
         System.out.println( userName + " insira a sua palavra passe: \n");
         String password = myObj.nextLine();
         
-    }
-
-    public void begin() {
-
-        DsConnect start = new DsConnect("9999","9999"); // temp
-        String returnado = start.run();
-
-        if("error".equals(returnado)){
-            
-            System.out.println("[ERROR] Exception found or unknown error connecting to DS.");
-            
-        }
-        else{
-            
-            System.out.println(returnado);
-            ServerTCPconnect startserver = new ServerTCPconnect(returnado);
-            startserver.start();
-
-            Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
-            String userName = myObj.nextLine();
-
-            startserver.stopthread();
-            
-        }
-    
     }
 
     @Override

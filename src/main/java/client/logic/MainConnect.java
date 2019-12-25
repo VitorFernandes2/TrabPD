@@ -54,14 +54,10 @@ public class MainConnect implements subject{
             case 444:
                 // Envio a interface erro desconhecido
                 inter.update(444,datacomun);
-                break;    
-
-
+                break;
+                
         }
-
         
-
-
     }
 
     public void begin() {
@@ -79,14 +75,17 @@ public class MainConnect implements subject{
 
             //Comunica com o DS caso alguma alteração aconteça com o servidor
 
-
             //System.out.println(returnado);
             ServerTCPconnect startserver = new ServerTCPconnect(returnado,datacomun,inter);
             startserver.start();
-
-            //Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
-            //String userName = myObj.nextLine();
-            this.notifyObserver(4);
+            
+            //Luis - Mudanca para comando//
+            //this.notifyObserver(4);    //
+            //---------------------------//
+            
+            //Wait por comando de saida
+            while(!startserver.getCommand().equalsIgnoreCase("exit")){}
+            //-------------------------
 
             startserver.stopthread();
 
