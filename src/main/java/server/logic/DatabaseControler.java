@@ -3,6 +3,7 @@ package server.logic;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -209,8 +210,10 @@ public class DatabaseControler {
     
     public void UserLogin(String username){ 
         try {
-            String selectSql = ("UPDATE `users` SET `online` = '0' WHERE `users`.`username` = \"" + username + "\"");
-            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String selectSql = ("UPDATE `users` SET `online` = ? WHERE `users`.`username` = \"" + username + "\"");
+            PreparedStatement preparedStatement = connect.prepareStatement(selectSql);
+            preparedStatement.setInt(1, 0);
+            preparedStatement.execute();
         } catch (SQLException ex) {
             System.out.println("[ERROR] User login " + ex.getMessage());
         }
@@ -218,8 +221,10 @@ public class DatabaseControler {
     
     public void UserLogout(String username){ 
         try {
-            String selectSql = ("UPDATE `users` SET `online` = '1' WHERE `users`.`username` = \"" + username + "\"");
-            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String selectSql = ("UPDATE `users` SET `online` = ? WHERE `users`.`username` = \"" + username + "\"");
+            PreparedStatement preparedStatement = connect.prepareStatement(selectSql);
+            preparedStatement.setInt(1, 1);
+            preparedStatement.execute();
         } catch (SQLException ex) {
             System.out.println("[ERROR] User logout " + ex.getMessage());
         }
