@@ -95,6 +95,9 @@ public class ServerConnectionStarter {
         sd.Obj().put("output", "Server a correr.");
         
         sd.notifyObserver(1);
+
+        DSAliveProcedure aliveProcedure = new DSAliveProcedure(sd);
+        aliveProcedure.start();
         
         //Começa a comunicação em multicast
         MulticastUDP multi = new MulticastUDP(sd);
@@ -110,6 +113,7 @@ public class ServerConnectionStarter {
         String wait = myObj.nextLine();
         
         try {
+            aliveProcedure.terminate();
             //Obriga a Thread do Servidor a parar
             threadclass.stopthread();
             

@@ -75,7 +75,7 @@ public class MulticastUDP {
                     byte [] buffer = new byte [100];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     multicastSock.receive(packet);
-                    System.out.println("Recebi: " + new String(buffer));
+                    //System.out.println("Recebi: " + new String(buffer));
                     
                     //updatedatabase(JObjrecebido);
                     

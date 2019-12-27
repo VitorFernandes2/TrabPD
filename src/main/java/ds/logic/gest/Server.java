@@ -9,7 +9,7 @@ public class Server {
     private int numberClients; // numero de clientes
     private boolean On; // estado do servidor
     private boolean Princi; // servidor 
-    private ArrayList<Client> clients; // client ligado ao servidor
+    private ClientList clients; // client ligado ao servidor
     
     public Server(String IP, String port,boolean on, boolean Princi) {
         this.IP = IP;
@@ -17,7 +17,7 @@ public class Server {
         this.numberClients = 0;
         On = on;
         this.Princi = Princi;
-        clients = new ArrayList<Client>();
+        clients = new ClientList();
     }
     
     public synchronized String getIP() {
@@ -66,7 +66,7 @@ public class Server {
         this.Princi = false;
     }
 
-    public synchronized ArrayList<Client> getClients() {
+    public synchronized ClientList getClients() {
         return clients;
     }
 }

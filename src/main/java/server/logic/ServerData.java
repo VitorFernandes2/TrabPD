@@ -19,6 +19,7 @@ public class ServerData {
     private List<ThreadClientListenTreatment> Servers;
     private int ServerPort;
     private DatabaseControler dbaction;
+    private long numberOfServers;
 
     public DatabaseControler getDbaction() {
         return dbaction;
@@ -43,6 +44,7 @@ public class ServerData {
         this.Clients = new ArrayList<>();
         this.Servers = new ArrayList<>();
         this.ObjMudance = new JSONObject();
+        this.numberOfServers = 1;
     }
 
     public int getServerPort() {
@@ -140,5 +142,13 @@ public class ServerData {
     public void setObjMudance(JSONObject ObjMudance) {
         this.ObjMudance = ObjMudance;
     }
-    
+
+    public long getNumberOfServers() {
+        return numberOfServers;
+    }
+
+    public void setNumberOfServers(long numberOfServers) {
+        this.numberOfServers = numberOfServers;
+    }
+
 }
