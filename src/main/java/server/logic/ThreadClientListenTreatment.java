@@ -32,6 +32,9 @@ public class ThreadClientListenTreatment implements Runnable {
     @Override
     public void run() {
         //Tratamento de mensagens
+        
+        //boolean isRegister = false;
+        //boolean isLogin = false;
 
         si.Obj().put("output", "Client " + this.ID + " connected to tcp.");
         si.notifyObserver(1);
@@ -65,10 +68,12 @@ public class ThreadClientListenTreatment implements Runnable {
                     //}
                     //----------------------------
                     
+                    //if(isLogg && !isLogin){
                     if(isLogg){
                         switch(commandLogin(cmd)){
                             case 1:
                                 si.Obj().put("output", "[ERROR] User " + user + " logado com sucesso.");
+                                //isLogin = true;
                                 break;
                             case -1:
                                 si.Obj().put("output", "[ERROR] User " + user + " já se encontra online.");
