@@ -71,6 +71,10 @@ public class ManageServers extends Thread {
                         //Remove o servidor
                         servers.remove(item);
 
+                        //Se for o principal
+                        if (item.isPrinci())
+                            servers.get(0).setPrinci();
+
                         ClientList clients = item.getClients();
 
                         ServerList serverAux2 = new ServerList();
