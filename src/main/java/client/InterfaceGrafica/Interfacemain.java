@@ -84,7 +84,7 @@ public class Interfacemain implements observer{
 
         do {
             duracao = Readers.readString("Insira o duracao da musica: ");
-            duration = Double.parseDouble(ano);
+            duration = Double.parseDouble(duracao);
         }while (duration == 0);
 
         String genero = Readers.readString("Insira o genero da musica: ");

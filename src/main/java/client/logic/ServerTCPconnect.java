@@ -141,6 +141,21 @@ public class ServerTCPconnect implements Runnable{
                             pr.println(obj.toString());
                             pr.flush();
 
+                            InputStreamReader in = new InputStreamReader(s.getInputStream());
+                            BufferedReader bf = new BufferedReader(in);
+
+                            String str = bf.readLine();
+
+                            JSONParser JsonParser = new JSONParser();
+                            JSONObject JObj = (JSONObject) JsonParser.parse(str);
+                            data.setJObj(JObj);
+
+                            this.upperclass.update(3, data);
+
+                            SendFileToServer sendFileToServer = new SendFileToServer(music.getPath(),
+                                    s.getOutputStream());
+                            sendFileToServer.start();
+
                             break;
 
                     }
@@ -189,8 +204,10 @@ public class ServerTCPconnect implements Runnable{
             JObjE.put("exception", e.toString());
             data.setJObj(JObjE);
             upperclass.update(444, data);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        
+
     }
     
     public String getCommand(){

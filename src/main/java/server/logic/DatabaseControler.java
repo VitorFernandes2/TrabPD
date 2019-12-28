@@ -303,6 +303,21 @@ public class DatabaseControler {
                    + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"')";
            stmt.executeUpdate(insertSql);
 
+           sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
+           resultSet = stmt.executeQuery(sql);
+
+           while (resultSet.next()){
+
+               int id = resultSet.getInt("music_id");
+               String path = id +".mp3";
+               String updateSql = "UPDATE musics"
+                       + " SET localname = '"+ path + "'"
+                       + " WHERE music_id = "+ id;
+               stmt.executeUpdate(updateSql);
+               return path;
+
+           }
+
        } catch (SQLException e) {
            return null;
        }

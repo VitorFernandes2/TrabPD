@@ -72,8 +72,26 @@ public class ThreadClientListenTreatment implements Runnable {
                         String MusicGenre = (String) JObj.get("MusicGenre");
                         String MusicPath = (String) JObj.get("MusicPath");
 
-                        si.getDbaction().insertMusic(MusicName, MusicAuthor, MusicAlbum,
+                        String fileName = si.getDbaction().insertMusic(MusicName, MusicAuthor, MusicAlbum,
                                 MusicYear, MusicDuration, MusicGenre);
+
+                        //Se puder criar o ficheiro inicia a thread de leitura
+                        if (fileName != null){
+
+                            //Envia Mensagem para enviar o ficheiro
+                            JSONObject obj = new JSONObject();
+
+                            obj.put("message", "sendFile");
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            //Inicia a Thread para receber os ficheiros
+                            ReadFileFromClient readFileFromClient =
+                                    new ReadFileFromClient(Client.getInputStream(), Client.getOutputStream()
+                                            , fileName);
+                            readFileFromClient.start();
+
+                        }
 
                     }
                     else{
