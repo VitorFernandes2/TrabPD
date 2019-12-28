@@ -158,27 +158,13 @@ public class ServerTCPconnect implements Runnable{
 
                             break;
 
+                        case 10:
+
+
+
+                            break;
+
                     }
-
-                    //Command
-                    /*cmd = sc.nextLine();
-                    obj.put("Command", cmd);
-
-                    PrintWriter pr = new PrintWriter(s.getOutputStream());
-                    pr.println(obj.toString());
-                    pr.flush();
-
-                    InputStreamReader in = new InputStreamReader(s.getInputStream());
-                    BufferedReader bf = new BufferedReader(in);
-                    
-                    String str = bf.readLine();
-
-                    JSONParser JsonParser = new JSONParser();
-                    JSONObject JObj = (JSONObject) JsonParser.parse(str);
-                    data.setJObj(JObj);*/
-
-                    //Mostra os dados no objecto Data
-                    //this.upperclass.update(3, data);
 
                 }
                 
