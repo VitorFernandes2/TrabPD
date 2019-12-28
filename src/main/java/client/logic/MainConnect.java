@@ -71,17 +71,10 @@ public class MainConnect implements subject{
         else{
             
             datacomun = new ConnectData();
-            this.notifyObserver(2);
-
-            //Comunica com o DS caso alguma alteração aconteça com o servidor
 
             //System.out.println(returnado);
             ServerTCPconnect startserver = new ServerTCPconnect(returnado,datacomun,inter);
             startserver.start();
-            
-            //Luis - Mudanca para comando//
-            //this.notifyObserver(4);    //
-            //---------------------------//
             
             //Wait por comando de saida
             while(!startserver.getCommand().equalsIgnoreCase("exit")){}

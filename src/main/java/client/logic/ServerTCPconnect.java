@@ -92,20 +92,35 @@ public class ServerTCPconnect implements Runnable{
             while(stopthread){
                 
                 synchronized(s.getOutputStream()){
-                    //Função de entrada de comando//
-                    
-                    //Removeção destas keys pois parecia que davam erros
-                    obj.remove("Username");
-                    obj.remove("Password");
-                    //--------------------------------------------------
-                    
-                    obj.put("Username", data.getUsername());
-                    obj.put("Password", data.getPassword());
-                    
+
+                    //Mostra consoante o menu em que se encontra
+                    switch (data.getMenu()){
+
+                        case 7:
+                            this.upperclass.update(7, data);
+
+                            if (data.getCommand().equals("entrar"))
+                                data.setMenu(8);
+
+                            break;
+
+                        case 8:
+                            this.upperclass.update(8, data);
+
+                            if (data.getCommand().equals("gotoMusics"))
+                                data.setMenu(6);
+
+                            break;
+
+                        case 6:
+                            this.upperclass.update(6, data);
+                            break;
+                            
+                    }
+
                     //Command
-                    cmd = sc.nextLine();
+                    /*cmd = sc.nextLine();
                     obj.put("Command", cmd);
-                    //-------
 
                     PrintWriter pr = new PrintWriter(s.getOutputStream());
                     pr.println(obj.toString());
@@ -118,11 +133,11 @@ public class ServerTCPconnect implements Runnable{
 
                     JSONParser JsonParser = new JSONParser();
                     JSONObject JObj = (JSONObject) JsonParser.parse(str);
-                    data.setJObj(JObj);
-                    //System.out.println(JObj.toString());
-                    this.upperclass.update(3, data);
-                    
-                    //----------------------------//
+                    data.setJObj(JObj);*/
+
+                    //Mostra os dados no objecto Data
+                    //this.upperclass.update(3, data);
+
                 }
                 
             }
@@ -137,12 +152,12 @@ public class ServerTCPconnect implements Runnable{
             //Provisório para fechar aplicação quando o servidor for abaixo
             obj.put("Command", "exit");
             //-------------------------------------------------------------
-        } catch (ParseException e) {
+        } /*catch (ParseException e) {
             JObjE = new JSONObject();
             JObjE.put("exception", e.toString());
             data.setJObj(JObjE);
             upperclass.update(444, data);
-        } catch (NullPointerException e) {
+        }*/ catch (NullPointerException e) {
             JObjE = new JSONObject();
             JObjE.put("exception", e.toString());
             data.setJObj(JObjE);
