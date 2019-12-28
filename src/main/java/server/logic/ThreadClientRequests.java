@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import server.ServerLogic;
-import server.comunicationInterface.ComunicationInterface;
 
 /**
  *
@@ -15,6 +14,12 @@ public class ThreadClientRequests implements Runnable {
     private ServerLogic si;
     private Socket s;
     private ThreadClientListenTreatment tclt;
+    private MulticastUDP multi;
+    
+    public ThreadClientRequests(ServerLogic si, MulticastUDP multi) {
+        this.si = si;
+        this.multi = multi;
+    }
     
     public ThreadClientRequests(ServerLogic si) {
         this.si = si;
@@ -41,7 +46,7 @@ public class ThreadClientRequests implements Runnable {
                 while(!si.getServer().isClosed()){
                     s = si.getServer().accept();
                     si.addClients(s);
-                    tclt = new ThreadClientListenTreatment(s, si);
+                    tclt = new ThreadClientListenTreatment(s, si, multi);
                     si.addListners(tclt);
                     si.getListen(tclt).start();
                 }

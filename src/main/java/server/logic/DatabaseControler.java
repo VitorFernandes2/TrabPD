@@ -69,8 +69,9 @@ public class DatabaseControler {
 
             String tableSql = "CREATE TABLE IF NOT EXISTS users"
             + "(user_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
-            + "username varchar(30), password varchar(30),"
-            + "online boolean)";
+            + "username varchar(30), password varchar(30))";
+//            + "username varchar(30), password varchar(30),"
+//            + "online boolean)";
             stmt.execute(tableSql);
 
             String tableSql2 = "CREATE TABLE IF NOT EXISTS musics"
@@ -90,15 +91,25 @@ public class DatabaseControler {
         return true;
     }
     
-    public boolean insertuser(String name,String username,String password,boolean online){
+    public boolean insertuser(String name,String username,String password){
         
         try {
             /*String insertSql = "INSERT INTO employees(name, position, salary)"
             + " VALUES('john', 'developer', 2000)";
             stmt.executeUpdate(insertSql);*/   
-            String insertSql = "INSERT INTO users(name, username, password, online)"
-            + " VALUES('"+name+"', '"+username+"', '"+password+"', '"+online+"')";
+            String insertSql = "INSERT INTO users(name, username, password)"
+            + " VALUES('"+name+"', '"+username+"', '"+password+"')";
             stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            return false;
+        }
+        return true;
+    }
+    public boolean removeuser(String username,String password){
+        
+        try {
+            String deleteSql = "DELETE FROM `users` WHERE `users`.`username` = \"" + username + "\"";
+            stmt.executeUpdate(deleteSql);
         } catch (SQLException ex) {
             return false;
         }
@@ -208,27 +219,25 @@ public class DatabaseControler {
         return false;
     }
     
-    public void UserLogin(String username){ 
-        try {
-            String selectSql = ("UPDATE `users` SET `online` = ? WHERE `users`.`username` = \"" + username + "\"");
-            PreparedStatement preparedStatement = connect.prepareStatement(selectSql);
-            preparedStatement.setInt(1, 0);
-            preparedStatement.execute();
-        } catch (SQLException ex) {
-            System.out.println("[ERROR] User login " + ex.getMessage());
-        }
-    }
-    
-    public void UserLogout(String username){ 
-        try {
-            String selectSql = ("UPDATE `users` SET `online` = ? WHERE `users`.`username` = \"" + username + "\"");
-            PreparedStatement preparedStatement = connect.prepareStatement(selectSql);
-            preparedStatement.setInt(1, 1);
-            preparedStatement.execute();
-        } catch (SQLException ex) {
-            System.out.println("[ERROR] User logout " + ex.getMessage());
-        }
-    }
+//    public void UserLogin(String username){ 
+//        try {
+//            String selectSql = ("UPDATE `users` SET `online` = 1 WHERE `users`.`username` = \"" + username + "\"");
+//            //Execute the update to the Data Base
+//            stmt.executeUpdate(selectSql);
+//        } catch (SQLException ex) {
+//            System.out.println("[ERROR] User login " + ex.getMessage());
+//        }
+//    }
+//    
+//    public void UserLogout(String username){ 
+//        try {
+//            String selectSql = ("UPDATE `users` SET `online` = 0 WHERE `users`.`username` = \"" + username + "\"");
+//            //Execute the update to the Data Base
+//            stmt.executeUpdate(selectSql);
+//        } catch (SQLException ex) {
+//            System.out.println("[ERROR] User logout " + ex.getMessage());
+//        }
+//    }
 
     public ResultSet getRawDatabaseinfo(){
         try {

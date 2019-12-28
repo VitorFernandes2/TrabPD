@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
 import java.net.Socket;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,11 +19,14 @@ public class ThreadClientListenTreatment implements Runnable {
     private int ID;
     private InputStreamReader in;
     private PrintWriter pr;
+    private boolean Sucesso;
+    private MulticastUDP multi;
 
-    public ThreadClientListenTreatment(Socket Client, ServerLogic si) {
+    public ThreadClientListenTreatment(Socket Client, ServerLogic si, MulticastUDP multi) {
         this.Client = Client;
         this.si = si;
         this.ID = Counter++;
+        this.multi = multi;
     }
     
     public void start() {
@@ -35,6 +39,10 @@ public class ThreadClientListenTreatment implements Runnable {
         
         //boolean isRegister = false;
         //boolean isLogin = false;
+        
+        Sucesso = false;
+        
+        String out = null;
 
         si.Obj().put("output", "Client " + this.ID + " connected to tcp.");
         si.notifyObserver(1);
@@ -62,62 +70,24 @@ public class ThreadClientListenTreatment implements Runnable {
                     String pass = (String) JObj.get("Password");
                     String cmd = (String) JObj.get("Command");
                     
-                    //Código temporário de Registo
-                    //if(!si.getDbaction().contaisUser(user)){
-                    //    si.getDbaction().insertuser(user, user, pass, true);
-                    //}
-                    //----------------------------
+                    out = commandParse(cmd);
+                    si.Obj().put("output", out);
                     
-                    //if(isLogg && !isLogin){
-                    if(isLogg){
-                        switch(commandLogin(cmd)){
-                            case 1:
-                                si.Obj().put("output", "[ERROR] User " + user + " logado com sucesso.");
-                                //isLogin = true;
-                                break;
-                            case -1:
-                                si.Obj().put("output", "[ERROR] User " + user + " já se encontra online.");
-                                break;
-                            case -2:
-                                //Quando o commando não é do tipo login
-                                isLogg = false;
-                                break;
-                            default:
-                                si.Obj().put("output", "[ERROR] User " + user + " introduziu dados incorretos.");
-                                break;
-                        }
+                    //Código de envio para os outros servidores
+                    if(Sucesso){
+                        byte[] b = String.valueOf(cmd).getBytes();
+                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
+                        multi.getMulticastSock().send(packet);
                     }
-                    else if(!isLogg && isRegg){
-                        switch(commandRegisto(cmd)){
-                            case 1:
-                                si.Obj().put("output", "[ERROR] User " + user + " registado com sucesso.");
-                                break;
-                            case -1:
-                                si.Obj().put("output", "[ERROR] User " + user + " já se encontra na base de dados.");
-                                break;
-                            default:
-                                //Quando o commando não é do tipo registo
-                                isRegg = false;
-                                break;
-                        }
-                    }
-
-                    if(isLogg){
-                        si.Obj().put("output", "Objeto enviado com sucesso no login: " + JObj.toString());
-                    }
-                    else if(!isLogg && isRegg){
-                        si.Obj().put("output", "Objeto registado com sucesso: " + JObj.toString());
-                    }
-                    else{
-                        si.Obj().put("output", "Objeto enviado com erros de comando: " + JObj.toString());
-                    }
+                    //-----------------------------------------
                     
                     si.notifyObserver(1);
 
                     JSONObject obj = new JSONObject();
 
-                    obj.put("Data", si.Obj().toString() + " Cliente de ID: " + this.ID);   //Para testes por agora//
-                    obj.put("Mp3", "music");
+                    obj.put("tipo", "resposta");
+                    obj.put("sucesso", Sucesso);
+                    obj.put("msg", out + " do user " + " Cliente de ID: " + this.ID);
                     pr.println(obj.toString());
                     pr.flush();
                     
@@ -152,10 +122,16 @@ public class ThreadClientListenTreatment implements Runnable {
 
     }
     
-    public int commandLogin(String command){
-        boolean hasType = false;
-        boolean hasUserName = false;
-        boolean hasPassword = false;
+    public String commandParse(String command){
+        boolean hasTypeLog = false;
+        boolean hasTypeReg = false;
+        boolean hasTypeOut = false;
+        boolean hasUserNameLog = false;
+        boolean hasUserNameReg = false;
+        boolean hasUserNameOut = false;
+        boolean hasPasswordLog = false;
+        boolean hasPasswordReg = false;
+        boolean hasPasswordOut = false;
         String username = "";
         String password = "";
         command = command.replace(" ", "");
@@ -164,113 +140,84 @@ public class ThreadClientListenTreatment implements Runnable {
             String parte = zone.replace("|", " ");
             String [] cmd = parte.split(" ");
             //vai verificar se o comando é inicializado corretamente
-            if(cmd[0].equalsIgnoreCase("tipo") && !hasType){
+            if(cmd[0].equalsIgnoreCase("tipo") && !hasTypeLog && !hasTypeReg && !hasTypeOut){
                 //vai verificar se o tipo de comando é o correto
                 if(cmd[1].equalsIgnoreCase("login")){
-                    hasType = true;
+                    hasTypeLog = true;
+                }
+                else if(cmd[1].equalsIgnoreCase("registo")){
+                    hasTypeReg = true;
+                }
+                else if(cmd[1].equalsIgnoreCase("logout")){
+                    hasTypeOut = true;
                 }
                 else{
-                    //o comando introduzido é de outro tipo
-                    return -2;
+                    Sucesso = false;
+                    return "erro de comando";
                 }
             }
-            else if(cmd[0].equalsIgnoreCase("username") && !hasUserName && hasType){
+            else if(cmd[0].equalsIgnoreCase("username") && !hasUserNameLog && !hasUserNameReg && !hasUserNameOut){
                 //vai verificar se o utilizador existe na base de dados
                 username = cmd[1];
-                hasUserName = si.getDbaction().contaisUser(username);
+                if(hasTypeLog){
+                    hasUserNameLog = si.getDbaction().contaisUser(username);
+                }
+                else if(hasTypeReg){
+                    hasUserNameReg = !si.getDbaction().contaisUser(username);
+                }
+                else if(hasTypeOut){
+                    hasUserNameOut = si.getDbaction().contaisUser(username);
+                }
+                else{
+                    Sucesso = false;
+                    return "erro de comando";
+                }
             }
-            else if(cmd[0].equalsIgnoreCase("password") && !hasPassword && hasUserName && hasType){
+            else if(cmd[0].equalsIgnoreCase("password") && !hasPasswordLog && !hasPasswordReg && !hasPasswordOut){
                 //vai verificar que a password introduzida cuincide com a introduzida para aquele username
                 password = cmd[1];
-                hasPassword = si.getDbaction().verifyUserPassword(username, password);
+                if(hasTypeLog && hasUserNameLog){
+                    hasPasswordLog = si.getDbaction().verifyUserPassword(username, password);
+                }
+                else if(hasTypeReg && hasUserNameReg){
+                    hasPasswordReg = true;
+                }
+                else if(hasTypeOut && hasUserNameOut){
+                    hasPasswordOut = si.getDbaction().verifyUserPassword(username, password);
+                }
+                else{
+                    Sucesso = false;
+                    return "erro de comando";
+                }
             }
             else {
                 //caso exista mais linhas de comando para além desta ou o comando introduzido tenha sido mal escrito
                 //ou seja de outro tipo
-                return -2;
+                Sucesso = false;
+                return "erro de comando";
             }
         }
         
-        if(hasPassword && hasType && hasUserName){
+        if(hasPasswordLog && hasTypeLog && hasUserNameLog){
             //Verifica se o utilizador se encontra na base de dados como logado
-            if(!si.getDbaction().contaisUserOnline(username)){
-                //caso não esteja logado, é efetuado o seu login
-                si.getDbaction().UserLogin(username);
-                return 1;
-            }
-            else{
-                return -1;
-            }
+            Sucesso = true;
+            return "Login com sucesso";
+        }
+        else if(hasPasswordReg && hasTypeReg && hasUserNameReg){
+            Sucesso = true;
+            si.getDbaction().insertuser(username, username, password);
+            return "Registo com sucesso";
+        }
+        else if(hasPasswordOut && hasTypeOut && hasUserNameOut){
+            Sucesso = true;
+            si.getDbaction().removeuser(username, password);
+            return "Registo com sucesso";
         }
         else{
-            if(!hasType){
-                //caso o user não existe na base de dados
-                return -2;
-            }
-            else{
-                //caso o user não existe na base de dados
-                return -3;
-            }
-            //return -3;
+            Sucesso = false;
+            return "erro de comando";
         }
     }
     
-    public int commandRegisto(String command){
-        boolean hasType = false;
-        boolean hasUserName = false;
-        boolean hasPassword = false;
-        String username = "";
-        String password = "";
-        command = command.replace(" ", "");
-        String [] zones = command.split(";");
-        for(String zone : zones){
-            String parte = zone.replace("|", " ");
-            String [] cmd = parte.split(" ");
-            //vai verificar se o comando é inicializado corretamente
-            if(cmd[0].equalsIgnoreCase("tipo") && !hasType){
-                //vai verificar se o tipo de comando é o correto
-                if(cmd[1].equalsIgnoreCase("registo")){
-                    hasType = true;
-                }
-                else{
-                    //o comando introduzido é de outro tipo
-                    return -2;
-                }
-            }
-            else if(cmd[0].equalsIgnoreCase("username") && !hasUserName && hasType){
-                //vai verificar se o utilizador ainda não existe na base de dados
-                username = cmd[1];
-                hasUserName = !si.getDbaction().contaisUser(username);
-            }
-            else if(cmd[0].equalsIgnoreCase("password") && hasUserName && hasType){
-                //vai guardar a password do novo utilizador
-                password = cmd[1];
-                hasPassword = true;
-            }
-            else{
-                //caso exista mais linhas de comando para além desta ou o comando introduzido tenha sido mal escrito
-                //ou seja de outro tipo
-                return -2;
-            }
-        }
-        
-        if(hasType && hasUserName && hasPassword){
-            //user é inserido na base de dados e logado
-            if(si.getDbaction().insertuser(username, username, password, true)){
-                return 1;
-            }
-            else{
-                return -3;
-            }
-        }
-        else{
-            if(!hasUserName){
-                return -1;
-            }
-            else{
-                return -2;
-            }
-        }
-    }
     
 }

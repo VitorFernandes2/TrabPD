@@ -114,8 +114,14 @@ public class ServerConnectionStarter {
         
         try {
             aliveProcedure.terminate();
+            
             //Obriga a Thread do Servidor a parar
             threadclass.stopthread();
+            //-----------------------------------
+            
+            //Código de terminio de Multicast
+            multi.turnOff();
+            //-------------------------------
             
             System.exit(0);//retirar depois para tratamento de morte do servidor
             
