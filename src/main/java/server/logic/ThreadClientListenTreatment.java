@@ -36,28 +36,20 @@ public class ThreadClientListenTreatment implements Runnable {
     @Override
     public void run() {
         //Tratamento de mensagens
-        
-        //boolean isRegister = false;
-        //boolean isLogin = false;
-        
         Sucesso = false;
-        
         String out = null;
 
         si.Obj().put("output", "Client " + this.ID + " connected to tcp.");
         si.notifyObserver(1);
 
+        //Enquanto não se fechar o client
         while(!Client.isClosed()){
             try {
                 in = new InputStreamReader(Client.getInputStream()); // DUMMY CODE : modificar para enviar o q é preciso
                 pr = new PrintWriter(Client.getOutputStream());
+
                 //Recebe o que o Cliente enviou ao servidor
                 synchronized(in){
-                    //Reset de validações para os comandos
-                    boolean isLogg = true;
-                    boolean isRegg = true;
-                    boolean isList = true;
-                    //------------------------------------
                     
                     BufferedReader bf = new BufferedReader(in);
 
@@ -65,21 +57,38 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     JSONParser JsonParser = new JSONParser();
                     JSONObject JObj = (JSONObject) JsonParser.parse(str);
-                    
-                    String user = (String) JObj.get("Username");
-                    String pass = (String) JObj.get("Password");
+
                     String cmd = (String) JObj.get("Command");
-                    
-                    out = commandParse(cmd);
-                    si.Obj().put("output", out);
-                    
+
+                    if (cmd.equals("createMusic")){
+
+                        System.out.println("Mandou a musica " + JObj.get("MusicName"));
+
+                        String MusicName = (String) JObj.get("MusicName");
+                        String MusicAuthor = (String) JObj.get("MusicAuthor");
+                        String MusicYear = (String) JObj.get("MusicYear");
+                        String MusicAlbum = (String) JObj.get("MusicAlbum");
+                        double MusicDuration = (double) JObj.get("MusicDuration");
+                        String MusicGenre = (String) JObj.get("MusicGenre");
+                        String MusicPath = (String) JObj.get("MusicPath");
+
+                        si.getDbaction().insertMusic(MusicName, MusicAuthor, MusicAlbum,
+                                MusicYear, MusicDuration, MusicGenre);
+
+                    }
+                    else{
+
+                        out = commandParse(cmd);
+                        si.Obj().put("output", out);
+
+                    }
+
                     //Código de envio para os outros servidores
                     if(Sucesso){
                         byte[] b = String.valueOf(cmd).getBytes();
                         DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
                         multi.getMulticastSock().send(packet);
                     }
-                    //-----------------------------------------
                     
                     si.notifyObserver(1);
 

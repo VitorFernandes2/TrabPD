@@ -59,6 +59,10 @@ public class Interfacemain implements observer{
                 this.secondMenu(data);
                 break;
 
+            case 9:
+                this.createMusic(data);
+                break;
+
             case 444:
                 String exc = (String) data.getJObj().get("exception");
                 System.out.println("[ERROR] Excepção lançada aqui no notifier: " + exc);
@@ -66,6 +70,28 @@ public class Interfacemain implements observer{
                 
         }
         
+    }
+
+    private void createMusic(ConnectData data) {
+
+        String nome = Readers.readString("Insira o nome da musica: ");
+        String album = Readers.readString("Insira o nome do album: ");
+        String autor = Readers.readString("Insira o nome da autor: ");
+        String ano = Readers.readString("Insira o ano da musica: ");
+
+        String duracao;
+        double duration = 0;
+
+        do {
+            duracao = Readers.readString("Insira o duracao da musica: ");
+            duration = Double.parseDouble(ano);
+        }while (duration == 0);
+
+        String genero = Readers.readString("Insira o genero da musica: ");
+        String caminho = Readers.readString("Insira o local da musica: ");
+
+        data.setMusic(ano, nome, album, autor, genero, duration, caminho);
+
     }
 
     private void secondMenu(ConnectData data) {
@@ -98,12 +124,14 @@ public class Interfacemain implements observer{
             System.out.println("listMusics - Listar as musicas na base de dados");
             System.out.println("createMusic - Criar uma musica");
             System.out.println("removeMusic - Remover musica");
-            System.out.println("changeMusic - Alterar music");
+            System.out.println("changeMusic - Alterar musica");
+            System.out.println("playMusic - Tocar musica");
 
             cmd = Readers.readString("\nInsira a opcao que pretende: ");
 
         }while (!cmd.equals("listMusics") && !cmd.equals("createMusic")
-                && !cmd.equals("removeMusic") && !cmd.equals("changeMusic"));
+                && !cmd.equals("removeMusic") && !cmd.equals("changeMusic")
+                && !cmd.equals("playMusic"));
 
         data.setCommand(cmd);
 

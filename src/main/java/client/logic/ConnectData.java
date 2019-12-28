@@ -1,5 +1,6 @@
 package client.logic;
 
+import mainObjects.Music;
 import org.json.simple.JSONObject;
 
 /**
@@ -15,6 +16,7 @@ public class ConnectData {
     private JSONObject JObj;
     private String command;
     private int menu = 7;
+    private Music music = null;
     
     public JSONObject getJObj() {
         return JObj;
@@ -54,5 +56,13 @@ public class ConnectData {
 
     public void setMenu(int menu) {
         this.menu = menu;
+    }
+
+    public Music getMusic() {
+        return music;
+    }
+
+    public void setMusic(String year, String name, String album, String author, String genre, double duration, String path) {
+        this.music = new Music(year, name, album, author, genre, duration, path);
     }
 }

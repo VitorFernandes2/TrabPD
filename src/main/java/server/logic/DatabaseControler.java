@@ -116,7 +116,7 @@ public class DatabaseControler {
         return true;
     }
     
-    public boolean insertmusic(String name,String artist,String album, String year, double duration, String genre, String localname){
+    /*public boolean insertmusic(String name,String artist,String album, String year, double duration, String genre, String localname){
         
         try {
             String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre, localname)"
@@ -126,7 +126,7 @@ public class DatabaseControler {
             return false;
         }
         return true;
-    }
+    }*/
     
     public boolean runinsertedcode(String insert){
         
@@ -283,6 +283,32 @@ public class DatabaseControler {
      
     }
    
-   
+   public String insertMusic(String name,String artist,String album, String year, double duration, String genre){
+
+        //Comando sql para ir buscar todas as músicas
+       try {
+           String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
+           ResultSet resultSet = stmt.executeQuery(sql);
+
+           System.out.println("Fiz o comando!");
+
+           while (resultSet.next()){
+
+               String nome = resultSet.getString("name");
+               return null;
+
+           }
+
+           String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre)"
+                   + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"')";
+           stmt.executeUpdate(insertSql);
+
+       } catch (SQLException e) {
+           return null;
+       }
+
+       return null;
+
+   }
    
 }

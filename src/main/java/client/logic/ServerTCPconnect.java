@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+
+import mainObjects.Music;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -114,8 +116,33 @@ public class ServerTCPconnect implements Runnable{
 
                         case 6:
                             this.upperclass.update(6, data);
+
+                            if (data.getCommand().equals("createMusic"))
+                                data.setMenu(9);
                             break;
-                            
+
+                        //Criar musica
+                        case 9:
+                            this.upperclass.update(9, data);
+
+                            Music music = data.getMusic();
+                            System.out.printf(music.toString());
+
+                            obj.put("Command", "createMusic");
+                            obj.put("MusicName", music.getName());
+                            obj.put("MusicAuthor", music.getAuthor());
+                            obj.put("MusicYear", music.getYear());
+                            obj.put("MusicAlbum", music.getAlbum());
+                            obj.put("MusicDuration", music.getDuration());
+                            obj.put("MusicGenre", music.getGenre());
+                            obj.put("MusicPath", music.getPath());
+
+                            PrintWriter pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            break;
+
                     }
 
                     //Command
