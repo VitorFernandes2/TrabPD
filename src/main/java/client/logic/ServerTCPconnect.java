@@ -171,10 +171,18 @@ public class ServerTCPconnect implements Runnable{
                             if (data.getCommand().equals("createMusic")){
                                 data.setMenu(9);
                             }
-                            else
-                                if (data.getCommand().equals("playMusic")){
-                                    data.setMenu(11);
-                                }
+                            else if (data.getCommand().equals("playMusic")){
+                                data.setMenu(11);
+                            }
+                            else if (data.getCommand().equals("removeMusic")){
+                                data.setMenu(12);
+                            }
+                            else if (data.getCommand().equals("changeMusic")){
+                                data.setMenu(14);
+                            }
+                            else if (data.getCommand().equals("listMusics")){
+                                data.setMenu(13);
+                            }
                             
                             break;
 
@@ -249,6 +257,27 @@ public class ServerTCPconnect implements Runnable{
                                 receiveFileFromServer.start();
 
                             }
+
+                            break;
+
+                        //Remover musica
+                        case 12:
+
+
+
+                            break;
+
+                        //Listar musicas
+                        case 13:
+
+
+
+                            break;
+
+                        //Alterar musica
+                        case 14:
+
+
 
                             break;
 
