@@ -269,6 +269,8 @@ public class ServerTCPconnect implements Runnable{
                         //Remover musica
                         case 12:
 
+                            this.upperclass.update(12, data);
+
                             obj = new JSONObject();
                             obj.put("Command", "removeMusic");
                             obj.put("name", data.getNome());
@@ -286,28 +288,59 @@ public class ServerTCPconnect implements Runnable{
 
                             obj = new JSONObject();
                             obj.put("Command", "listMusics");
-                            obj.put("name", data.getNome());
-                            obj.put("author", data.getAutor());
 
                             //Envia os dados para listar as musicas
                             pr = new PrintWriter(s.getOutputStream());
                             pr.println(obj.toString());
                             pr.flush();
 
+                            //Mensagem de confirmacao ou negacao
+                            in = new InputStreamReader(s.getInputStream());
+                            BufferedReader bf3 = new BufferedReader(in);
+
+                            String str3 = bf3.readLine();
+
+                            JSONParser JsonParser3 = new JSONParser();
+                            JSONObject JObj3 = (JSONObject) JsonParser3.parse(str3);
+
+                            data.setJObj(JObj3);
+
+                            this.upperclass.update(13, data);
+
                             break;
 
                         //Alterar musica
                         case 14:
 
+                            this.upperclass.update(14, data);
+
+                            Music music2 = data.getMusic();
+
                             obj = new JSONObject();
                             obj.put("Command", "changeMusic");
                             obj.put("name", data.getNome());
                             obj.put("author", data.getAutor());
+                            obj.put("MusicName", music2.getName());
+                            obj.put("MusicAuthor", music2.getAuthor());
+                            obj.put("MusicYear", music2.getYear());
+                            obj.put("MusicAlbum", music2.getAlbum());
+                            obj.put("MusicDuration", music2.getDuration());
+                            obj.put("MusicGenre", music2.getGenre());
+                            obj.put("MusicPath", music2.getPath());
 
                             //Envia os dados para alterar a musica para o servidor
                             pr = new PrintWriter(s.getOutputStream());
                             pr.println(obj.toString());
                             pr.flush();
+
+                            //Mensagem de confirmacao ou negacao
+                            in = new InputStreamReader(s.getInputStream());
+                            BufferedReader bf4 = new BufferedReader(in);
+
+                            String str4 = bf4.readLine();
+
+                            JSONParser JsonParser4 = new JSONParser();
+                            JSONObject JObj4 = (JSONObject) JsonParser4.parse(str4);
 
                             break;
 

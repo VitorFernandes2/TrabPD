@@ -1,11 +1,13 @@
 package server.logic;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.ServerLogic;
 
@@ -375,6 +377,81 @@ public class DatabaseControler {
         }
 
         return null;
+
+    }
+
+    public boolean removeMusic(String name,String artist, ServerLogic sl){
+
+        String filename = getFileName(name, artist, sl);
+        File file = new File(filename);
+
+        if(file.delete())
+        {
+            System.out.println("File deleted successfully");
+        }
+
+        try {
+            String deleteSql = "DELETE FROM musics WHERE name = '" + name +"' And artist = '" + artist + "'";
+            stmt.executeUpdate(deleteSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] Logout -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+
+    }
+
+    public boolean changeMusic(String name,String artist, String newName,
+                               String newArtist,String album, String year,
+                               double duration, String genre, ServerLogic sl){
+
+        try {
+            String deleteSql = "UPDATE musics" +
+                    " SET name = '" + newName + "', artist = '" + newArtist + "', album = '" + album
+                    + "', year = '" + year + "', duration = '" + duration +"', genre = '" + genre +"'" +
+                    " WHERE name = '" + name +"' AND artist = '" + artist + "'";
+            stmt.executeUpdate(deleteSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] Logout -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+
+    }
+
+    public JSONObject listMusics(){
+
+        JSONObject Jobj = new JSONObject();
+        Jobj.put("message", "musicsList");
+        try {
+
+            String selectSql = "SELECT * FROM musics" ;
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            int i = 0;
+            while(resultSet.next()){
+
+                i++;
+                String nome = "music" + i;
+                JSONArray array = new JSONArray();
+                array.add(resultSet.getString("name"));
+                array.add(resultSet.getString("artist"));
+                array.add(resultSet.getString("album"));
+                array.add(resultSet.getString("year"));
+                array.add(resultSet.getDouble("duration"));
+                array.add(resultSet.getString("genre"));
+                Jobj.put(nome, array);
+
+            }
+
+            Jobj.put("numberOfMusics", i);
+
+        } catch (SQLException ex) {
+            return null;
+        }
+
+        return Jobj;
 
     }
    

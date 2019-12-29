@@ -2,7 +2,10 @@ package client.InterfaceGrafica;
 
 import client.Interfaces.observer;
 import client.logic.ConnectData;
+import com.mysql.cj.xdevapi.JsonArray;
 import mainObjects.Readers;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.Scanner;
 
@@ -62,6 +65,37 @@ public class Interfacemain implements observer{
                 this.playMusic(data);
                 break;
 
+            //remover musica
+            case 12:
+                this.removeMusic(data);
+                break;
+
+            //Listar musica
+            case 13:
+                this.listMusics(data);
+                break;
+
+            //Alterar musica
+            case 14:
+                this.changeMusic(data);
+                break;
+
+            //Menu das playlists
+            case 15:
+                break;
+
+            //Criacao de Playlist
+            case 16:
+                break;
+
+            //Remove de Playlist
+            case 17:
+                break;
+
+            //Change Playlist
+            case 18:
+                break;
+
             case 444:
                 String exc = (String) data.getJObj().get("exception");
                 System.out.println("[ERROR] Excepção lançada aqui no notifier: " + exc);
@@ -105,6 +139,60 @@ public class Interfacemain implements observer{
         String caminho = Readers.readString("Insira o local da musica: ");
 
         data.setMusic(ano, nome, album, autor, genero, duration, caminho);
+
+    }
+
+    private void changeMusic(ConnectData data) {
+
+        String nomeAlterar = Readers.readString("Insira o nome da musica a alterar: ");
+        String autorAlterar = Readers.readString("Insira o autor da musica a alterar: ");
+        String nome = Readers.readString("Insira o novo nome da musica: ");
+        String album = Readers.readString("Insira o novo nome do album: ");
+        String autor = Readers.readString("Insira o novo nome da autor: ");
+        String ano = Readers.readString("Insira o novo ano da musica: ");
+
+        String duracao;
+        double duration = 0;
+
+        do {
+            duracao = Readers.readString("Insira a nova duracao da musica: ");
+            duration = Double.parseDouble(duracao);
+        }while (duration == 0);
+
+        String genero = Readers.readString("Insira o novo genero da musica: ");
+
+        data.setNome(nomeAlterar);
+        data.setAutor(autorAlterar);
+        data.setMusic(ano, nome, album, autor, genero, duration, null);
+
+    }
+
+    private void listMusics(ConnectData data){
+
+        JSONObject obj = data.getJObj();
+
+        int numberMusics = (int)obj.get("numberOfMusics");
+
+        for (int i = 1; i <= numberMusics; i++) {
+
+            String nome = "music" + i;
+            JSONArray array = (JSONArray) obj.get(nome);
+
+            System.out.println(nome + "\n" + array.get(0) + "\n" + array.get(1) + "\n"
+                    + array.get(2) + "\n" + array.get(3) + "\n"
+                    + array.get(4) + "\n" + array.get(5) + "\n");
+
+        }
+
+    }
+
+    private void removeMusic(ConnectData data) {
+
+        String nome = Readers.readString("Insira o nome da musica: ");
+        String autor = Readers.readString("Insira o nome do autor: ");
+
+        data.setNome(nome);
+        data.setAutor(autor);
 
     }
 

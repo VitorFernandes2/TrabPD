@@ -104,33 +104,111 @@ public class ThreadClientListenTreatment implements Runnable {
                         }
 
                     }
-                    else
-                        if (cmd.equals("playMusic")){
+                    else if (cmd.equals("playMusic")){
 
-                            System.out.println("Este quer ouvir uma musica");
-                            String name = (String)JObj.get("name");
-                            String author = (String)JObj.get("author");
+                        String name = (String)JObj.get("name");
+                        String author = (String)JObj.get("author");
 
-                            String path = si.getDbaction().getFileName(name, author, si);
-                            System.out.println(path);
+                        String path = si.getDbaction().getFileName(name, author, si);
+                        System.out.println(path);
+
+                        JSONObject obj = new JSONObject();
+                        obj.put("message", "receiveFile");
+
+                        pr.println(obj.toString());
+                        pr.flush();
+
+                        SendFileToClient sendFileToClient =
+                                new SendFileToClient(path, Client.getOutputStream());
+                        sendFileToClient.start();
+
+                    }
+                    else if(cmd.equals("changeMusic")){
+
+                        String name = (String)JObj.get("name");
+                        String author = (String)JObj.get("author");
+
+                        String MusicName = (String) JObj.get("MusicName");
+                        String MusicAuthor = (String) JObj.get("MusicAuthor");
+                        String MusicYear = (String) JObj.get("MusicYear");
+                        String MusicAlbum = (String) JObj.get("MusicAlbum");
+                        double MusicDuration = (double) JObj.get("MusicDuration");
+                        String MusicGenre = (String) JObj.get("MusicGenre");
+                        String MusicPath = (String) JObj.get("MusicPath");
+
+                        //Sucesso na alteração
+                        if (si.getDbaction().changeMusic(name, author, MusicName, MusicAuthor,
+                                MusicAlbum, MusicYear, MusicDuration, MusicGenre, si)){
 
                             JSONObject obj = new JSONObject();
-                            obj.put("message", "receiveFile");
+                            obj.put("message", "changeDone");
 
                             pr.println(obj.toString());
                             pr.flush();
 
-                            SendFileToClient sendFileToClient =
-                                    new SendFileToClient(path, Client.getOutputStream());
-                            sendFileToClient.start();
-
-                        }
+                        } //Se não teve sucesso
                         else{
 
-                            out = commandParse(cmd);
-                            si.Obj().put("output", out);
+                            JSONObject obj = new JSONObject();
+                            obj.put("message", "changeNotDone");
+
+                            pr.println(obj.toString());
+                            pr.flush();
 
                         }
+
+                    }
+                    else if(cmd.equals("removeMusic")){
+
+                        String name = (String)JObj.get("name");
+                        String author = (String)JObj.get("author");
+
+                        if (si.getDbaction().removeMusic(name, author, si)){
+
+                            JSONObject obj = new JSONObject();
+                            obj.put("message", "removeDone");
+
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+                        else {
+
+                            JSONObject obj = new JSONObject();
+                            obj.put("message", "removeNotDone");
+
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+
+                    }
+                    else if(cmd.equals("listMusics")){
+
+                        JSONObject obj = new JSONObject();
+                        obj = si.getDbaction().listMusics();
+
+                        if (obj != null){
+
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+                        else {
+
+                            obj.put("message", "noMusicList");
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+
+                    }
+                    else{
+
+                        out = commandParse(cmd);
+                        si.Obj().put("output", out);
+
+                    }
 
                     //Código de envio para os outros servidores
                     //mesmo que o comando não seja um sucesso
