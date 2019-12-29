@@ -85,6 +85,7 @@ public class ServerTCPconnect implements Runnable{
             PrintWriter pr;
             InputStreamReader in = new InputStreamReader(s.getInputStream());
             StringBuilder sb;
+            JSONObject obj;
             while(stopthread){
                 
                 synchronized(s.getOutputStream()){
@@ -97,7 +98,8 @@ public class ServerTCPconnect implements Runnable{
                             
                             sb = new StringBuilder();
                             sb.append("tipo|login;username|").append(data.getUsername()).append(";password|").append(data.getPassword());
-                            
+
+                            obj = new JSONObject();
                             obj.put("Command", sb.toString());
                             
                             pr = new PrintWriter(s.getOutputStream());
@@ -113,7 +115,8 @@ public class ServerTCPconnect implements Runnable{
                             
                             sb = new StringBuilder();
                             sb.append("tipo|registo;username|").append(data.getUsername()).append(";password|").append(data.getPassword());
-                            
+
+                            obj = new JSONObject();
                             obj.put("Command", sb.toString());
                             
                             pr = new PrintWriter(s.getOutputStream());
@@ -137,6 +140,7 @@ public class ServerTCPconnect implements Runnable{
                                 data.setMenu(3);
                             }
                             else if(data.getCommand().equals("sair")){
+                                obj = new JSONObject();
                                 //Flag de saida de programa
                                 obj.put("Command", "exit");
                                 break;
@@ -154,6 +158,7 @@ public class ServerTCPconnect implements Runnable{
                                 sb = new StringBuilder();
                                 sb.append("tipo|logout;username|").append(data.getUsername()).append(";password|").append(data.getPassword());
 
+                                obj = new JSONObject();
                                 obj.put("Command", sb.toString());
                                 
                                 pr = new PrintWriter(s.getOutputStream());
@@ -193,6 +198,7 @@ public class ServerTCPconnect implements Runnable{
                             Music music = data.getMusic();
                             System.out.printf(music.toString());
 
+                            obj = new JSONObject();
                             obj.put("Command", "createMusic");
                             obj.put("MusicName", music.getName());
                             obj.put("MusicAuthor", music.getAuthor());
@@ -230,7 +236,7 @@ public class ServerTCPconnect implements Runnable{
                         case 11:
                             this.upperclass.update(11, data);
 
-                            JSONObject obj = new JSONObject();
+                            obj = new JSONObject();
                             obj.put("Command", "playMusic");
                             obj.put("name", data.getNome());
                             obj.put("author", data.getAutor());
@@ -263,21 +269,45 @@ public class ServerTCPconnect implements Runnable{
                         //Remover musica
                         case 12:
 
+                            obj = new JSONObject();
+                            obj.put("Command", "removeMusic");
+                            obj.put("name", data.getNome());
+                            obj.put("author", data.getAutor());
 
+                            //Envia os dados para tocar a musica para o servidor
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
 
                             break;
 
                         //Listar musicas
                         case 13:
 
+                            obj = new JSONObject();
+                            obj.put("Command", "listMusics");
+                            obj.put("name", data.getNome());
+                            obj.put("author", data.getAutor());
 
+                            //Envia os dados para listar as musicas
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
 
                             break;
 
                         //Alterar musica
                         case 14:
 
+                            obj = new JSONObject();
+                            obj.put("Command", "changeMusic");
+                            obj.put("name", data.getNome());
+                            obj.put("author", data.getAutor());
 
+                            //Envia os dados para alterar a musica para o servidor
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
 
                             break;
 
