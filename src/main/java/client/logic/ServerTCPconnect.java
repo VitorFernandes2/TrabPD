@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package client.logic;
 
 import client.InterfaceGrafica.Interfacemain;
@@ -70,12 +65,10 @@ public class ServerTCPconnect implements Runnable{
             
         }
         catch (ParseException e){
-            //System.out.println("[ERROR] unable to parse json from tcp connect");
             JObjE = new JSONObject();
             JObjE.put("exception", "[ERROR] unable to parse json from tcp connect in ServerTCPconnect thread " + e.toString());
             data.setJObj(JObjE);
             upperclass.update(444, data);
-            //this.upperclass.notifyObserver(444);
         }
     }
     
@@ -85,40 +78,100 @@ public class ServerTCPconnect implements Runnable{
 
     @Override
     public void run() {
-        Scanner sc = new Scanner(System.in);
-        String cmd;
         try {
-
+            int guardaMenu = 7;
+            boolean didPush = false;
             Socket  s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
-            
+            PrintWriter pr;
+            InputStreamReader in = new InputStreamReader(s.getInputStream());
+            StringBuilder sb;
             while(stopthread){
                 
                 synchronized(s.getOutputStream()){
 
                     //Mostra consoante o menu em que se encontra
                     switch (data.getMenu()){
+                        
+                        case 2:
+                            this.upperclass.update(2, data);
+                            
+                            sb = new StringBuilder();
+                            sb.append("tipo|login;username|").append(data.getUsername()).append(";password|").append(data.getPassword());
+                            
+                            obj.put("Command", sb.toString());
+                            
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
+                            didPush = true;
+                            guardaMenu = 7;
+                            
+                            break;
 
+                        case 3:
+                            this.upperclass.update(10, data);
+                            
+                            sb = new StringBuilder();
+                            sb.append("tipo|registo;username|").append(data.getUsername()).append(";password|").append(data.getPassword());
+                            
+                            obj.put("Command", sb.toString());
+                            
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
+                            didPush = true;
+                            guardaMenu = 7;
+                            
+                            break;
+                        
                         case 7:
                             this.upperclass.update(7, data);
 
-                            if (data.getCommand().equals("entrar"))
+                            if (data.getCommand().equals("entrar")){
                                 data.setMenu(8);
-
+                            }
+                            else if(data.getCommand().equals("entraLogin")){
+                                data.setMenu(2);
+                            }
+                            else if(data.getCommand().equals("entraRegisto")){
+                                data.setMenu(3);
+                            }
+                            else if(data.getCommand().equals("sair")){
+                                //Flag de saida de programa
+                                obj.put("Command", "exit");
+                                break;
+                            }
+                            
                             break;
 
                         case 8:
                             this.upperclass.update(8, data);
 
-                            if (data.getCommand().equals("gotoMusics"))
+                            if (data.getCommand().equals("gotoMusics")){
                                 data.setMenu(6);
+                            }
+                            else if(data.getCommand().equals("logout")){
+                                sb = new StringBuilder();
+                                sb.append("tipo|logout;username|").append(data.getUsername()).append(";password|").append(data.getPassword());
+
+                                obj.put("Command", sb.toString());
+                                
+                                pr = new PrintWriter(s.getOutputStream());
+                                pr.println(obj.toString());
+                                pr.flush();
+                                didPush = true;
+                                data.setMenu(7);
+                            }
 
                             break;
 
                         case 6:
                             this.upperclass.update(6, data);
 
-                            if (data.getCommand().equals("createMusic"))
+                            if (data.getCommand().equals("createMusic")){
                                 data.setMenu(9);
+                            }
+                            
                             break;
 
                         //Criar musica
@@ -137,11 +190,11 @@ public class ServerTCPconnect implements Runnable{
                             obj.put("MusicGenre", music.getGenre());
                             obj.put("MusicPath", music.getPath());
 
-                            PrintWriter pr = new PrintWriter(s.getOutputStream());
+                            pr = new PrintWriter(s.getOutputStream());
                             pr.println(obj.toString());
                             pr.flush();
 
-                            InputStreamReader in = new InputStreamReader(s.getInputStream());
+                            in = new InputStreamReader(s.getInputStream());
                             BufferedReader bf = new BufferedReader(in);
 
                             String str = bf.readLine();
@@ -166,6 +219,23 @@ public class ServerTCPconnect implements Runnable{
                             break;
 
                     }
+                    
+                    if(didPush){
+                        BufferedReader bf = new BufferedReader(in);
+
+                        String str = bf.readLine();
+
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(str);
+                        boolean Sucesso = (boolean) JObj.get("sucesso");
+
+                        if(!Sucesso){
+                            data.setMenu(guardaMenu);
+                        }
+
+                        data.getJObj().put("output", JObj.toString());
+                        upperclass.update(86, data);
+                    }
 
                 }
                 
@@ -181,18 +251,16 @@ public class ServerTCPconnect implements Runnable{
             //Provisório para fechar aplicação quando o servidor for abaixo
             obj.put("Command", "exit");
             //-------------------------------------------------------------
-        } /*catch (ParseException e) {
-            JObjE = new JSONObject();
-            JObjE.put("exception", e.toString());
-            data.setJObj(JObjE);
-            upperclass.update(444, data);
-        }*/ catch (NullPointerException e) {
-            JObjE = new JSONObject();
-            JObjE.put("exception", e.toString());
-            data.setJObj(JObjE);
-            upperclass.update(444, data);
         } catch (ParseException e) {
-            e.printStackTrace();
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            data.setJObj(JObjE);
+            upperclass.update(444, data);
+        } catch (NullPointerException e) {
+            JObjE = new JSONObject();
+            JObjE.put("exception", e.toString());
+            data.setJObj(JObjE);
+            upperclass.update(444, data);
         }
 
     }
@@ -203,121 +271,6 @@ public class ServerTCPconnect implements Runnable{
     
     public void stopthread(){ // pode ser ma pratica
         stopthread = false;
-    }
-    
-    public JSONObject commandParser(String command){
-        JSONObject Aux = new JSONObject();
-        String [] zones = command.trim().split(";");
-        boolean isLogin = false;
-        boolean isRegister = false;
-        boolean isResponse = false;
-        boolean isList = false;
-        boolean hasType = false;
-        boolean hasUsernameLog = false;
-        boolean hasUsernameReg = false;
-        boolean hasListItens = false;
-        boolean hasMessage = false;
-        int i = 0;
-        int max = 0;
-        
-        //Tradução e verificação de comando
-        for (String zone : zones) {
-            if(!hasType){
-                if(zone.split("|")[0].equalsIgnoreCase("tipo")){
-                    //se for do tipo login vai começar a correr as suas validações
-                    if(zone.split("|")[1].equalsIgnoreCase("login")){
-                        Aux.put("tipo", "login");
-                        hasType = true;
-                        isLogin = true;
-                    }
-                    //se for do tipo registo vai começar a correr as suas validações
-                    else if(zone.split("|")[1].equalsIgnoreCase("registo")){
-                        Aux.put("tipo", "registo");
-                        hasType = true;
-                        isRegister = true;
-                    }
-                    //se for do tipo lista vai começar a correr as suas validações
-                    else if(zone.split("|")[1].equalsIgnoreCase("lista")){
-                        Aux.put("tipo", "lista");
-                        hasType = true;
-                        isList = true;
-                    }
-                    //se for do tipo resposta vai começar a correr as suas validações
-                    else if(zone.split("|")[1].equalsIgnoreCase("resposta")){
-                        Aux.put("tipo", "resposta");
-                        hasType = true;
-                        isResponse = true;
-                    }
-                }
-            }
-            //se for do tipo login e ainda não tive username
-            else if(isLogin && !hasUsernameLog){
-                if(zone.split("|")[0].equalsIgnoreCase("username")){
-                    Aux.put("username", zone.split("|")[1]);
-                    hasUsernameLog = true;
-                }
-            }
-            //se for do tipo registo e ainda não tive username
-            else if(isRegister && !hasUsernameReg){
-                if(zone.split("|")[0].equalsIgnoreCase("username")){
-                    Aux.put("username", zone.split("|")[1]);
-                    hasUsernameReg = true;
-                }
-            }
-            //se for do tipo resposta e tiver o username do user que envia
-            else if(isResponse && hasMessage){
-                //-----------------Formato do comando:----------------//
-                // tipo | resposta ; user | username ; msg | mensagem //
-                //----------------------------------------------------//
-                //guarda a mensagem que vai enviar
-                if(zone.split("|")[0].equalsIgnoreCase("msg")){
-                    Aux.put("msg", zone.split("|")[1]);
-                    return Aux;
-                }
-                else{
-                    return null;
-                }
-            }
-            //se for do tipo resposta e não tiver username
-            else if(isResponse && !hasMessage){
-                if(zone.split("|")[0].equalsIgnoreCase("username")){
-                    Aux.put("username", zone.split("|")[1]);
-                    hasMessage = true;
-                }
-            }
-            //se for do tipo lista e não tiver ainda itens na lista
-            else if(isList && !hasListItens){
-                if(zone.split("|")[0].equalsIgnoreCase("n_itens")){
-                    max = Integer.parseInt(zone.split("|")[1]);
-                    Aux.put("n_itens", Integer.parseInt(zone.split("|")[1]));
-                    hasListItens = true;
-                }
-            }
-            //se for do tipo registo e não tiver password, mas tem username
-            else if(hasUsernameReg && isRegister){
-                if(zone.split("|")[0].equalsIgnoreCase("password")){
-                    Aux.put("password", zone.split("|")[1]);
-                    return Aux;
-                }
-            }
-            //se for do tipo lista e tiver a adicionar itens
-            else if(hasListItens){
-                if(zone.split("|")[0].equalsIgnoreCase("item_" + i)){
-                    Aux.put("item_" + i, zone.split("|")[1]);
-                    i++;
-                }
-                else{
-                    return null;
-                }
-            }
-        }
-        //---------------------------------
-        //se o número de itens não for o definido no comando
-        if(max != i){
-            return null;
-        }
-        
-        return Aux;
     }
     
 }

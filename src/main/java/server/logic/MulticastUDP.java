@@ -27,18 +27,14 @@ public class MulticastUDP {
     private static MulticastSocket multicastSock;
     private static InetAddress group;
     private boolean duringupdate = false;
-    //Mudado por Luis
     private static ServerLogic ci;
-    //---------------
     private static int port; // TEMPPP
     private static boolean corre;
 
-    //Mudado por Luis
     public MulticastUDP(ServerLogic ci) {
         this.ci = ci;
         this.port = ci.getSd().getServerPort(); // TEMPPPP
     }
-    //---------------
     
     //public static void main(String[] args) throws UnknownHostException, IOException {
     public void comecamulticast() {
@@ -94,7 +90,10 @@ public class MulticastUDP {
                     //Código para a atualização da base de dados, a partir do comando enviado
                     
                     String cmd = new String(buffer);
-                    System.out.println("Tentativa de execução de comando: " + commandParse(cmd));
+                    String result = commandParse(cmd);
+                    if(!result.contains("Sem Tipo definido [2] !\n")){
+                        System.out.println("\nRecebi: " + cmd + "\nTentativa de execução de comando: " + result);
+                    }
                     
                     //-----------------------------------------------------------------------
                     
@@ -105,7 +104,8 @@ public class MulticastUDP {
                 ci.Obj().put("exception", "[ERROR]Package not received in good state.\n" + ex.getMessage());
                 ci.notifyObserver(4);
             }
-            System.out.println("[ERROR] Servidor deixou de receber mensagens por multicast.");
+            ci.Obj().put("exception", "[ERROR] Servidor deixou de receber mensagens por multicast.");
+            ci.notifyObserver(4);
         }
     };
     
@@ -115,12 +115,11 @@ public class MulticastUDP {
                 while(corre){
                     
                     TimeUnit.SECONDS.sleep(2);
-                    byte [] buffer = new byte [100];
                     int msg = port;
                     byte[] b = String.valueOf(msg).getBytes(); 
                     DatagramPacket packet = new DatagramPacket(b, b.length,group,3456);
                     multicastSock.send(packet);
-                    System.out.println("Enviei val: " + msg);
+                    //System.out.println("Enviei val: " + msg);
                     
                 }
             } catch (Exception e){}
@@ -210,62 +209,70 @@ public class MulticastUDP {
                     hasTypeOut = true;
                 }
                 else{
-                    return "erro de comando";
+                    return "Sem tipo definido [1] !\n";
                 }
             }
             else if(cmd[0].equalsIgnoreCase("username") && !hasUserNameLog && !hasUserNameReg && !hasUserNameOut){
+                if(cmd[1] == null || cmd[1].length() == 0){
+                    return "Sem Username defenido!\n";
+                }
                 //vai verificar se o utilizador existe na base de dados
                 username = cmd[1];
                 if(hasTypeLog){
-                    hasUserNameLog = ci.getDbaction().contaisUser(username);
+                    hasUserNameLog = ci.getDbaction().contaisUserMultiCast(username, ci);
                 }
                 else if(hasTypeReg){
-                    hasUserNameReg = !ci.getDbaction().contaisUser(username);
+                    hasUserNameReg = !ci.getDbaction().contaisUserMultiCast(username, ci);
                 }
                 else if(hasTypeOut){
-                    hasUserNameOut = ci.getDbaction().contaisUser(username);
-                }
-                else{
-                    return "erro de comando";
+                    hasUserNameOut = ci.getDbaction().contaisUserMultiCast(username, ci);
                 }
             }
             else if(cmd[0].equalsIgnoreCase("password") && !hasPasswordLog && !hasPasswordReg && !hasPasswordOut){
+                if(cmd[1] == null || cmd[1].length() == 0){
+                    return "Sem Password defenida!\n";
+                }
                 //vai verificar que a password introduzida cuincide com a introduzida para aquele username
                 password = cmd[1];
                 if(hasTypeLog && hasUserNameLog){
-                    hasPasswordLog = ci.getDbaction().verifyUserPassword(username, password);
+                    hasPasswordLog = ci.getDbaction().verifyUserPasswordMultiCast(username, password, ci);
                 }
                 else if(hasTypeReg && hasUserNameReg){
                     hasPasswordReg = true;
                 }
                 else if(hasTypeOut && hasUserNameOut){
-                    hasPasswordOut = ci.getDbaction().verifyUserPassword(username, password);
-                }
-                else{
-                    return "erro de comando";
+                    hasPasswordOut = ci.getDbaction().verifyUserPasswordMultiCast(username, password, ci);
                 }
             }
             else {
                 //caso exista mais linhas de comando para além desta ou o comando introduzido tenha sido mal escrito
                 //ou seja de outro tipo
-                return "erro de comando";
+                return "Sem Tipo definido [2] !\n";
             }
         }
         
         if(hasPasswordLog && hasTypeLog && hasUserNameLog){
             //Verifica se o utilizador se encontra na base de dados como logado
-            return "Login com sucesso";
+            return "Login com sucesso.\n";
         }
         else if(hasPasswordReg && hasTypeReg && hasUserNameReg){
-            ci.getDbaction().insertuser(username, username, password);
-            return "Registo com sucesso";
+            if(ci.getDbaction().insertuserMultiCast(username, username, password, ci)){
+                return "Registo com sucesso.\n";
+            }
+            else{
+                return "Registo sem sucesso.\n";
+            }
         }
         else if(hasPasswordOut && hasTypeOut && hasUserNameOut){
-            ci.getDbaction().removeuser(username, password);
-            return "Registo com sucesso";
+            if(ci.getDbaction().removeuserMultiCast(username, password, ci)){
+                return "Logout com sucesso.\n";
+            }
+            else{
+                return "Logout sem sucesso.\n";
+            }
         }
         else{
-            return "erro de comando";
+            return "Erro de comando total.\n";
         }
     }
     

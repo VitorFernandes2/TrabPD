@@ -73,7 +73,7 @@ public class ThreadClientListenTreatment implements Runnable {
                         String MusicPath = (String) JObj.get("MusicPath");
 
                         String fileName = si.getDbaction().insertMusic(MusicName, MusicAuthor, MusicAlbum,
-                                MusicYear, MusicDuration, MusicGenre);
+                                MusicYear, MusicDuration, MusicGenre, si);
 
                         //Se puder criar o ficheiro inicia a thread de leitura
                         if (fileName != null){
@@ -102,11 +102,12 @@ public class ThreadClientListenTreatment implements Runnable {
                     }
 
                     //Código de envio para os outros servidores
-                    if(Sucesso){
-                        byte[] b = String.valueOf(cmd).getBytes();
-                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
-                        multi.getMulticastSock().send(packet);
-                    }
+                    //mesmo que o comando não seja um sucesso
+                    //nesta base de dados ele pode ser noutra
+                    byte[] b = String.valueOf(cmd).getBytes();
+                    DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
+                    multi.getMulticastSock().send(packet);
+                    //-----------------------------------------
                     
                     si.notifyObserver(1);
 
@@ -180,48 +181,54 @@ public class ThreadClientListenTreatment implements Runnable {
                 }
                 else{
                     Sucesso = false;
-                    return "erro de comando";
+                    return "Erro de comando";
                 }
             }
             else if(cmd[0].equalsIgnoreCase("username") && !hasUserNameLog && !hasUserNameReg && !hasUserNameOut){
+                if(cmd[1] == null || cmd[1].length() == 0){
+                    return "Sem Username defenido";
+                }
                 //vai verificar se o utilizador existe na base de dados
                 username = cmd[1];
                 if(hasTypeLog){
-                    hasUserNameLog = si.getDbaction().contaisUser(username);
+                    hasUserNameLog = si.getDbaction().contaisUser(username, si);
                 }
                 else if(hasTypeReg){
-                    hasUserNameReg = !si.getDbaction().contaisUser(username);
+                    hasUserNameReg = !si.getDbaction().contaisUser(username, si);
                 }
                 else if(hasTypeOut){
-                    hasUserNameOut = si.getDbaction().contaisUser(username);
+                    hasUserNameOut = si.getDbaction().contaisUser(username, si);
                 }
                 else{
                     Sucesso = false;
-                    return "erro de comando";
+                    return "Erro de comando";
                 }
             }
             else if(cmd[0].equalsIgnoreCase("password") && !hasPasswordLog && !hasPasswordReg && !hasPasswordOut){
+                if(cmd[1] == null || cmd[1].length() == 0){
+                    return "Sem Password defenida";
+                }
                 //vai verificar que a password introduzida cuincide com a introduzida para aquele username
                 password = cmd[1];
                 if(hasTypeLog && hasUserNameLog){
-                    hasPasswordLog = si.getDbaction().verifyUserPassword(username, password);
+                    hasPasswordLog = si.getDbaction().verifyUserPassword(username, password, si);
                 }
                 else if(hasTypeReg && hasUserNameReg){
                     hasPasswordReg = true;
                 }
                 else if(hasTypeOut && hasUserNameOut){
-                    hasPasswordOut = si.getDbaction().verifyUserPassword(username, password);
+                    hasPasswordOut = si.getDbaction().verifyUserPassword(username, password, si);
                 }
                 else{
                     Sucesso = false;
-                    return "erro de comando";
+                    return "Erro de comando";
                 }
             }
             else {
                 //caso exista mais linhas de comando para além desta ou o comando introduzido tenha sido mal escrito
                 //ou seja de outro tipo
                 Sucesso = false;
-                return "erro de comando";
+                return "Erro de comando";
             }
         }
         
@@ -231,20 +238,31 @@ public class ThreadClientListenTreatment implements Runnable {
             return "Login com sucesso";
         }
         else if(hasPasswordReg && hasTypeReg && hasUserNameReg){
-            Sucesso = true;
-            si.getDbaction().insertuser(username, username, password);
-            return "Registo com sucesso";
+            //Verifica se o utilizador é registado de forma correta
+            if(si.getDbaction().insertuser(username, username, password, si)){
+                Sucesso = true;
+                return "Registo com sucesso";
+            }
+            else{
+                Sucesso = false;
+                return "Registo sem sucesso";
+            }
         }
         else if(hasPasswordOut && hasTypeOut && hasUserNameOut){
-            Sucesso = true;
-            si.getDbaction().removeuser(username, password);
-            return "Registo com sucesso";
+            //Verifica se o utilizador termina a sua sessão de forma correta
+            if(si.getDbaction().removeuser(username, password, si)){
+                Sucesso = true;
+                return "Logout com sucesso";
+            }
+            else{
+                Sucesso = false;
+                return "Logout sem sucesso";
+            }
         }
         else{
             Sucesso = false;
-            return "erro de comando";
+            return "Erro total de comando";
         }
     }
-    
     
 }

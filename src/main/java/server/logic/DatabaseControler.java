@@ -1,15 +1,13 @@
 package server.logic;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 import org.json.simple.JSONObject;
+import server.ServerLogic;
 
 /**
  *
@@ -69,9 +67,7 @@ public class DatabaseControler {
 
             String tableSql = "CREATE TABLE IF NOT EXISTS users"
             + "(user_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
-            + "username varchar(30), password varchar(30))";
-//            + "username varchar(30), password varchar(30),"
-//            + "online boolean)";
+            + "username varchar(30), password TINYTEXT NOT NULL)";
             stmt.execute(tableSql);
 
             String tableSql2 = "CREATE TABLE IF NOT EXISTS musics"
@@ -85,35 +81,100 @@ public class DatabaseControler {
             stmt.execute(tableSql3);
 
         } catch (SQLException ex) {
+            //Important without notify
             System.out.println("Tipo: " + ex);
+            //------------------------
             return false;
         }
         return true;
     }
     
-    public boolean insertuser(String name,String username,String password){
-        
-        try {
-            /*String insertSql = "INSERT INTO employees(name, position, salary)"
-            + " VALUES('john', 'developer', 2000)";
-            stmt.executeUpdate(insertSql);*/   
+    public boolean insertuser(String name, String username, String password, ServerLogic sl){
+        try {  
             String insertSql = "INSERT INTO users(name, username, password)"
             + " VALUES('"+name+"', '"+username+"', '"+password+"')";
             stmt.executeUpdate(insertSql);
         } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertUser -> " + ex.getMessage());
+            sl.notifyObserver(4);
             return false;
         }
         return true;
     }
-    public boolean removeuser(String username,String password){
-        
+    
+    public boolean removeuser(String username, String password, ServerLogic sl){
         try {
             String deleteSql = "DELETE FROM `users` WHERE `users`.`username` = \"" + username + "\"";
             stmt.executeUpdate(deleteSql);
         } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] Logout -> " + ex.getMessage());
+            sl.notifyObserver(4);
             return false;
         }
         return true;
+    }
+    
+    public boolean insertuserMultiCast(String name, String username, String password, ServerLogic sl){
+        try {
+            String insertSql = "INSERT INTO users(name, username, password)"
+            + " VALUES('"+name+"', '"+username+"', '"+password.trim()+"')";
+            stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertUser Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean removeuserMultiCast(String username, String password, ServerLogic sl){
+        try {
+            String deleteSql = "DELETE FROM `users` WHERE `users`.`username` = \"" + username + "\"";
+            stmt.executeUpdate(deleteSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] Logout Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean contaisUserMultiCast(String username, ServerLogic sl){
+        try {
+            String selectSql = ("SELECT username FROM `users` WHERE username = \"" + username + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("username");
+                if(procu.equals(username)){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] ContainUser Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+           return false;
+        }
+        return false;
+    }
+    
+    public boolean verifyUserPasswordMultiCast(String username, String Password, ServerLogic sl){
+        try {
+            String selectSql = ("SELECT password FROM `users` WHERE username = \"" + username + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("password");
+                if(procu.equals(Password.trim())){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] VerifyUserPassword Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+           return false;
+        }
+        return false;
     }
     
     /*public boolean insertmusic(String name,String artist,String album, String year, double duration, String genre, String localname){
@@ -168,7 +229,7 @@ public class DatabaseControler {
         return "-1";
     }
     
-    public boolean contaisUser(String username){ 
+    public boolean contaisUser(String username, ServerLogic sl){ 
         try {
             String selectSql = ("SELECT username FROM `users` WHERE username = \"" + username + "\"");
             ResultSet resultSet = stmt.executeQuery(selectSql);
@@ -180,29 +241,14 @@ public class DatabaseControler {
                 }
             }
         } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] ContainsUser -> " + ex.getMessage());
+            sl.notifyObserver(4);
            return false;
         }
         return false;
     }
     
-    public boolean contaisUserOnline(String username){ 
-        try {
-            String selectSql = ("SELECT online FROM `users` WHERE username = \"" + username + "\"");
-            ResultSet resultSet = stmt.executeQuery(selectSql);
-            String procu;
-            while(resultSet.next()){
-                procu = resultSet.getString("online");
-                if(procu.equals("1")){
-                    return true;
-                }
-            }
-        } catch (SQLException ex) {
-           return false;
-        }
-        return false;
-    }
-    
-    public boolean verifyUserPassword(String username, String Password){ 
+    public boolean verifyUserPassword(String username, String Password, ServerLogic sl){ 
         try {
             String selectSql = ("SELECT password FROM `users` WHERE username = \"" + username + "\"");
             ResultSet resultSet = stmt.executeQuery(selectSql);
@@ -214,31 +260,13 @@ public class DatabaseControler {
                 }
             }
         } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] VerifyUserPassword -> " + ex.getMessage());
+            sl.notifyObserver(4);
            return false;
         }
         return false;
     }
     
-//    public void UserLogin(String username){ 
-//        try {
-//            String selectSql = ("UPDATE `users` SET `online` = 1 WHERE `users`.`username` = \"" + username + "\"");
-//            //Execute the update to the Data Base
-//            stmt.executeUpdate(selectSql);
-//        } catch (SQLException ex) {
-//            System.out.println("[ERROR] User login " + ex.getMessage());
-//        }
-//    }
-//    
-//    public void UserLogout(String username){ 
-//        try {
-//            String selectSql = ("UPDATE `users` SET `online` = 0 WHERE `users`.`username` = \"" + username + "\"");
-//            //Execute the update to the Data Base
-//            stmt.executeUpdate(selectSql);
-//        } catch (SQLException ex) {
-//            System.out.println("[ERROR] User logout " + ex.getMessage());
-//        }
-//    }
-
     public ResultSet getRawDatabaseinfo(){
         try {
             String selectSql = ("SELECT * FROM " + namedb);
@@ -260,7 +288,7 @@ public class DatabaseControler {
         //tradutor de numero para uma string, para criar o nome da base de dados com o porto
         int num, temp, digit, count = 0;
         num = this.serverport;
-        char[] array = { 'A', 'B', 'C', 'D', 'E', 'F' , 'G' , 'H' , 'I' , 'J' , 'K'};
+        char[] array = { 'a', 'b', 'c', 'd', 'e', 'f' , 'g' , 'h' , 'i' , 'j' , 'k'};
         String output = "";
         
         temp = num;
@@ -283,7 +311,7 @@ public class DatabaseControler {
      
     }
    
-   public String insertMusic(String name,String artist,String album, String year, double duration, String genre){
+   public String insertMusic(String name,String artist,String album, String year, double duration, String genre, ServerLogic sl){
 
         //Comando sql para ir buscar todas as músicas
        try {
@@ -319,7 +347,9 @@ public class DatabaseControler {
            }
 
        } catch (SQLException e) {
-           return null;
+            sl.Obj().put("exception", "[ERROR] InsertMusic -> " + e.getMessage());
+            sl.notifyObserver(4);
+            return null;
        }
 
        return null;

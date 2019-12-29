@@ -13,7 +13,7 @@ public class ConnectData {
     
     private String username;
     private String password;
-    private JSONObject JObj;
+    private JSONObject JObj = new JSONObject();
     private String command;
     private int menu = 7;
     private Music music = null;

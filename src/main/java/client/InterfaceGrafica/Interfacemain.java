@@ -7,16 +7,6 @@ import mainObjects.Readers;
 import java.util.Scanner;
 
 public class Interfacemain implements observer{
-    
-    public void inicio (){
-        
-        System.out.println("Bem Vindo \n Insira o seu username: \n");
-        Scanner myObj = new Scanner(System.in);
-        String userName = myObj.nextLine();
-        System.out.println( userName + " insira a sua palavra passe: \n");
-        String password = myObj.nextLine();
-        
-    }
 
     @Override
     public void update(int acao, ConnectData data) {
@@ -63,9 +53,18 @@ public class Interfacemain implements observer{
                 this.createMusic(data);
                 break;
 
+            case 10:
+                this.registinter(data);
+                break;
+
             case 444:
                 String exc = (String) data.getJObj().get("exception");
                 System.out.println("[ERROR] Excepção lançada aqui no notifier: " + exc);
+                break;
+
+            case 86:
+                String exc2 = (String) data.getJObj().get("output");
+                System.out.println(exc2);
                 break;
                 
         }
@@ -158,26 +157,53 @@ public class Interfacemain implements observer{
     }
 
     private void logininter(ConnectData data) {
+        String user = new String();
+        String pass = new String();
+        System.out.println("\n Autenticação (não aceitavel espacos em branco): ");
 
-        System.out.println("\n Autenticação: ");
+        do{
+            System.out.print("\n Username:");
+            Scanner myObj = new Scanner(System.in);
+            user = myObj.nextLine();
+        }while(user.contains(" "));
 
-        System.out.print("\n Login:");
-        Scanner myObj = new Scanner(System.in);
-        data.setUsername(myObj.nextLine());
+        do{
+            System.out.print(" Password:");
+            Scanner myObj = new Scanner(System.in);
+            pass = myObj.nextLine();
+        }while(pass.contains(" "));
+        
+        data.setUsername(user);
+        data.setPassword(pass);
+        
+        data.setMenu(8);
+    }
+    
+    private void registinter(ConnectData data) {
+        String user = new String();
+        String pass = new String();
+        System.out.println("\n Registo (não aceitavel espacos em branco): ");
 
-        System.out.print(" PassWord:");
-        myObj = new Scanner(System.in);
-        data.setPassword(myObj.nextLine());
+        do{
+            System.out.print("\n Username:");
+            Scanner myObj = new Scanner(System.in);
+            user = myObj.nextLine();
+        }while(user.contains(" "));
 
+        do{
+            System.out.print(" Password:");
+            Scanner myObj = new Scanner(System.in);
+            pass = myObj.nextLine();
+        }while(pass.contains(" "));
+        
+        data.setUsername(user);
+        data.setPassword(pass);
+        
+        data.setMenu(8);
     }
 
     private void tempshowreceb(ConnectData data) {
-
         System.out.println(data.getJObj().toString());
-    
     }
-
-
-
     
 }
