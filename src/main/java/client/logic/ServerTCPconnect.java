@@ -158,6 +158,7 @@ public class ServerTCPconnect implements Runnable{
 
                             break;
 
+                        //Listar todas as musicas
                         case 10:
 
 
