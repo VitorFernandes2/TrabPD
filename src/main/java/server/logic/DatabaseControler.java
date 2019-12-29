@@ -43,7 +43,7 @@ public class DatabaseControler {
         this.principal = pinc;
     }
     
-    public boolean startdatabase(){
+    public boolean startdatabase(ServerLogic sl){
         
         System.out.println("Connecting to database...");
           
@@ -83,13 +83,39 @@ public class DatabaseControler {
             stmt.execute(tableSql3);
 
         } catch (SQLException ex) {
-            //Important without notify
-            System.out.println("Tipo: " + ex);
-            //------------------------
+            sl.Obj().put("exception", "[ERROR] Inicialização da Base de Dados -> " + ex.getMessage());
+            sl.notifyObserver(4);
             return false;
         }
         return true;
     }
+
+    public String getNamedb() {
+        return namedb;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+    
+    //função temporária sem tratamento
+    public boolean insertplaylist(int music_id, int user_id, String name, ServerLogic sl){
+        try {  
+            String insertSql = "INSERT INTO playlist(music_id, user_id, name)"
+            + " VALUES('"+music_id+"', '"+user_id+"', '"+name+"')";
+            stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertPlaylist -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+    }
+    //--------------------------------
     
     public boolean insertuser(String name, String username, String password, ServerLogic sl){
         try {  
@@ -179,17 +205,18 @@ public class DatabaseControler {
         return false;
     }
     
-    /*public boolean insertmusic(String name,String artist,String album, String year, double duration, String genre, String localname){
-        
+    public boolean insertmusic(String name,String artist,String album, String year, double duration, String genre, String localname, ServerLogic sl){
         try {
             String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre, localname)"
             + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"', '"+localname+"')";
             stmt.executeUpdate(insertSql);
         } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertMusicPrivate -> " + ex.getMessage());
+            sl.notifyObserver(4);
             return false;
         }
         return true;
-    }*/
+    }
     
     public boolean runinsertedcode(String insert){
         

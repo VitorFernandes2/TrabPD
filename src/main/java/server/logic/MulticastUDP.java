@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package server.logic;
 
 import java.io.IOException;
@@ -11,6 +6,11 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -49,18 +49,15 @@ public class MulticastUDP {
             new Thread(Receb).start();
             new Thread(Env).start();
             
-            //código modificado
-            //TimeUnit.SECONDS.sleep(30);
-            //corre = false;
+            ci.Obj().put("output", "\nMulticastThreads iniciadas.\n");
+            ci.notifyObserver(1);
             
-            //multicastSock.close();
-        //} catch (InterruptedException ex) {
-            //Logger.getLogger(MulticastUDP.class.getName()).log(Level.SEVERE, null, ex);
-            //-----------------
         } catch (UnknownHostException ex) {
-            Logger.getLogger(MulticastUDP.class.getName()).log(Level.SEVERE, null, ex);
+            ci.Obj().put("exception", "[ERROR] Lançamento de Thread Multicast [1] (UnknownHost) -> " + ex.getMessage());
+            ci.notifyObserver(4);
         } catch (IOException ex) {
-            Logger.getLogger(MulticastUDP.class.getName()).log(Level.SEVERE, null, ex);
+            ci.Obj().put("exception", "[ERROR] Lançamento de Thread Multicast [2] (IO) -> " + ex.getMessage());
+            ci.notifyObserver(4);
         }
         
     }
@@ -95,6 +92,100 @@ public class MulticastUDP {
                         System.out.println("\nRecebi: " + cmd + "\nTentativa de execução de comando: " + result);
                     }
                     
+                    if(cmd.trim().equals("copiar") && !ci.getDbaction().getNamedb().equals("Principal")){
+                        //Código de Cópia da base de dados original
+                        try {
+                            String PrincipalString = "jdbc:mysql://localhost:3306/Principal?useTimezone=true&serverTimezone=UTC&useSSL=false";
+                            Connection connectPrincipal = DriverManager.getConnection(PrincipalString,ci.getDbaction().getUser(),ci.getDbaction().getPass());
+                            Statement stmt2 = connectPrincipal.createStatement();
+                            
+                            try {
+                                String selectSql = ("SELECT * FROM `users`");
+                                ResultSet resultSet = stmt2.executeQuery(selectSql);
+                                String username;
+                                String password;
+                                while(resultSet.next()){
+                                    username = resultSet.getString("username");
+                                    password = resultSet.getString("password");
+                                    String usercopy = "tipo|registo;username|" + username + ";password|" + password;
+                                    byte[] b = String.valueOf(usercopy).getBytes();
+                                    DatagramPacket packetUser = new DatagramPacket(b, b.length, group, 3456);
+                                    multicastSock.send(packetUser);
+                                }
+                            } catch (SQLException ex) {
+                                ci.Obj().put("exception", "[ERROR] Copia da Users para outras bases de dados -> " + ex.getMessage());
+                                ci.notifyObserver(4);
+                                break;
+                            }
+                            /*
+                            try {
+                                String selectSql = ("SELECT * FROM `musics`");
+                                ResultSet resultSet = stmt2.executeQuery(selectSql);
+                                String name;
+                                String artist;
+                                String album;
+                                String year;
+                                double duration;
+                                String genre;
+                                String localname;
+                                while(resultSet.next()){
+                                    name = resultSet.getString("name");
+                                    artist = resultSet.getString("artist");
+                                    album = resultSet.getString("album");
+                                    year = resultSet.getString("year");
+                                    duration = resultSet.getDouble("duration");
+                                    genre = resultSet.getString("genre");
+                                    localname = resultSet.getString("localname");
+                                    //wip
+                                    JSONObject jo = new JSONObject();
+                                    jo.put("Command", usercopy);
+                                    byte[] b = String.valueOf(jo.toString()).getBytes();
+                                    DatagramPacket packetUser = new DatagramPacket(b, b.length, group, 3456);
+                                    multicastSock.send(packetUser);
+                                    //---
+                                }
+                            } catch (SQLException ex) {
+                                ci.Obj().put("exception", "[ERROR] Copia da Musics -> " + ex.getMessage());
+                                ci.notifyObserver(4);
+                                break;
+                            }
+
+                            try {
+                                String selectSql = ("SELECT * FROM `playlist`");
+                                ResultSet resultSet = stmt2.executeQuery(selectSql);
+                                int music_id;
+                                int user_id;
+                                String name;
+                                while(resultSet.next()){
+                                    music_id = resultSet.getInt("music_id");
+                                    user_id = resultSet.getInt("user_id");
+                                    name = resultSet.getString("name");
+                                    //wip
+                                    JSONObject jo = new JSONObject();
+                                    jo.put("Command", usercopy);
+                                    byte[] b = String.valueOf(jo.toString()).getBytes();
+                                    DatagramPacket packetUser = new DatagramPacket(b, b.length, group, 3456);
+                                    multicastSock.send(packetUser);
+                                    //---
+                                }
+                            } catch (SQLException ex) {
+                                ci.Obj().put("exception", "[ERROR] Copia da Playlist -> " + ex.getMessage());
+                                ci.notifyObserver(4);
+                                break;
+                            }
+                            */
+                            connectPrincipal.close();
+                            stmt2.close();
+
+                        } catch (SQLException ex) {
+                            ci.Obj().put("exception", "[ERROR] Copia da Base de Dados -> " + ex.getMessage());
+                            ci.notifyObserver(4);
+                            return;
+                        }
+                        //-----------------------------------------
+                        
+                    }
+                    
                     //-----------------------------------------------------------------------
                     
                     //updatedatabase(JObjrecebido);
@@ -112,6 +203,11 @@ public class MulticastUDP {
     private static Runnable Env = new Runnable() { // TEMPPP
         public void run() {
             try{
+                //Pedido de cópia de base de dados principal por parte do servidor
+                byte[] c = String.valueOf("copiar").getBytes();
+                DatagramPacket packetUser = new DatagramPacket(c, c.length, group, 3456);
+                multicastSock.send(packetUser);
+                //----------------------------------------------------------------
                 while(corre){
                     
                     TimeUnit.SECONDS.sleep(2);

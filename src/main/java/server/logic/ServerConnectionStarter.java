@@ -66,7 +66,7 @@ public class ServerConnectionStarter {
                 sd.notifyObserver(4);
             }
             
-            if (sd.getDbaction().startdatabase() == false){
+            if (sd.getDbaction().startdatabase(sd) == false){
                 sd.Obj().put("exception", "Erro a o criar a base de dados");
                 sd.notifyObserver(4);
             }
