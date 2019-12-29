@@ -239,6 +239,29 @@ public class Interfacemain implements observer{
 
     }
 
+    private void playlistInterface(ConnectData data) {
+
+        String cmd = null;
+
+        do{
+
+            System.out.println("\nPlaylists:");
+            System.out.println("listPlaylists - Listar as playlists na base de dados");
+            System.out.println("createPlaylist - Criar uma playlists");
+            System.out.println("removePlaylist - Remover playlists");
+            System.out.println("changePlaylist - Alterar playlists");
+            System.out.println("playPlaylist - Tocar playlists");
+
+            cmd = Readers.readString("\nInsira a opcao que pretende: ");
+
+        }while (!cmd.equals("listPlaylists") && !cmd.equals("createPlaylist")
+                && !cmd.equals("removePlaylist") && !cmd.equals("changePlaylist")
+                && !cmd.equals("playPlaylist"));
+
+        data.setCommand(cmd);
+
+    }
+
     private void initialMenu(ConnectData data){
 
         String cmd = null;
