@@ -318,8 +318,6 @@ public class DatabaseControler {
            String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
            ResultSet resultSet = stmt.executeQuery(sql);
 
-           System.out.println("Fiz o comando!");
-
            while (resultSet.next()){
 
                String nome = resultSet.getString("name");
@@ -355,5 +353,29 @@ public class DatabaseControler {
        return null;
 
    }
+
+    public String getFileName(String name,String artist, ServerLogic sl){
+
+        //Comando sql para ir buscar todas as músicas
+        try {
+            String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while (resultSet.next()){
+
+                String nome = resultSet.getString("localname");
+                return nome;
+
+            }
+
+        } catch (SQLException e) {
+            sl.Obj().put("exception", "[ERROR] InsertMusic -> " + e.getMessage());
+            sl.notifyObserver(4);
+            return null;
+        }
+
+        return null;
+
+    }
    
 }

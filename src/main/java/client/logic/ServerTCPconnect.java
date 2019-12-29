@@ -171,6 +171,10 @@ public class ServerTCPconnect implements Runnable{
                             if (data.getCommand().equals("createMusic")){
                                 data.setMenu(9);
                             }
+                            else
+                                if (data.getCommand().equals("playMusic")){
+                                    data.setMenu(11);
+                                }
                             
                             break;
 
@@ -205,16 +209,46 @@ public class ServerTCPconnect implements Runnable{
 
                             this.upperclass.update(3, data);
 
-                            SendFileToServer sendFileToServer = new SendFileToServer(music.getPath(),
-                                    s.getOutputStream());
-                            sendFileToServer.start();
+                            //Se puder enviar o ficheiro
+                            if (JObj.get("message").equals("sendFile")){
+                                SendFileToServer sendFileToServer = new SendFileToServer(music.getPath(),
+                                        s.getOutputStream());
+                                sendFileToServer.start();
+                            }
 
                             break;
 
-                        //Listar todas as musicas
-                        case 10:
+                        //Tocar musica
+                        case 11:
+                            this.upperclass.update(11, data);
 
+                            JSONObject obj = new JSONObject();
+                            obj.put("Command", "playMusic");
+                            obj.put("name", data.getNome());
+                            obj.put("author", data.getAutor());
 
+                            //Envia os dados para tocar a musica para o servidor
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            //Mensagem de confirmacao ou negacao
+                            in = new InputStreamReader(s.getInputStream());
+                            BufferedReader bf2 = new BufferedReader(in);
+
+                            String str2 = bf2.readLine();
+
+                            JSONParser JsonParser2 = new JSONParser();
+                            JSONObject JObj2 = (JSONObject) JsonParser2.parse(str2);
+
+                            if (JObj2.get("message").equals("receiveFile")){
+
+                                ReceiveFileFromServer receiveFileFromServer =
+                                        new ReceiveFileFromServer(s.getInputStream(), s.getOutputStream(),
+                                                "tmp.mp3");
+                                receiveFileFromServer.start();
+
+                            }
 
                             break;
 

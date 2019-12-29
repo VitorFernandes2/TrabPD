@@ -92,14 +92,45 @@ public class ThreadClientListenTreatment implements Runnable {
                             readFileFromClient.start();
 
                         }
+                        else{
+
+                            //Envia Mensagem para enviar o ficheiro
+                            JSONObject obj = new JSONObject();
+
+                            obj.put("message", "fileDenied");
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
 
                     }
-                    else{
+                    else
+                        if (cmd.equals("playMusic")){
 
-                        out = commandParse(cmd);
-                        si.Obj().put("output", out);
+                            System.out.println("Este quer ouvir uma musica");
+                            String name = (String)JObj.get("name");
+                            String author = (String)JObj.get("author");
 
-                    }
+                            String path = si.getDbaction().getFileName(name, author, si);
+                            System.out.println(path);
+
+                            JSONObject obj = new JSONObject();
+                            obj.put("message", "receiveFile");
+
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            SendFileToClient sendFileToClient =
+                                    new SendFileToClient(path, Client.getOutputStream());
+                            sendFileToClient.start();
+
+                        }
+                        else{
+
+                            out = commandParse(cmd);
+                            si.Obj().put("output", out);
+
+                        }
 
                     //Código de envio para os outros servidores
                     //mesmo que o comando não seja um sucesso

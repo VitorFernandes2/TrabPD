@@ -57,6 +57,11 @@ public class Interfacemain implements observer{
                 this.registinter(data);
                 break;
 
+            //tocar musica
+            case 11:
+                this.playMusic(data);
+                break;
+
             case 444:
                 String exc = (String) data.getJObj().get("exception");
                 System.out.println("[ERROR] Excepção lançada aqui no notifier: " + exc);
@@ -69,6 +74,16 @@ public class Interfacemain implements observer{
                 
         }
         
+    }
+
+    private void playMusic(ConnectData data) {
+
+        String nome = Readers.readString("Insira o nome da musica: ");
+        String author = Readers.readString("Insira o nome da autor: ");
+
+        data.setNome(nome);
+        data.setAutor(author);
+
     }
 
     private void createMusic(ConnectData data) {

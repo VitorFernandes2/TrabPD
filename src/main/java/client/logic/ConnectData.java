@@ -17,6 +17,8 @@ public class ConnectData {
     private String command;
     private int menu = 7;
     private Music music = null;
+    private String nome = null;
+    private String autor = null;
     
     public JSONObject getJObj() {
         return JObj;
@@ -64,5 +66,21 @@ public class ConnectData {
 
     public void setMusic(String year, String name, String album, String author, String genre, double duration, String path) {
         this.music = new Music(year, name, album, author, genre, duration, path);
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getAutor() {
+        return autor;
+    }
+
+    public void setAutor(String autor) {
+        this.autor = autor;
     }
 }
