@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 import org.json.simple.JSONObject;
 import server.comunicationInterface.ComunicationInterface;
 import server.interfaces.subjectServer;
@@ -94,6 +95,18 @@ public class ServerLogic implements subjectServer{
 
     public void desconnetClient(Socket Client) throws IOException {
         sd.desconnetClient(Client);
+    }
+
+    public void removeClientsLogs(String username) {
+        sd.getClientsLogs().remove(username);
+    }
+
+    public void addClientsLogs(String username) {
+        sd.getClientsLogs().add(username);
+    }
+
+    public List<String> getClientsLogs() {
+        return sd.getClientsLogs();
     }
 
     @Override

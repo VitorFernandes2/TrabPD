@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
 import mainObjects.Music;
 import org.json.simple.JSONObject;
@@ -367,6 +366,7 @@ public class ServerTCPconnect implements Runnable{
                     }
                     
                     if(didPush){
+                        didPush = false;
                         BufferedReader bf = new BufferedReader(in);
 
                         String str = bf.readLine();

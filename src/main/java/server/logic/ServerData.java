@@ -17,6 +17,7 @@ public class ServerData {
     private ServerSocket Server;
     private List<Socket> Clients;
     private List<ThreadClientListenTreatment> Servers;
+    private List<String> ClientsLogs;
     private int ServerPort;
     private DatabaseControler dbaction;
     private long numberOfServers;
@@ -43,8 +44,21 @@ public class ServerData {
         this.DsPort = DsPort;
         this.Clients = new ArrayList<>();
         this.Servers = new ArrayList<>();
+        this.ClientsLogs = new ArrayList<>();
         this.ObjMudance = new JSONObject();
         this.numberOfServers = 1;
+    }
+
+    public void removeClientsLogs(String username) {
+        ClientsLogs.remove(username);
+    }
+
+    public void addClientsLogs(String username) {
+        ClientsLogs.add(username);
+    }
+
+    public List<String> getClientsLogs() {
+        return ClientsLogs;
     }
 
     public int getServerPort() {

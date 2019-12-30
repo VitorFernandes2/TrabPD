@@ -36,7 +36,6 @@ public class ThreadClientListenTreatment implements Runnable {
     @Override
     public void run() {
         //Tratamento de mensagens
-        Sucesso = false;
         String out = null;
 
         si.Obj().put("output", "Client " + this.ID + " connected to tcp.");
@@ -44,6 +43,7 @@ public class ThreadClientListenTreatment implements Runnable {
 
         //Enquanto não se fechar o client
         while(!Client.isClosed()){
+            Sucesso = false;
             try {
                 in = new InputStreamReader(Client.getInputStream()); // DUMMY CODE : modificar para enviar o q é preciso
                 pr = new PrintWriter(Client.getOutputStream());
@@ -204,15 +204,16 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else{
-
+                        //Tratamento do login/registo/logout
                         out = commandParse(cmd);
                         si.Obj().put("output", out);
 
                     }
 
                     //Código de envio para os outros servidores
-                    //mesmo que o comando não seja um sucesso
-                    //nesta base de dados ele pode ser noutra
+                    // mesmo que o comando não seja um sucesso
+                    // neste servidor os dados dele podem ser diferentes
+                    // por isso enviados para o para todos
                     byte[] b = String.valueOf(cmd).getBytes();
                     DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
                     multi.getMulticastSock().send(packet);
@@ -342,9 +343,16 @@ public class ThreadClientListenTreatment implements Runnable {
         }
         
         if(hasPasswordLog && hasTypeLog && hasUserNameLog){
-            //Verifica se o utilizador se encontra na base de dados como logado
-            Sucesso = true;
-            return "Login com sucesso";
+            //Verifica se o utilizador se encontra nos dados do servidor como logado
+            if(si.getClientsLogs().contains(username.trim())){
+                Sucesso = false;
+                return "Login sem sucesso";
+            }
+            else{
+                Sucesso = true;
+                si.addClientsLogs(username.trim());
+                return "Login com sucesso";
+            }
         }
         else if(hasPasswordReg && hasTypeReg && hasUserNameReg){
             //Verifica se o utilizador é registado de forma correta
@@ -358,9 +366,11 @@ public class ThreadClientListenTreatment implements Runnable {
             }
         }
         else if(hasPasswordOut && hasTypeOut && hasUserNameOut){
-            //Verifica se o utilizador termina a sua sessão de forma correta
-            if(si.getDbaction().removeuser(username, password, si)){
+            //Verifica se o utilizador se encontra nos dados do servidor como logado
+            // e retira-o
+            if(si.getClientsLogs().contains(username.trim())){
                 Sucesso = true;
+                si.removeClientsLogs(username.trim());
                 return "Logout com sucesso";
             }
             else{

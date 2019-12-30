@@ -326,7 +326,8 @@ public class Interfacemain implements observer{
         data.setUsername(user);
         data.setPassword(pass);
         
-        data.setMenu(8);
+        //No fim de se registar ele volta ao menu para poder realizar login
+        data.setMenu(7);
     }
 
     private void tempshowreceb(ConnectData data) {

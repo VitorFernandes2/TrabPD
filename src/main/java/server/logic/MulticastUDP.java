@@ -1,7 +1,6 @@
 package server.logic;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -11,11 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.json.simple.JSONObject;
 import server.ServerLogic;
 
 /**
@@ -26,7 +21,6 @@ public class MulticastUDP {
 
     private static MulticastSocket multicastSock;
     private static InetAddress group;
-    private boolean duringupdate = false;
     private static ServerLogic ci;
     private static int port; // TEMPPP
     private static boolean corre;
@@ -44,7 +38,7 @@ public class MulticastUDP {
             group = InetAddress.getByName("225.4.5.6");
             multicastSock = new MulticastSocket(3456);
             multicastSock.joinGroup(group);
-            corre= true;
+            corre = true;
             
             new Thread(Receb).start();
             new Thread(Env).start();
@@ -82,7 +76,6 @@ public class MulticastUDP {
                     byte [] buffer = new byte [100];
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     multicastSock.receive(packet);
-                    //System.out.println("Recebi: " + new String(buffer));
                     
                     //Código para a atualização da base de dados, a partir do comando enviado
                     
@@ -92,6 +85,7 @@ public class MulticastUDP {
                         System.out.println("\nRecebi: " + cmd + "\nTentativa de execução de comando: " + result);
                     }
                     
+                    //Código para cópia total das necessidades dos dados de cada servidor criado
                     if(cmd.trim().equals("copiar") && !ci.getDbaction().getNamedb().equals("Principal")){
                         //Código de Cópia da base de dados original
                         try {
@@ -117,7 +111,7 @@ public class MulticastUDP {
                                 ci.notifyObserver(4);
                                 break;
                             }
-                            /*
+                            /*//Código para a cópia das músicas
                             try {
                                 String selectSql = ("SELECT * FROM `musics`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
@@ -149,7 +143,7 @@ public class MulticastUDP {
                                 ci.notifyObserver(4);
                                 break;
                             }
-
+                            //Código para cópia das playlist's, tem de ser reformulado!
                             try {
                                 String selectSql = ("SELECT * FROM `playlist`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
@@ -184,6 +178,49 @@ public class MulticastUDP {
                         }
                         //-----------------------------------------
                         
+                        //Pedido de logins existentes à base de dados principal
+                        byte[] l = String.valueOf("logins").getBytes();
+                        DatagramPacket packetLogs = new DatagramPacket(l, l.length, group, 3456);
+                        multicastSock.send(packetLogs);
+                        //-----------------------------------------------------
+                        
+                    }
+                    //Código de cópia de logins existentes na base de dados principal
+                    else if(cmd.trim().equals("logins") && ci.getDbaction().getNamedb().equals("Principal")){
+                        try {
+                            String PrincipalString = "jdbc:mysql://localhost:3306/Principal?useTimezone=true&serverTimezone=UTC&useSSL=false";
+                            Connection connectPrincipal = DriverManager.getConnection(PrincipalString,ci.getDbaction().getUser(),ci.getDbaction().getPass());
+                            Statement stmt2 = connectPrincipal.createStatement();
+                            try {
+                                String selectSql = ("SELECT * FROM `users`");
+                                ResultSet resultSet = stmt2.executeQuery(selectSql);
+                                String username;
+                                String password;
+                                while(resultSet.next()){
+                                    username = resultSet.getString("username");
+                                    password = resultSet.getString("password");
+                                    if(ci.getClientsLogs().contains(username.trim())){
+                                        String userLogcopy = "tipo|login;username|" + username + ";password|" + password;
+                                        byte[] c = String.valueOf(userLogcopy).getBytes();
+                                        DatagramPacket packetUserLog = new DatagramPacket(c, c.length, group, 3456);
+                                        multicastSock.send(packetUserLog);
+                                    }
+                                }
+                            } catch (SQLException ex) {
+                                ci.Obj().put("exception", "[ERROR] Copia da Logs para outras bases de dados -> " + ex.getMessage());
+                                ci.notifyObserver(4);
+                                break;
+                            }
+                            
+                            connectPrincipal.close();
+                            stmt2.close();
+                            
+                        } catch (SQLException ex) {
+                            ci.Obj().put("exception", "[ERROR] Copia da Base de Dados do Logins -> " + ex.getMessage());
+                            ci.notifyObserver(4);
+                            return;
+                        }
+                        
                     }
                     
                     //-----------------------------------------------------------------------
@@ -192,7 +229,7 @@ public class MulticastUDP {
                     
                 }
             } catch (IOException ex) {
-                ci.Obj().put("exception", "[ERROR]Package not received in good state.\n" + ex.getMessage());
+                ci.Obj().put("exception", "[ERROR]Package não foi recebida em bom estado.\n" + ex.getMessage());
                 ci.notifyObserver(4);
             }
             ci.Obj().put("exception", "[ERROR] Servidor deixou de receber mensagens por multicast.");
@@ -218,62 +255,14 @@ public class MulticastUDP {
                     //System.out.println("Enviei val: " + msg);
                     
                 }
-            } catch (Exception e){}
-            System.out.println("[ERROR] Servidor deixou de enviar mensagens por multicast.");
-        }
-    };
-    
-    public void sendDataBaseUpdate(JSONObject JObjrecebido){ // OLDDD... ADAPTAR PARA A NECESSIDADE
-        //REVER -> Meter dentro de um thread? remover a thread já feita? cuidado q tem wait de thread. O timeour está correto?
-        try {
-            if(multicastSock == null){
-                group = InetAddress.getByName("225.4.5.6");
-                multicastSock = new MulticastSocket(3456);
-                multicastSock.joinGroup(group);
+            } catch (IOException | InterruptedException e){
+                ci.Obj().put("exception", "[ERROR] Servidor deixou de enviar mensagens por multicast." + e.getMessage());
+                ci.notifyObserver(4);
             }
-            duringupdate = true;    
-            // TEMP --> Definir e mandar o necessario
-            Scanner myObj = new Scanner(System.in);
-            String msg = myObj.nextLine();
-
-            DatagramPacket packet = new DatagramPacket(msg.getBytes(), msg.length(),group,3456);
-
-            multicastSock.send(packet);
-
-            // recebe confirmação
-            Receb.wait(); // Pausa a thread para q esta n roube a informação
             
-            multicastSock.setSoTimeout(10000);
-            int numberofrun = 100,pos=1;
-            while(pos <= numberofrun){
-                try{
-                    
-                    byte [] buffer = new byte [100];
-                    DatagramPacket packetrec = new DatagramPacket(buffer, buffer.length);
-                    multicastSock.receive(packet);
-                    System.out.println("Recebi: " + new String(buffer));
-
-                }catch (InterruptedIOException e){
-                    // TEMP --> Definir e mandar o necessario
-                    Scanner myObjs = new Scanner(System.in);
-                    String msgs = myObjs.nextLine();
-                    DatagramPacket packetes = new DatagramPacket(msgs.getBytes(), msgs.length(),group,3456);
-                    multicastSock.send(packetes);
-                    multicastSock.setSoTimeout(10000);
-                    numberofrun = 100;pos = 1;
-                } 
-            }
-            multicastSock.setSoTimeout(0); // disable timeout
-            Receb.notify(); // continua a thread q foi parada
-            duringupdate = false;
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(MulticastUDP.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MulticastUDP.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MulticastUDP.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
+        
+    };
     
     private static String commandParse(String command){
         boolean hasTypeLog = false;
@@ -349,7 +338,15 @@ public class MulticastUDP {
         
         if(hasPasswordLog && hasTypeLog && hasUserNameLog){
             //Verifica se o utilizador se encontra na base de dados como logado
-            return "Login com sucesso.\n";
+            //Caso o servidor não tenha o nome de cliente logado, esse é adicionado
+            // aos dados desse servidor
+            if(!ci.getClientsLogs().contains(username.trim())){
+                ci.addClientsLogs(username.trim());
+                return "Login com sucesso.\n";
+            }
+            else{
+                return "Login sem sucesso.\n";
+            }
         }
         else if(hasPasswordReg && hasTypeReg && hasUserNameReg){
             if(ci.getDbaction().insertuserMultiCast(username, username, password, ci)){
@@ -360,7 +357,10 @@ public class MulticastUDP {
             }
         }
         else if(hasPasswordOut && hasTypeOut && hasUserNameOut){
-            if(ci.getDbaction().removeuserMultiCast(username, password, ci)){
+            //Caso o servidor tenha o nome de cliente logado, esse é retirado
+            // dos dados desse servidor
+            if(ci.getClientsLogs().contains(username.trim())){
+                ci.removeClientsLogs(username.trim());
                 return "Logout com sucesso.\n";
             }
             else{
