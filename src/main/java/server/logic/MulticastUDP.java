@@ -87,20 +87,7 @@ public class MulticastUDP {
                     String cmd = new String(buffer);
                     //Tratamento de músicas
                     if(cmd.contains("createMusic")){
-                        JSONParser JsonParser = new JSONParser();
-                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd.trim());
                         
-                        String MusicName = (String) JObj.get("MusicName");
-                        String MusicAuthor = (String) JObj.get("MusicAuthor");
-                        String MusicYear = (String) JObj.get("MusicYear");
-                        String MusicAlbum = (String) JObj.get("MusicAlbum");
-                        double MusicDuration = (double) JObj.get("MusicDuration");
-                        String MusicGenre = (String) JObj.get("MusicGenre");
-                        String MusicPath = (String) JObj.get("MusicPath");
-
-                        if(!ci.getDbaction().contaismusic(MusicName, MusicAuthor, MusicAlbum, ci)){
-                            ci.getDbaction().insertmusic(MusicName, MusicAuthor, MusicAlbum, MusicYear, MusicDuration, MusicGenre, MusicPath, ci);
-                        }
                         
                     }
                     //Tratamento de login/registo/logout
@@ -256,9 +243,6 @@ public class MulticastUDP {
                 }
             } catch (IOException ex) {
                 ci.Obj().put("exception", "[ERROR] Package não foi recebida em bom estado.\n" + ex.getMessage());
-                ci.notifyObserver(4);
-            } catch (ParseException ex) {
-                ci.Obj().put("exception", "[ERROR] JSON Parser failed.\n" + ex.getMessage());
                 ci.notifyObserver(4);
             }
             ci.Obj().put("exception", "[ERROR] Servidor deixou de receber mensagens por multicast.");
