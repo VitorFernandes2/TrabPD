@@ -82,6 +82,7 @@ public class Interfacemain implements observer{
 
             //Menu das playlists
             case 15:
+                this.playlistInterface(data);
                 break;
 
             //Criacao de Playlist

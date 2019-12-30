@@ -167,6 +167,9 @@ public class ServerTCPconnect implements Runnable{
                                 didPush = true;
                                 data.setMenu(7);
                             }
+                            else if (data.getCommand().equals("gotoPlaylists")){
+                                data.setMenu(15);
+                            }
 
                             break;
 
@@ -342,6 +345,23 @@ public class ServerTCPconnect implements Runnable{
                             JSONParser JsonParser4 = new JSONParser();
                             JSONObject JObj4 = (JSONObject) JsonParser4.parse(str4);
 
+                            break;
+
+                        //Menu de Playlists
+                        case 15:
+
+                            break;
+
+                        //Criacao de Playlist
+                        case 16:
+                            break;
+
+                        //Remove de Playlist
+                        case 17:
+                            break;
+
+                        //Change Playlist
+                        case 18:
                             break;
 
                     }
