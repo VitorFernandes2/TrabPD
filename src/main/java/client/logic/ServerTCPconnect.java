@@ -85,7 +85,11 @@ public class ServerTCPconnect implements Runnable{
             PrintWriter pr;
             InputStreamReader in = new InputStreamReader(s.getInputStream());
             StringBuilder sb;
+            BufferedReader bf;
             JSONObject obj;
+            String str;
+            JSONParser JsonParser;
+            JSONObject JObj;
             while(stopthread){
                 
                 synchronized(s.getOutputStream()){
@@ -220,12 +224,12 @@ public class ServerTCPconnect implements Runnable{
                             pr.flush();
 
                             in = new InputStreamReader(s.getInputStream());
-                            BufferedReader bf = new BufferedReader(in);
+                            bf = new BufferedReader(in);
 
-                            String str = bf.readLine();
+                            str = bf.readLine();
 
-                            JSONParser JsonParser = new JSONParser();
-                            JSONObject JObj = (JSONObject) JsonParser.parse(str);
+                            JsonParser = new JSONParser();
+                            JObj = (JSONObject) JsonParser.parse(str);
                             data.setJObj(JObj);
 
                             this.upperclass.update(3, data);
@@ -354,19 +358,108 @@ public class ServerTCPconnect implements Runnable{
 
                         //Menu de Playlists
                         case 15:
+                            this.upperclass.update(15, data);
+
+                            if (data.getCommand().equals("listPlaylists")){
+                                this.data.setMenu(19);
+                            }
+                            else if(data.getCommand().equals("createPlaylist")){
+                                this.data.setMenu(16);
+                            }
+                            else if(data.getCommand().equals("removePlaylist")){
+                                this.data.setMenu(17);
+                            }
+                            else if(data.getCommand().equals("changePlaylist")){
+                                this.data.setMenu(18);
+                            }
+                            else if(data.getCommand().equals("playPlaylist")){
+                                this.data.setMenu(20);
+                            }
 
                             break;
 
                         //Criacao de Playlist
                         case 16:
+                            this.upperclass.update(16, data);
+
+                            obj = new JSONObject();
+                            obj.put("Command", "createPlaylist");
+
+                            for (int i = 0; i < data.getMusicNameList().size(); i++) {
+
+                                String name = "nomeMusica" + i;
+                                String autor = "autorMusica" + i;
+                                obj.put(name, data.getMusicNameList().get(i));
+
+                            }
+
+                            //Envia os dados para alterar as playlists
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
+
                             break;
 
                         //Remove de Playlist
                         case 17:
+                            this.upperclass.update(17, data);
+
+                            obj = new JSONObject();
+                            obj.put("Command", "removePlaylist");
+                            obj.put("name", data.getNome());
+
+                            //Envia os dados para alterar as playlists
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
+
                             break;
 
                         //Change Playlist
                         case 18:
+                            this.upperclass.update(18, data);
+
+                            obj = new JSONObject();
+                            obj.put("Command", "changePlaylist");
+                            obj.put("name", this.data.getNome());
+                            obj.put("newName", this.data.getAutor());
+
+                            //Envia os dados para alterar as playlists
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            break;
+
+                        //List Playlist
+                        case 19:
+
+                            obj = new JSONObject();
+                            obj.put("Command", "listPlaylist");
+
+                            //Envia os dados para listar as playlists
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            //Mensagem de confirmacao ou negacao
+                            in = new InputStreamReader(s.getInputStream());
+                            bf = new BufferedReader(in);
+
+                            str = bf.readLine();
+
+                            JsonParser = new JSONParser();
+                            JObj = (JSONObject) JsonParser.parse(str);
+
+                            data.setJObj(JObj);
+
+                            this.upperclass.update(19, data);
+
+                            break;
+
+                        //Play Playlist
+                        case 20:
+
                             break;
 
                     }
@@ -374,12 +467,12 @@ public class ServerTCPconnect implements Runnable{
                     //Envio para tratamento
                     if(didPush){
                         didPush = false;
-                        BufferedReader bf = new BufferedReader(in);
+                        bf = new BufferedReader(in);
 
-                        String str = bf.readLine();
+                        str = bf.readLine();
 
-                        JSONParser JsonParser = new JSONParser();
-                        JSONObject JObj = (JSONObject) JsonParser.parse(str);
+                        JsonParser = new JSONParser();
+                        JObj = (JSONObject) JsonParser.parse(str);
                         boolean Sucesso = (boolean) JObj.get("sucesso");
 
                         if(!Sucesso){

@@ -3,6 +3,8 @@ package client.logic;
 import mainObjects.Music;
 import org.json.simple.JSONObject;
 
+import java.util.List;
+
 /**
  *
  * @author Joao Coelho
@@ -19,6 +21,8 @@ public class ConnectData {
     private Music music = null;
     private String nome = null;
     private String autor = null;
+    private List<String> musicNameList = null;
+    private List<String> musicAuthorList = null;
     
     public JSONObject getJObj() {
         return JObj;
@@ -83,4 +87,21 @@ public class ConnectData {
     public void setAutor(String autor) {
         this.autor = autor;
     }
+
+    public List<String> getMusicNameList() {
+        return musicNameList;
+    }
+
+    public void setMusicNameList(List<String> musicNameList) {
+        this.musicNameList = musicNameList;
+    }
+
+    public List<String> getMusicAuthorList() {
+        return musicAuthorList;
+    }
+
+    public void setMusicAuthorList(List<String> musicAuthorList) {
+        this.musicAuthorList = musicAuthorList;
+    }
+
 }

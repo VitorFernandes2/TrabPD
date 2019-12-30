@@ -7,6 +7,8 @@ import mainObjects.Readers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Interfacemain implements observer{
@@ -87,14 +89,27 @@ public class Interfacemain implements observer{
 
             //Criacao de Playlist
             case 16:
+                this.createPlaylist(data);
                 break;
 
             //Remove de Playlist
             case 17:
+                this.removePlaylist(data);
                 break;
 
             //Change Playlist
             case 18:
+                this.changePlaylist(data);
+                break;
+
+            //List Playlist
+            case 19:
+                this.ListPlaylists(data);
+                break;
+
+            //Play Playlist
+            case 20:
+                this.playPlayList(data);
                 break;
 
             case 444:
@@ -110,6 +125,69 @@ public class Interfacemain implements observer{
         }
         
     }
+
+    private void playPlayList(ConnectData data) {
+
+
+
+    }
+
+    private void ListPlaylists(ConnectData data) {
+
+        JSONObject obj = data.getJObj();
+
+        long numberPlaylist = (long)obj.get("numberOfPlaylists");
+
+        for (long i = 1; i <= numberPlaylist; i++) {
+
+            String nome = "playlist" + i;
+            String name = (String) obj.get(nome);
+
+            System.out.println(name);
+
+        }
+
+    }
+
+    private void changePlaylist(ConnectData data) {
+
+        String nome = Readers.readString("Insira o nome da playlist que pretende alterar: ");
+        String NewName = Readers.readString("Insira o novo nome da playlist que pretende alterar: ");
+
+        data.setNome(nome);
+        data.setAutor(NewName);
+
+    }
+
+    private void removePlaylist(ConnectData data) {
+
+        String name = Readers.readString("Insira o nome da playlist que pretende eliminar: ");
+        data.setNome(name);
+
+    }
+
+    private void createPlaylist(ConnectData data) {
+
+        String nome = Readers.readString("Insira o nome da playlist: ");
+        String musicName = null;
+        String musicAuthor = null;
+        data.setMusicAuthorList(new ArrayList<String>());
+        data.setMusicNameList(new ArrayList<String>());
+        String exit = null;
+
+        do {
+            musicName = Readers.readString("Insira o nome da musica: ");
+            musicAuthor = Readers.readString("Insira o nome do autor da musica: ");
+            data.getMusicAuthorList().add(musicAuthor);
+            data.getMusicNameList().add(musicName);
+            exit = Readers.readString("Pretende sair (sim - para sair): ");
+        }while (!exit.equalsIgnoreCase("sim"));
+
+        data.setNome(nome);
+
+    }
+
+
 
     private void playMusic(ConnectData data) {
 
