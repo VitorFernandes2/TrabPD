@@ -273,11 +273,12 @@ public class Interfacemain implements observer{
             System.out.println("entraLogin - Fazer login");
             System.out.println("entraRegisto - Fazer registo");
             System.out.println("entrar - Entrar direto");
+            System.out.println("sair - Sair direto");
 
             cmd = Readers.readString("\nInsira a opcao que pretende: ");
 
         }while (!cmd.equals("entraLogin") && !cmd.equals("entraRegisto")
-                && !cmd.equals("entrar"));
+                && !cmd.equals("entrar") && !cmd.equals("sair"));
 
         data.setCommand(cmd);
 

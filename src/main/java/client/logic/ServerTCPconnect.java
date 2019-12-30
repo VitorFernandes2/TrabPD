@@ -80,6 +80,7 @@ public class ServerTCPconnect implements Runnable{
         try {
             int guardaMenu = 7;
             boolean didPush = false;
+            boolean close = false;
             Socket  s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
             PrintWriter pr;
             InputStreamReader in = new InputStreamReader(s.getInputStream());
@@ -142,6 +143,10 @@ public class ServerTCPconnect implements Runnable{
                                 obj = new JSONObject();
                                 //Flag de saida de programa
                                 obj.put("Command", "exit");
+                                pr = new PrintWriter(s.getOutputStream());
+                                pr.println(obj.toString());
+                                pr.flush();
+                                close = true;
                                 break;
                             }
                             
@@ -282,6 +287,7 @@ public class ServerTCPconnect implements Runnable{
                             pr = new PrintWriter(s.getOutputStream());
                             pr.println(obj.toString());
                             pr.flush();
+                            didPush = true;
 
                             break;
 
@@ -365,6 +371,7 @@ public class ServerTCPconnect implements Runnable{
 
                     }
                     
+                    //Envio para tratamento
                     if(didPush){
                         didPush = false;
                         BufferedReader bf = new BufferedReader(in);
@@ -381,6 +388,10 @@ public class ServerTCPconnect implements Runnable{
 
                         data.getJObj().put("output", JObj.toString());
                         upperclass.update(86, data);
+                    }
+                    //Fecho da Aplicação
+                    else if(close){
+                        break;
                     }
 
                 }
@@ -408,6 +419,11 @@ public class ServerTCPconnect implements Runnable{
             data.setJObj(JObjE);
             upperclass.update(444, data);
         }
+        
+        upperclass.update(5, data);
+        //Provisório para fechar aplicação quando o servidor for abaixo
+        obj.put("Command", "exit");
+        //-------------------------------------------------------------
 
     }
     

@@ -37,6 +37,7 @@ public class ThreadClientListenTreatment implements Runnable {
     public void run() {
         //Tratamento de mensagens
         String out = null;
+        boolean log = false;
 
         si.Obj().put("output", "Client " + this.ID + " connected to tcp.");
         si.notifyObserver(1);
@@ -61,9 +62,9 @@ public class ThreadClientListenTreatment implements Runnable {
                     String cmd = (String) JObj.get("Command");
 
                     if (cmd.equals("createMusic")){
-
+                        //passar para notify
                         System.out.println("Mandou a musica " + JObj.get("MusicName"));
-
+                        //------------------
                         String MusicName = (String) JObj.get("MusicName");
                         String MusicAuthor = (String) JObj.get("MusicAuthor");
                         String MusicYear = (String) JObj.get("MusicYear");
@@ -207,16 +208,25 @@ public class ThreadClientListenTreatment implements Runnable {
                         //Tratamento do login/registo/logout
                         out = commandParse(cmd);
                         si.Obj().put("output", out);
-
+                        log = true;
+                        //----------------------------------
                     }
 
                     //Código de envio para os outros servidores
                     // mesmo que o comando não seja um sucesso
                     // neste servidor os dados dele podem ser diferentes
                     // por isso enviados para o para todos
-                    byte[] b = String.valueOf(cmd).getBytes();
-                    DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
-                    multi.getMulticastSock().send(packet);
+                    if(log){
+                        byte[] b = String.valueOf(cmd).getBytes();
+                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
+                        multi.getMulticastSock().send(packet);
+                        log = false;
+                    }
+                    else{
+                        byte[] b = String.valueOf(JObj.toString()).getBytes();
+                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
+                        multi.getMulticastSock().send(packet);
+                    }
                     //-----------------------------------------
                     
                     si.notifyObserver(1);
@@ -234,9 +244,15 @@ public class ThreadClientListenTreatment implements Runnable {
             } catch (IOException ex) {
                 si.Obj().put("exception", "[ERROR] Erro no ciclo de tratamento de Mensagens do Cliente.\n" + ex.getMessage());
                 si.notifyObserver(4);
+                si.removeClient(Client);
+                si.removeListenClient(this);
+                return;
             } catch (ParseException ex) {
                 si.Obj().put("exception", "[ERROR] Erro na tradução do Json no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
                 si.notifyObserver(4);
+                si.removeClient(Client);
+                si.removeListenClient(this);
+                return;
             } catch (NullPointerException ex) {
                 si.getSd().getObjMudance().put("exception", "[ERROR] Erro de Nullpointer. Provavelmente o Cliente se desconectou no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
                 si.notifyObserver(4);

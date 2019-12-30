@@ -11,6 +11,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import server.ServerLogic;
 
 /**
@@ -80,9 +85,60 @@ public class MulticastUDP {
                     //Código para a atualização da base de dados, a partir do comando enviado
                     
                     String cmd = new String(buffer);
-                    String result = commandParse(cmd);
-                    if(!result.contains("Sem Tipo definido [2] !\n")){
-                        System.out.println("\nRecebi: " + cmd + "\nTentativa de execução de comando: " + result);
+                    //Tratamento de músicas
+                    if(cmd.contains("createMusic")){
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd);
+                        
+                        String MusicName = (String) JObj.get("MusicName");
+                        String MusicAuthor = (String) JObj.get("MusicAuthor");
+                        String MusicYear = (String) JObj.get("MusicYear");
+                        String MusicAlbum = (String) JObj.get("MusicAlbum");
+                        double MusicDuration = (double) JObj.get("MusicDuration");
+                        String MusicGenre = (String) JObj.get("MusicGenre");
+                        String MusicPath = (String) JObj.get("MusicPath");
+
+                        String fileName = ci.getDbaction().insertMusic(MusicName, MusicAuthor, MusicAlbum,
+                                MusicYear, MusicDuration, MusicGenre, ci);
+                        
+                        /*//Ajuda para fazer
+                        
+                        //Se puder criar o ficheiro inicia a thread de leitura
+                        if (fileName != null){
+
+                            //Envia Mensagem para enviar o ficheiro
+                            JSONObject obj = new JSONObject();
+
+                            obj.put("message", "sendFile");
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            //Inicia a Thread para receber os ficheiros
+                            ReadFileFromClient readFileFromClient =
+                                    new ReadFileFromClient(Client.getInputStream(), Client.getOutputStream()
+                                            , fileName);
+                            readFileFromClient.start();
+
+                        }
+                        else{
+
+                            //Envia Mensagem para enviar o ficheiro
+                            JSONObject obj = new JSONObject();
+
+                            obj.put("message", "fileDenied");
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+                        //----------------*/
+                        
+                    }
+                    //Tratamento de login/registo/logout
+                    else{
+                        String result = commandParse(cmd);
+                        if(!result.contains("Sem Tipo definido [2] !\n")){
+                            System.out.println("\nRecebi: " + cmd + "\nTentativa de execução de comando: " + result);
+                        }
                     }
                     
                     //Código para cópia total das necessidades dos dados de cada servidor criado
@@ -229,7 +285,10 @@ public class MulticastUDP {
                     
                 }
             } catch (IOException ex) {
-                ci.Obj().put("exception", "[ERROR]Package não foi recebida em bom estado.\n" + ex.getMessage());
+                ci.Obj().put("exception", "[ERROR] Package não foi recebida em bom estado.\n" + ex.getMessage());
+                ci.notifyObserver(4);
+            } catch (ParseException ex) {
+                ci.Obj().put("exception", "[ERROR] JSON Parser failed.\n" + ex.getMessage());
                 ci.notifyObserver(4);
             }
             ci.Obj().put("exception", "[ERROR] Servidor deixou de receber mensagens por multicast.");
