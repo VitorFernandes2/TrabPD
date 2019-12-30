@@ -88,7 +88,7 @@ public class MulticastUDP {
                     //Tratamento de músicas
                     if(cmd.contains("createMusic")){
                         JSONParser JsonParser = new JSONParser();
-                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd);
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd.trim());
                         
                         String MusicName = (String) JObj.get("MusicName");
                         String MusicAuthor = (String) JObj.get("MusicAuthor");
@@ -98,39 +98,9 @@ public class MulticastUDP {
                         String MusicGenre = (String) JObj.get("MusicGenre");
                         String MusicPath = (String) JObj.get("MusicPath");
 
-                        String fileName = ci.getDbaction().insertMusic(MusicName, MusicAuthor, MusicAlbum,
-                                MusicYear, MusicDuration, MusicGenre, ci);
-                        
-                        /*//Ajuda para fazer
-                        
-                        //Se puder criar o ficheiro inicia a thread de leitura
-                        if (fileName != null){
-
-                            //Envia Mensagem para enviar o ficheiro
-                            JSONObject obj = new JSONObject();
-
-                            obj.put("message", "sendFile");
-                            pr.println(obj.toString());
-                            pr.flush();
-
-                            //Inicia a Thread para receber os ficheiros
-                            ReadFileFromClient readFileFromClient =
-                                    new ReadFileFromClient(Client.getInputStream(), Client.getOutputStream()
-                                            , fileName);
-                            readFileFromClient.start();
-
+                        if(!ci.getDbaction().contaismusic(MusicName, MusicAuthor, MusicAlbum, ci)){
+                            ci.getDbaction().insertmusic(MusicName, MusicAuthor, MusicAlbum, MusicYear, MusicDuration, MusicGenre, MusicPath, ci);
                         }
-                        else{
-
-                            //Envia Mensagem para enviar o ficheiro
-                            JSONObject obj = new JSONObject();
-
-                            obj.put("message", "fileDenied");
-                            pr.println(obj.toString());
-                            pr.flush();
-
-                        }
-                        //----------------*/
                         
                     }
                     //Tratamento de login/registo/logout

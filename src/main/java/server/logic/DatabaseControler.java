@@ -223,6 +223,29 @@ public class DatabaseControler {
         return true;
     }
     
+    public boolean contaismusic(String name,String artist,String album, ServerLogic sl){
+        try {
+            String selectSql = ("SELECT * FROM `musics`");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String namem;
+            String artistm;
+            String albumm;
+            while(resultSet.next()){
+                namem = resultSet.getString("name");
+                artistm = resultSet.getString("artist");
+                albumm = resultSet.getString("album");
+                if(namem.equals(name) && artistm.equals(artist) && albumm.equals(album)){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertMusicPrivate -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+    }
+    
     public boolean runinsertedcode(String insert){
         
         try{
