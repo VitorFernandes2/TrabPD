@@ -171,9 +171,9 @@ public class Interfacemain implements observer{
 
         JSONObject obj = data.getJObj();
 
-        int numberMusics = (int)obj.get("numberOfMusics");
+        long numberMusics = (long)obj.get("numberOfMusics");
 
-        for (int i = 1; i <= numberMusics; i++) {
+        for (long i = 1; i <= numberMusics; i++) {
 
             String nome = "music" + i;
             JSONArray array = (JSONArray) obj.get(nome);

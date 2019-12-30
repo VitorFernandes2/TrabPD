@@ -78,9 +78,14 @@ public class DatabaseControler {
             stmt.execute(tableSql2);
 
             String tableSql3 = "CREATE TABLE IF NOT EXISTS playlist"
-            + "(play_id int PRIMARY KEY AUTO_INCREMENT, music_id int,"
+            + "(play_id int PRIMARY KEY AUTO_INCREMENT,"
             + "user_id int, name varchar(30))";
             stmt.execute(tableSql3);
+
+            String tableSql4 = "CREATE TABLE IF NOT EXISTS playlistmusic"
+                    + "(id int PRIMARY KEY AUTO_INCREMENT, music_id int,"
+                    + "play_id int)";
+            stmt.execute(tableSql4);
 
         } catch (SQLException ex) {
             sl.Obj().put("exception", "[ERROR] Inicialização da Base de Dados -> " + ex.getMessage());
@@ -410,12 +415,16 @@ public class DatabaseControler {
     public boolean removeMusic(String name,String artist, ServerLogic sl){
 
         String filename = getFileName(name, artist, sl);
-        File file = new File(filename);
+        if (filename != null){
+            File file = new File(filename);
 
-        if(file.delete())
-        {
-            System.out.println("File deleted successfully");
+            if(file.delete())
+            {
+                System.out.println("File deleted successfully");
+            }
+
         }
+
 
         try {
             String deleteSql = "DELETE FROM musics WHERE name = '" + name +"' And artist = '" + artist + "'";
