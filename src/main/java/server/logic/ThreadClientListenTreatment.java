@@ -1,9 +1,6 @@
 package server.logic;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -120,6 +117,8 @@ public class ThreadClientListenTreatment implements Runnable {
 
                         JSONObject obj = new JSONObject();
                         obj.put("message", "receiveFile");
+                        File file = new File(path);
+                        obj.put("size", file.length());
 
                         pr.println(obj.toString());
                         pr.flush();

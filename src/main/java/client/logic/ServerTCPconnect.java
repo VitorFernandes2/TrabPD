@@ -270,10 +270,12 @@ public class ServerTCPconnect implements Runnable{
 
                             if (JObj2.get("message").equals("receiveFile")){
 
+                                long fileSize = (long)JObj2.get("size");
                                 ReceiveFileFromServer receiveFileFromServer =
                                         new ReceiveFileFromServer(s.getInputStream(), s.getOutputStream(),
-                                                "tmp.mp3");
+                                                "tmp.mp3", fileSize);
                                 receiveFileFromServer.start();
+                                receiveFileFromServer.join();
 
                             }
 
@@ -522,8 +524,10 @@ public class ServerTCPconnect implements Runnable{
             JObjE.put("exception", e.toString());
             data.setJObj(JObjE);
             upperclass.update(444, data);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        
+
         JObjE = new JSONObject();
         JObjE.put("exception", "Desligando o Cliente.");
         data.setJObj(JObjE);

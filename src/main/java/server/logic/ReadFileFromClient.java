@@ -32,7 +32,7 @@ public class ReadFileFromClient extends Thread {
 
         //Initialize the FileOutputStream to the output file's full path.
         FileOutputStream fos = null;
-        byte[] contents = new byte[256];
+        byte[] contents = new byte[254];
 
         try {
             fos = new FileOutputStream(filename);
