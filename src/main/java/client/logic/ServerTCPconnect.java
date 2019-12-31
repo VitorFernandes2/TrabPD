@@ -384,16 +384,21 @@ public class ServerTCPconnect implements Runnable{
 
                             obj = new JSONObject();
                             obj.put("Command", "createPlaylist");
+                            obj.put("username", this.data.getUsername());
+                            obj.put("name", this.data.getNome());
 
                             for (int i = 0; i < data.getMusicNameList().size(); i++) {
 
                                 String name = "nomeMusica" + i;
                                 String autor = "autorMusica" + i;
                                 obj.put(name, data.getMusicNameList().get(i));
+                                obj.put(autor, data.getMusicAuthorList().get(i));
 
                             }
 
-                            //Envia os dados para alterar as playlists
+                            obj.put("numberOfMusics", data.getMusicAuthorList().size());
+
+                            //Envia os dados para criar as playlists
                             pr = new PrintWriter(s.getOutputStream());
                             pr.println(obj.toString());
                             pr.flush();
@@ -406,6 +411,7 @@ public class ServerTCPconnect implements Runnable{
 
                             obj = new JSONObject();
                             obj.put("Command", "removePlaylist");
+                            obj.put("username", this.data.getUsername());
                             obj.put("name", data.getNome());
 
                             //Envia os dados para alterar as playlists
@@ -421,6 +427,7 @@ public class ServerTCPconnect implements Runnable{
 
                             obj = new JSONObject();
                             obj.put("Command", "changePlaylist");
+                            obj.put("username", this.data.getUsername());
                             obj.put("name", this.data.getNome());
                             obj.put("newName", this.data.getAutor());
 
@@ -436,6 +443,7 @@ public class ServerTCPconnect implements Runnable{
 
                             obj = new JSONObject();
                             obj.put("Command", "listPlaylist");
+                            obj.put("username", this.data.getUsername());
 
                             //Envia os dados para listar as playlists
                             pr = new PrintWriter(s.getOutputStream());

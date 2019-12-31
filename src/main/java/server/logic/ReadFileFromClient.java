@@ -18,9 +18,19 @@ public class ReadFileFromClient extends Thread {
     @Override
     public void run() {
 
+        try {
+            readFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void readFile() throws IOException {
+
         //Initialize the FileOutputStream to the output file's full path.
         FileOutputStream fos = null;
-        byte[] contents = new byte[10000];
+        byte[] contents = new byte[256];
 
         try {
             fos = new FileOutputStream(filename);
@@ -33,13 +43,17 @@ public class ReadFileFromClient extends Thread {
         //No of bytes read in one read() call
         int bytesRead = 0;
 
-        try {
-            while((bytesRead=is.read(contents)) >= 0)
-                bos.write(contents, 0, bytesRead);
-            bos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        do {
+
+            bytesRead = is.read(contents);
+            if (bytesRead < 0)
+                break;
+            bos.write(contents, 0, bytesRead);
+
+        }while (bytesRead > 0);
+
+        System.out.println("Recebi tudo");
+        bos.flush();
 
     }
 

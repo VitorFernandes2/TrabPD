@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -490,5 +491,203 @@ public class DatabaseControler {
         return Jobj;
 
     }
-   
+
+    public int getMusicId(String nome, String autor, ServerLogic sl){
+
+        int id = -1;
+
+        try {
+
+            String sql = "SELECT * FROM musics WHERE name = '" + nome + "' AND artist = '" + autor + "'";
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while (resultSet.next()){
+
+                id = resultSet.getInt("music_id");
+                return id;
+
+            }
+
+        } catch (SQLException e) {
+            return -1;
+        }
+
+        return id;
+
+    }
+
+    public boolean createPlaylist(String nome, String username, ArrayList<String> musics,
+                                  ArrayList<String> autores, ServerLogic sl){
+
+        int id = 0;
+        id = getUserID(username);
+        if (id == -1)
+            return false;
+
+        String sql = null;
+        ResultSet resultSet = null;
+
+        try {
+
+            sql = "SELECT * FROM playlist WHERE name = '" + nome + "' AND user_id = '" + id +"'";
+            resultSet = stmt.executeQuery(sql);
+
+            //Se existir retorna falso
+            while (resultSet.next()){
+                return false;
+            }
+
+            sql = "INSERT INTO playlist(user_id, name) " +
+                    " VALUES('" + id + "', '" + nome +"')";
+            resultSet = stmt.executeQuery(sql);
+
+            sql = "SELECT * FROM playlist WHERE name = '" + nome + "' AND user_id = '" + id +"'";
+            resultSet = stmt.executeQuery(sql);
+
+            int playId = 0;
+            while (resultSet.next()){
+                playId = resultSet.getInt("id");
+            }
+
+            for (int i = 0; i < musics.size(); i++) {
+
+                int musicId = getMusicId(musics.get(i), autores.get(i), sl);
+
+                if (musicId != -1){
+
+                    sql = "INSERT INTO playlistmusic(music_id, play_id) " +
+                            "VALUES('" + musicId +"','" + playId + "')";
+                    resultSet = stmt.executeQuery(sql);
+
+                }
+
+            }
+
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public boolean changePlaylist(String oldname, String nome, String username,ServerLogic sl){
+
+        int id = 0;
+        id = getUserID(username);
+        if (id == -1)
+            return false;
+
+        try {
+            String sql = "UPDATE playlist " +
+                    "SET name = '" + nome + "'" +
+                    "WHERE user_id = '" + id +"' AND name = '" + oldname + "'";
+            ResultSet resultSet = stmt.executeQuery(sql);
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public boolean removePlaylist(String nome, String username, ServerLogic sl){
+
+        int id = 0;
+        id = getUserID(username);
+        if (id == -1)
+            return false;
+
+        ResultSet resultSet = null;
+        int playlistId = 0;
+        try{
+
+            String sqlSelect = "SELECT * FROM playlist WHERE name = '" + username + "' AND user_id = '" + id + "'";
+            resultSet = stmt.executeQuery(sqlSelect);
+
+            int i = 0;
+            while (resultSet.next()){
+                i++;
+                playlistId = resultSet.getInt("id");
+                break;
+            }
+
+            if (i == 0)
+                return false;
+
+        } catch (SQLException e) {
+            return false;
+        }
+
+        try{
+
+            String deleteSql = "DELETE FROM playlist WHERE name = '" + nome +"' And user_id = '" + id + "'";
+            resultSet = stmt.executeQuery(deleteSql);
+
+            deleteSql = "DELETE FROM playlistmusic WHERE play_id = '" + playlistId + "'";
+            resultSet = stmt.executeQuery(deleteSql);
+
+        }catch (SQLException e) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public int getUserID(String username){
+
+        try {
+
+            String selectSql = "SELECT * FROM users WHERE username = '" + username + "'";
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+
+            while (resultSet.next()){
+
+                int id = resultSet.getInt("user_id");
+                return id;
+
+            }
+
+        } catch (SQLException e) {
+            return -1;
+        }
+
+        return -1;
+
+    }
+
+    public JSONObject listPlaylist(String username, ServerLogic sl){
+
+        JSONObject obj = null;
+        int id = 0;
+        String selectSql = null;
+        ResultSet resultSet = null;
+
+        id = getUserID(username);
+        if (id == -1)
+            return null;
+
+        try {
+
+            selectSql = "SELECT * FROM playlist WHERE user_id = '" + id +"'";
+            resultSet = stmt.executeQuery(selectSql);
+            int i = 0;
+            while(resultSet.next()){
+
+                i++;
+                String nome = "playlist" + (i - 1);
+                obj.put(nome, resultSet.getString("name"));
+
+            }
+
+            obj.put("numberOfPlaylists", i);
+
+        } catch (SQLException ex) {
+            return null;
+        }
+        return obj;
+
+    }
+
 }

@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.Socket;
+import java.util.ArrayList;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -202,6 +204,70 @@ public class ThreadClientListenTreatment implements Runnable {
                             pr.flush();
 
                         }
+
+                    }
+                    else if(cmd.equals("listPlaylist")){
+
+                        JSONObject obj = new JSONObject();
+                        String username = (String)JObj.get("username");
+                        obj = si.getDbaction().listPlaylist(username, si);
+
+                        if (obj != null){
+
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+                        else {
+
+                            obj.put("message", "noPlaylistList");
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+
+                    }
+                    else if(cmd.equals("changePlaylist")){
+
+                        String username = (String)JObj.get("username");
+                        String oldName = (String)JObj.get("name");
+                        String newName = (String)JObj.get("newName");
+                        si.getDbaction().changePlaylist(oldName,newName,username, si);
+
+                    }
+                    else if(cmd.equals("removePlaylist")){
+
+                        String username = (String)JObj.get("username");
+                        String name = (String)JObj.get("name");
+                        si.getDbaction().removePlaylist(name,username,si);
+
+                    }
+                    else if(cmd.equals("createPlaylist")){
+
+                        String username = (String)JObj.get("username");
+                        String name = (String)JObj.get("name");
+                        long size = (long)JObj.get("numberOfMusics");
+
+                        ArrayList<String> musics = new ArrayList<>();
+                        ArrayList<String> autors = new ArrayList<>();
+                        for (long i = 0; i < size; i++) {
+
+                            String MusicName = "nomeMusica" + i;
+                            String autor = "autorMusica" + i;
+
+                            String MusicNameInput = (String)JObj.get(MusicName);
+                            String MusicAutorInput = (String)JObj.get(autor);
+
+                            musics.add(MusicNameInput);
+                            autors.add(MusicAutorInput);
+
+                        }
+
+                        si.getDbaction().createPlaylist(name, username, musics, autors, si);
+
+                    }
+                    else if(cmd.equals("playPlaylist")){
+
 
                     }
                     else{
