@@ -1,10 +1,8 @@
 package client.logic;
 
 import client.InterfaceGrafica.Interfacemain;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -219,6 +217,9 @@ public class ServerTCPconnect implements Runnable{
                             obj.put("MusicDuration", music.getDuration());
                             obj.put("MusicGenre", music.getGenre());
                             obj.put("MusicPath", music.getPath());
+
+                            File file = new File(music.getPath());
+                            obj.put("size", file.length());
 
                             pr = new PrintWriter(s.getOutputStream());
                             pr.println(obj.toString());

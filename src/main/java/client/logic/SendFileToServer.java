@@ -34,7 +34,7 @@ public class SendFileToServer extends Thread {
             e.printStackTrace();
         }
 
-        BufferedInputStream bis = new BufferedInputStream(fis);
+        FileInputStream bis = new FileInputStream(file);
 
         //Get socket's output stream
         OutputStream os = out;
@@ -44,7 +44,7 @@ public class SendFileToServer extends Thread {
         long fileLength = file.length();
         long current = 0;
 
-        while(current!=fileLength){
+        /*while(current!=fileLength){
 
             int size = 256;
 
@@ -59,7 +59,19 @@ public class SendFileToServer extends Thread {
             bis.read(contents, 0, size);
             os.write(contents);
 
-        }
+        }*/
+
+        int bytes = 0;
+
+        do {
+
+            bytes = bis.read(contents);
+            if (bytes < 0)
+                break;
+            os.write(contents, 0, bytes);
+
+        }while (bytes > 0);
+
         System.out.println(current + " - " + fileLength);
         fis.close();
 

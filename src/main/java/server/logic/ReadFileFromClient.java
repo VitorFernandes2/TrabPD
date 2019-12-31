@@ -8,11 +8,13 @@ public class ReadFileFromClient extends Thread {
     private InputStream in;
     private OutputStream out;
     private String filename;
+    private long size = 0;
 
-    public ReadFileFromClient(InputStream in, OutputStream out, String filename) {
+    public ReadFileFromClient(InputStream in, OutputStream out, String filename, long size) {
         this.in = in;
         this.out = out;
         this.filename = filename;
+        this.size = size;
     }
 
     @Override
@@ -42,18 +44,23 @@ public class ReadFileFromClient extends Thread {
 
         //No of bytes read in one read() call
         int bytesRead = 0;
-
+        int current = 0;
         do {
 
             bytesRead = is.read(contents);
-            if (bytesRead < 0)
+
+            fos.write(contents, 0, bytesRead);
+            current += bytesRead;
+
+            System.out.println(current + " - " + size);
+
+            if (current == size)
                 break;
-            bos.write(contents, 0, bytesRead);
 
         }while (bytesRead > 0);
 
         System.out.println("Recebi tudo");
-        bos.flush();
+        fos.close();
 
     }
 

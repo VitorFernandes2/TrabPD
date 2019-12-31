@@ -74,6 +74,7 @@ public class ThreadClientListenTreatment implements Runnable {
                         double MusicDuration = (double) JObj.get("MusicDuration");
                         String MusicGenre = (String) JObj.get("MusicGenre");
                         String MusicPath = (String) JObj.get("MusicPath");
+                        long fileSize = (long)JObj.get("size");
 
                         String fileName = si.getDbaction().insertMusic(MusicName, MusicAuthor, MusicAlbum,
                                 MusicYear, MusicDuration, MusicGenre, si);
@@ -91,8 +92,10 @@ public class ThreadClientListenTreatment implements Runnable {
                             //Inicia a Thread para receber os ficheiros
                             ReadFileFromClient readFileFromClient =
                                     new ReadFileFromClient(Client.getInputStream(), Client.getOutputStream()
-                                            , fileName);
+                                            , fileName, fileSize);
                             readFileFromClient.start();
+                            readFileFromClient.join();
+                            System.out.printf("Sai");
 
                         }
                         else{
@@ -325,6 +328,8 @@ public class ThreadClientListenTreatment implements Runnable {
                 si.removeClient(Client);
                 si.removeListenClient(this);
                 return;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
         }
