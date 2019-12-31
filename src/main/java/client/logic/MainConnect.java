@@ -76,16 +76,7 @@ public class MainConnect implements subject{
             startserver.start();
             
             //Wait por comando de saida
-            while(!startserver.getCommand().equalsIgnoreCase("exit")){
-                //Tratamento do comando de servidor ir abaixo (FailOver)
-//                if(startserver.getCommand().equalsIgnoreCase("serverdown")){
-//                    startserver.setCommand("");
-//                    if(start.run().equalsIgnoreCase("error")){
-//                        //desligar o cliente
-//                        break;
-//                    }
-//                }
-            }
+            while(!startserver.getCommand().equalsIgnoreCase("exit")){}
             //-------------------------
 
             startserver.stopthread();
