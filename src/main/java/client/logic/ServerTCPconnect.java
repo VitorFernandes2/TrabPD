@@ -90,6 +90,7 @@ public class ServerTCPconnect implements Runnable{
             String str;
             JSONParser JsonParser;
             JSONObject JObj;
+            JSONObject obj;
             while(stopthread){
                 
                 synchronized(s.getOutputStream()){
@@ -508,7 +509,7 @@ public class ServerTCPconnect implements Runnable{
             data.setJObj(JObjE);
             upperclass.update(5, data);
             //Provisório para fechar aplicação quando o servidor for abaixo
-            obj.put("Command", "exit");
+            this.setCommand("exit");
             //-------------------------------------------------------------
         } catch (ParseException e) {
             JObjE = new JSONObject();
@@ -522,9 +523,12 @@ public class ServerTCPconnect implements Runnable{
             upperclass.update(444, data);
         }
         
+        JObjE = new JSONObject();
+        JObjE.put("exception", "Desligando o Cliente.");
+        data.setJObj(JObjE);
         upperclass.update(5, data);
         //Provisório para fechar aplicação quando o servidor for abaixo
-        obj.put("Command", "exit");
+        this.setCommand("exit");
         //-------------------------------------------------------------
 
     }
