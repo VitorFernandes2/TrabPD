@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import ds.logic.gest.Server;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.ServerLogic;
@@ -710,6 +711,86 @@ public class DatabaseControler {
             return null;
         }
         return obj;
+
+    }
+
+    public int getPlaylistID(String nome, int id){
+
+        try{
+
+            String sql = "SELECT * FROM playlist WHERE name = '" + nome + "' AND user_id = '" + id +"'";
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            //Se existir retorna falso
+            while (resultSet.next()){
+                int playid = resultSet.getInt("id");
+                return playid;
+            }
+
+        } catch (SQLException e) {
+            return -1;
+        }
+
+        return -1;
+
+    }
+
+    public ArrayList<String> playPlaylist(String username, String nome,ServerLogic sl){
+
+        int id = 0;
+        id = getUserID(username);
+        if (id == -1)
+            return null;
+
+        int playid = 0;
+        playid = getPlaylistID(nome, id);
+        if (playid == -1)
+            return null;
+
+        ArrayList<String> list = new ArrayList<>();
+
+        try{
+
+            String sql = "SELECT * playistmusic WHERE play_id = '" + playid + "'";
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while (resultSet.next()){
+
+                int musicId = resultSet.getInt("music_id");
+                String path = getMusicPath(musicId);
+
+                if (path != null)
+                    list.add(path);
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+
+    }
+
+    public String getMusicPath(int musicId) {
+
+        try {
+
+            String sql = "SELECT * FROM musics WHERE music_id = '" + musicId + "'";
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while (resultSet.next()){
+
+                String path = resultSet.getString("localname");
+                return path;
+
+            }
+
+        } catch (SQLException e) {
+            return null;
+        }
+
+        return null;
 
     }
 

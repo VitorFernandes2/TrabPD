@@ -273,7 +273,19 @@ public class ThreadClientListenTreatment implements Runnable {
                         String username = (String)JObj.get("username");
                         String nome = (String)JObj.get("nome");
 
-                        
+                        ArrayList<String> list = si.getDbaction().playPlaylist(username, nome, si);
+
+                        //Tem dados para reproduzir
+                        if (list.size() > 0){
+
+
+
+                        }
+                        else {
+
+
+
+                        }
 
                     }
                     else{
