@@ -130,7 +130,8 @@ public class Interfacemain implements observer{
 
     private void playPlayList(ConnectData data) {
 
-
+        String nome = Readers.readString("Insira o nome da playlist para reproduzir: ");
+        data.setNome(nome);
 
     }
 

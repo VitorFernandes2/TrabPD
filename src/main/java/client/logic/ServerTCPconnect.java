@@ -471,6 +471,18 @@ public class ServerTCPconnect implements Runnable{
 
                         //Play Playlist
                         case 20:
+                            this.upperclass.update(20, data);
+
+                            String nome = data.getNome();
+                            obj = new JSONObject();
+                            obj.put("Command", "playPlaylist");
+                            obj.put("username", this.data.getUsername());
+                            obj.put("nome", this.data.getNome());
+
+                            //Envia os dados para listar as playlists
+                            pr = new PrintWriter(s.getOutputStream());
+                            pr.println(obj.toString());
+                            pr.flush();
 
                             break;
 

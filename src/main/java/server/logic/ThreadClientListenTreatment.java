@@ -270,6 +270,10 @@ public class ThreadClientListenTreatment implements Runnable {
                     }
                     else if(cmd.equals("playPlaylist")){
 
+                        String username = (String)JObj.get("username");
+                        String nome = (String)JObj.get("nome");
+
+                        
 
                     }
                     else{
