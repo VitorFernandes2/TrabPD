@@ -74,7 +74,7 @@ public class DatabaseControler {
 
             String tableSql2 = "CREATE TABLE IF NOT EXISTS musics"
             + "(music_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
-            + "artist varchar(30), album varchar(30), year varchar(30), duration double, genre varchar(30), localname varchar(30))";
+            + "artist varchar(30), album varchar(30), year varchar(30), duration double, genre varchar(30), localname varchar(90))";
             stmt.execute(tableSql2);
 
             String tableSql3 = "CREATE TABLE IF NOT EXISTS playlist"
@@ -243,7 +243,7 @@ public class DatabaseControler {
             sl.notifyObserver(4);
             return false;
         }
-        return true;
+        return false;
     }
     
     public boolean runinsertedcode(String insert){
