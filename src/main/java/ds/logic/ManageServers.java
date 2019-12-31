@@ -72,8 +72,16 @@ public class ManageServers extends Thread {
                         servers.remove(item);
 
                         //Se for o principal
-                        if (item.isPrinci())
+                        if (item.isPrinci() && !servers.isEmpty()){
                             servers.get(0).setPrinci();
+                            //Repensar em enviar um aviso ao novo servidor principal que o seu nome da base de dados passou a ser "Principal"
+                            
+                            //---------------------------------------------------------------------------------------------------------------
+                        }
+                        else{
+                            //saida para reinicio dos checks de cada servidor
+                            break;
+                        }
 
                         ClientList clients = item.getClients();
 

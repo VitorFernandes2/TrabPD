@@ -71,13 +71,21 @@ public class MainConnect implements subject{
         else{
             
             datacomun = new ConnectData();
-
-            //System.out.println(returnado);
+            
             ServerTCPconnect startserver = new ServerTCPconnect(returnado,datacomun,inter);
             startserver.start();
             
             //Wait por comando de saida
-            while(!startserver.getCommand().equalsIgnoreCase("exit")){}
+            while(!startserver.getCommand().equalsIgnoreCase("exit")){
+                //Tratamento do comando de servidor ir abaixo (FailOver)
+//                if(startserver.getCommand().equalsIgnoreCase("serverdown")){
+//                    startserver.setCommand("");
+//                    if(start.run().equalsIgnoreCase("error")){
+//                        //desligar o cliente
+//                        break;
+//                    }
+//                }
+            }
             //-------------------------
 
             startserver.stopthread();

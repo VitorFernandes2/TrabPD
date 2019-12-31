@@ -26,7 +26,7 @@ public class Main {
             manageServers = new ManageServers(servers);
         }catch (Exception e)
         {
-            System.out.println("Erro ao detetar o IP");
+            System.out.println("Erro ao detetar o IP: " + e.getMessage());
         }
 
         if (servertemp != null) {

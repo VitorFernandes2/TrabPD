@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 import mainObjects.Music;
 import org.json.simple.JSONObject;
@@ -83,10 +84,9 @@ public class ServerTCPconnect implements Runnable{
             boolean close = false;
             Socket  s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
             PrintWriter pr;
-            InputStreamReader in = new InputStreamReader(s.getInputStream());
+            InputStreamReader in;
             StringBuilder sb;
             BufferedReader bf;
-            JSONObject obj;
             String str;
             JSONParser JsonParser;
             JSONObject JObj;
@@ -475,6 +475,7 @@ public class ServerTCPconnect implements Runnable{
                     //Envio para tratamento
                     if(didPush){
                         didPush = false;
+                        in = new InputStreamReader(s.getInputStream());
                         bf = new BufferedReader(in);
 
                         str = bf.readLine();
@@ -501,7 +502,7 @@ public class ServerTCPconnect implements Runnable{
             
             s.close();
 
-        } catch (IOException e) {
+        } catch (SocketException e) {
             JObjE = new JSONObject();
             JObjE.put("exception", e.toString());
             data.setJObj(JObjE);
@@ -514,7 +515,7 @@ public class ServerTCPconnect implements Runnable{
             JObjE.put("exception", e.toString());
             data.setJObj(JObjE);
             upperclass.update(444, data);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | IOException e) {
             JObjE = new JSONObject();
             JObjE.put("exception", e.toString());
             data.setJObj(JObjE);
@@ -530,6 +531,10 @@ public class ServerTCPconnect implements Runnable{
     
     public String getCommand(){
         return (String) obj.get("Command");
+    }
+    
+    public void setCommand(String cmd){
+        obj.put("Command",cmd);
     }
     
     public void stopthread(){ // pode ser ma pratica
