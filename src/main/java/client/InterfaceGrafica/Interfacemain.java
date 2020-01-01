@@ -143,7 +143,7 @@ public class Interfacemain implements observer{
 
         long numberPlaylist = (long)obj.get("numberOfPlaylists");
 
-        for (long i = 1; i <= numberPlaylist; i++) {
+        for (long i = 0; i < numberPlaylist; i++) {
 
             String nome = "playlist" + i;
             String name = (String) obj.get(nome);

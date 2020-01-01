@@ -626,13 +626,13 @@ public class DatabaseControler {
         int playlistId = 0;
         try{
 
-            String sqlSelect = "SELECT * FROM playlist WHERE name = '" + username + "' AND user_id = '" + id + "'";
+            String sqlSelect = "SELECT * FROM playlist WHERE name = '" + nome + "' AND user_id = '" + id + "'";
             resultSet = stmt.executeQuery(sqlSelect);
 
             int i = 0;
             while (resultSet.next()){
                 i++;
-                playlistId = resultSet.getInt("id");
+                playlistId = resultSet.getInt("play_id");
                 break;
             }
 
@@ -683,7 +683,7 @@ public class DatabaseControler {
 
     public JSONObject listPlaylist(String username, ServerLogic sl){
 
-        JSONObject obj = null;
+        JSONObject obj = new JSONObject();
         int id = 0;
         String selectSql = null;
         ResultSet resultSet = null;
