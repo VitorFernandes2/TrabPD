@@ -518,7 +518,28 @@ public class ServerTCPconnect implements Runnable{
                                 pr = new PrintWriter(s.getOutputStream());
                                 pr.println(obj.toString());
                                 pr.flush();
-                                
+
+                                //Recebe as músicas
+                                in = new InputStreamReader(s.getInputStream());
+                                bf = new BufferedReader(in);
+
+                                str = bf.readLine();
+
+                                JsonParser = new JSONParser();
+                                JObj = (JSONObject) JsonParser.parse(str);
+
+                                if (JObj.get("message").equals("receiveFile")){
+
+                                    long fileSize = (long)JObj.get("size");
+                                    ReceiveFileFromServer receiveFileFromServer =
+                                            new ReceiveFileFromServer(s.getInputStream(), s.getOutputStream(),
+                                                    "tmp.mp3", fileSize);
+                                    receiveFileFromServer.start();
+                                    receiveFileFromServer.join();
+
+                                }
+
+
                                 break;
                                 
                         }

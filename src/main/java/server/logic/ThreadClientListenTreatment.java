@@ -274,6 +274,7 @@ public class ThreadClientListenTreatment implements Runnable {
                         String nome = (String)JObj.get("nome");
 
                         ArrayList<String> list = si.getDbaction().playPlaylist(username, nome, si);
+                        JSONObject obj = new JSONObject();
 
                         //Tem dados para reproduzir
                         if (list.size() > 0){
@@ -283,7 +284,9 @@ public class ThreadClientListenTreatment implements Runnable {
                         }
                         else {
 
-
+                            obj.put("message", "noPlaylistMusics");
+                            pr.println(obj.toString());
+                            pr.flush();
 
                         }
 
