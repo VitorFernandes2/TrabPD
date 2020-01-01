@@ -11,8 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -86,10 +84,71 @@ public class MulticastUDP {
                     
                     String cmd = new String(buffer);
                     
-                    //Tratamento de músicas
-                    if(cmd.contains("createMusic")){
+                    ci.Obj().put("output", "Recebe: " + cmd.trim());
+                    ci.notifyObserver(1);
                     
-                        System.out.println("recebe: " + cmd);
+                    //Tratamento de cópia de musics para as playlists para a nova base de dados
+                    if(cmd.contains("createcopyPlayListMusics")){
+                        
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd.trim());
+                        int Id = Integer.parseInt((String) JObj.get("Id"));
+                        int PlayId = Integer.parseInt((String) JObj.get("PlayId"));
+                        int MusicId = Integer.parseInt((String) JObj.get("MusicId"));
+                        
+                        if(!ci.getDbaction().contaisPlaylistMusicsMultiCast(MusicId, PlayId, ci)){
+                            ci.getDbaction().insertPlaylistMusicsMultiCast(Id, MusicId, PlayId, ci);
+                        }
+                        
+                    }
+                    //Tratamento de cópia de playlists para a nova base de dados
+                    else if(cmd.contains("createcopyPlayLists")){
+                        
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd.trim());
+                        int PlayId = Integer.parseInt((String) JObj.get("PlayId"));
+                        int UserId = Integer.parseInt((String) JObj.get("UserId"));
+                        String Name = (String) JObj.get("Name");
+                        
+                        if(!ci.getDbaction().contaisPlaylistMultiCast(UserId, Name, ci)){
+                            ci.getDbaction().insertPlaylistMultiCast(PlayId, UserId, Name, ci);
+                        }
+                        
+                    }
+                    //Tratamento de cópia de users para a nova base de dados
+                    else if(cmd.contains("createcopyUser")){
+                        
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd.trim());
+                        int UserId = Integer.parseInt((String) JObj.get("UserId"));
+                        String UserName = (String) JObj.get("UserName");
+                        String UserPassword = (String) JObj.get("UserPassword");
+                        
+                        if(!ci.getDbaction().contaisUserMultiCast(UserName, ci)){
+                            ci.getDbaction().insertuserMultiCast(UserId, UserName, UserName, UserPassword, ci);
+                        }
+                        
+                    }
+                    //Tratamento de cópia de músicas para a nova base de dados
+                    else if(cmd.contains("createcopyMusic")){
+                        
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd.trim());
+                        int MusicId = Integer.parseInt((String) JObj.get("MusicId"));
+                        String MusicName = (String) JObj.get("MusicName");
+                        String MusicAuthor = (String) JObj.get("MusicAuthor");
+                        String MusicYear = (String) JObj.get("MusicYear");
+                        String MusicAlbum = (String) JObj.get("MusicAlbum");
+                        double MusicDuration = (double) JObj.get("MusicDuration");
+                        String MusicGenre = (String) JObj.get("MusicGenre");
+                        String MusicPath = (String) JObj.get("MusicPath");
+                        
+                        if(!ci.getDbaction().contaismusic(MusicName, MusicAuthor, MusicAlbum, ci)){
+                            ci.getDbaction().insertmusic(MusicId, MusicName, MusicAuthor, MusicAlbum, MusicYear, MusicDuration, MusicGenre, MusicPath, ci);
+                        }
+                        
+                    }
+                    else if(cmd.contains("createMusic")){
                         
                         JSONParser JsonParser = new JSONParser();
                         JSONObject JObj = (JSONObject) JsonParser.parse(cmd.trim());
@@ -125,13 +184,19 @@ public class MulticastUDP {
                             try {
                                 String selectSql = ("SELECT * FROM `users`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
+                                String user_id;
                                 String username;
                                 String password;
                                 while(resultSet.next()){
+                                    user_id = String.valueOf(resultSet.getInt("user_id"));
                                     username = resultSet.getString("username");
                                     password = resultSet.getString("password");
-                                    String usercopy = "tipo|registo;username|" + username + ";password|" + password;
-                                    byte[] b = String.valueOf(usercopy).getBytes();
+                                    JSONObject jo = new JSONObject();
+                                    jo.put("Command", "createcopyUser");
+                                    jo.put("UserId", user_id);
+                                    jo.put("UserName", username.trim());
+                                    jo.put("UserPassword", password.trim());
+                                    byte[] b = String.valueOf(jo.toString()).getBytes();
                                     DatagramPacket packetUser = new DatagramPacket(b, b.length, group, 3456);
                                     multicastSock.send(packetUser);
                                 }
@@ -144,6 +209,7 @@ public class MulticastUDP {
                             try {
                                 String selectSql = ("SELECT * FROM `musics`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
+                                String music_id;
                                 String name;
                                 String artist;
                                 String album;
@@ -152,6 +218,7 @@ public class MulticastUDP {
                                 String genre;
                                 String localname;
                                 while(resultSet.next()){
+                                    music_id = String.valueOf(resultSet.getInt("music_id"));
                                     name = resultSet.getString("name");
                                     artist = resultSet.getString("artist");
                                     album = resultSet.getString("album");
@@ -160,7 +227,8 @@ public class MulticastUDP {
                                     genre = resultSet.getString("genre");
                                     localname = resultSet.getString("localname");
                                     JSONObject jo = new JSONObject();
-                                    jo.put("Command", "createMusic");
+                                    jo.put("Command", "createcopyMusic");
+                                    jo.put("MusicId", music_id);
                                     jo.put("MusicName", name.trim());
                                     jo.put("MusicAuthor", artist.trim());
                                     jo.put("MusicYear", year.trim());
@@ -177,32 +245,57 @@ public class MulticastUDP {
                                 ci.notifyObserver(4);
                                 break;
                             }
-                            /*
-                            //Código para cópia das playlist's, tem de ser reformulado!
+                            //Código para cópia das playlists
                             try {
                                 String selectSql = ("SELECT * FROM `playlist`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
-                                int music_id;
-                                int user_id;
+                                String play_id;
+                                String user_id;
                                 String name;
                                 while(resultSet.next()){
-                                    music_id = resultSet.getInt("music_id");
-                                    user_id = resultSet.getInt("user_id");
+                                    play_id = String.valueOf(resultSet.getInt("play_id"));
+                                    user_id = String.valueOf(resultSet.getInt("user_id"));
                                     name = resultSet.getString("name");
-                                    //wip
                                     JSONObject jo = new JSONObject();
-                                    jo.put("Command", usercopy);
+                                    jo.put("Command", "createcopyPlayLists");
+                                    jo.put("PlayId", play_id);
+                                    jo.put("UserId", user_id);
+                                    jo.put("Name", name);
                                     byte[] b = String.valueOf(jo.toString()).getBytes();
                                     DatagramPacket packetUser = new DatagramPacket(b, b.length, group, 3456);
                                     multicastSock.send(packetUser);
-                                    //---
                                 }
                             } catch (SQLException ex) {
                                 ci.Obj().put("exception", "[ERROR] Copia da Playlist -> " + ex.getMessage());
                                 ci.notifyObserver(4);
                                 break;
                             }
-                            */
+                            //Código para cópia das músicas associadas a cada playlist
+                            try {
+                                String selectSql = ("SELECT * FROM `playlistmusic`");
+                                ResultSet resultSet = stmt2.executeQuery(selectSql);
+                                String play_id;
+                                String music_id;
+                                String id;
+                                while(resultSet.next()){
+                                    play_id = String.valueOf(resultSet.getInt("play_id"));
+                                    music_id = String.valueOf(resultSet.getInt("music_id"));
+                                    id = String.valueOf(resultSet.getInt("id"));
+                                    JSONObject jo = new JSONObject();
+                                    jo.put("Command", "createcopyPlayListMusics");
+                                    jo.put("PlayId", play_id);
+                                    jo.put("MusicId", music_id);
+                                    jo.put("Id", id);
+                                    byte[] b = String.valueOf(jo.toString()).getBytes();
+                                    DatagramPacket packetUser = new DatagramPacket(b, b.length, group, 3456);
+                                    multicastSock.send(packetUser);
+                                }
+                            } catch (SQLException ex) {
+                                ci.Obj().put("exception", "[ERROR] Copia das Musicas associadas a cada Playlist -> " + ex.getMessage());
+                                ci.notifyObserver(4);
+                                break;
+                            }
+                            
                             connectPrincipal.close();
                             stmt2.close();
 

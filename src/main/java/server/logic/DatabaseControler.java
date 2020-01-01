@@ -109,21 +109,6 @@ public class DatabaseControler {
         return pass;
     }
     
-    //função temporária sem tratamento
-    public boolean insertplaylist(int music_id, int user_id, String name, ServerLogic sl){
-        try {  
-            String insertSql = "INSERT INTO playlist(music_id, user_id, name)"
-            + " VALUES('"+music_id+"', '"+user_id+"', '"+name+"')";
-            stmt.executeUpdate(insertSql);
-        } catch (SQLException ex) {
-            sl.Obj().put("exception", "[ERROR] InsertPlaylist -> " + ex.getMessage());
-            sl.notifyObserver(4);
-            return false;
-        }
-        return true;
-    }
-    //--------------------------------
-    
     public boolean insertuser(String name, String username, String password, ServerLogic sl){
         try {  
             String insertSql = "INSERT INTO users(name, username, password)"
@@ -160,6 +145,83 @@ public class DatabaseControler {
             return false;
         }
         return true;
+    }
+    
+    public boolean insertuserMultiCast(int user_id, String name, String username, String password, ServerLogic sl){
+        try {
+            String insertSql = "INSERT INTO users(user_id, name, username, password)"
+            + " VALUES('"+user_id+"', '"+name+"', '"+username+"', '"+password.trim()+"')";
+            stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertUser Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean insertPlaylistMultiCast(int play_id, int user_id, String name, ServerLogic sl){
+        try {
+            String insertSql = "INSERT INTO playlist(play_id, user_id, name)"
+            + " VALUES('"+play_id+"', '"+user_id+"', '"+name+"')";
+            stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertUser Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean insertPlaylistMusicsMultiCast(int id, int music_id, int play_id, ServerLogic sl){
+        try {
+            String insertSql = "INSERT INTO playlistmusic(id, music_id, play_id)"
+            + " VALUES('"+id+"', '"+music_id+"', '"+play_id+"')";
+            stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertUser Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean contaisPlaylistMultiCast(int user_id, String name, ServerLogic sl){
+        try {
+            String selectSql = ("SELECT name FROM `playlist` WHERE user_id = \"" + user_id + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("name");
+                if(procu.equals(name)){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] ContainUser Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+           return false;
+        }
+        return false;
+    }
+    
+    public boolean contaisPlaylistMusicsMultiCast(int music_id, int play_id, ServerLogic sl){
+        try {
+            String selectSql = ("SELECT play_id FROM `playlistmusic` WHERE music_id = \"" + music_id + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            int procu;
+            while(resultSet.next()){
+                procu = resultSet.getInt("play_id");
+                if(procu == play_id){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] ContainUser Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+           return false;
+        }
+        return false;
     }
     
     public boolean removeuserMultiCast(String username, String password, ServerLogic sl){
@@ -216,6 +278,19 @@ public class DatabaseControler {
         try {
             String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre, localname)"
             + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"', '"+localname+"')";
+            stmt.executeUpdate(insertSql);
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] InsertMusicPrivate -> " + ex.getMessage());
+            sl.notifyObserver(4);
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean insertmusic(int music_id, String name,String artist,String album, String year, double duration, String genre, String localname, ServerLogic sl){
+        try {
+            String insertSql = "INSERT INTO musics(music_id, name, artist, album, year, duration, genre, localname)"
+            + " VALUES('"+music_id+"', '"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"', '"+localname+"')";
             stmt.executeUpdate(insertSql);
         } catch (SQLException ex) {
             sl.Obj().put("exception", "[ERROR] InsertMusicPrivate -> " + ex.getMessage());
