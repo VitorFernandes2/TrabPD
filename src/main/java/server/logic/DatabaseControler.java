@@ -570,7 +570,7 @@ public class DatabaseControler {
 
             int playId = 0;
             while (resultSet.next()){
-                playId = resultSet.getInt("id");
+                playId = resultSet.getInt("play_id");
             }
 
             for (int i = 0; i < musics.size(); i++) {
