@@ -274,16 +274,18 @@ public class ThreadClientListenTreatment implements Runnable {
                         String nome = (String)JObj.get("nome");
 
                         ArrayList<String> list = si.getDbaction().playPlaylist(username, nome, si);
-                        JSONObject obj = new JSONObject();
 
                         //Tem dados para reproduzir
-                        if (list.size() > 0){
+                        if (list != null && list.size() > 0){
 
-
+                            SendPlaylistToClient t = new SendPlaylistToClient(pr, Client.getOutputStream(), list);
+                            t.start();
+                            t.join();
 
                         }
                         else {
 
+                            JSONObject obj = new JSONObject();
                             obj.put("message", "noPlaylistMusics");
                             pr.println(obj.toString());
                             pr.flush();

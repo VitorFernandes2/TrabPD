@@ -25,6 +25,7 @@ public class SendPlaylistToClient extends Thread{
         JSONObject obj = new JSONObject();
         obj.put("message", "receiveFiles");
         obj.put("numberOfFiles", list.size());
+
         for (int i = 0; i < list.size(); i++) {
 
             String nome = "Nome" + i;
@@ -37,10 +38,17 @@ public class SendPlaylistToClient extends Thread{
 
         }
 
+        System.out.println(obj.toString());
         pr.println(obj.toString());
         pr.flush();
 
+        for (int i = 0; i < list.size(); i++) {
 
+            SendFileToClient sendFileToClient =
+                    new SendFileToClient(list.get(i), out);
+            sendFileToClient.start();
+
+        }
 
     }
 

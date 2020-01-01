@@ -528,17 +528,31 @@ public class ServerTCPconnect implements Runnable{
                                 JsonParser = new JSONParser();
                                 JObj = (JSONObject) JsonParser.parse(str);
 
-                                if (JObj.get("message").equals("receiveFile")){
+                                if (JObj.get("message").equals("receiveFiles")){
 
-                                    long fileSize = (long)JObj.get("size");
-                                    ReceiveFileFromServer receiveFileFromServer =
-                                            new ReceiveFileFromServer(s.getInputStream(), s.getOutputStream(),
-                                                    "tmp.mp3", fileSize);
-                                    receiveFileFromServer.start();
-                                    receiveFileFromServer.join();
+                                    System.out.println(JObj.toString());
+
+                                    long numberOfFiles = (long)JObj.get("numberOfFiles");
+
+                                    for (int i = 0; i < numberOfFiles; i++) {
+
+                                        String playNome = "Nome" + i;
+                                        String name = (String)JObj.get(playNome);
+
+                                        String MusicSize = "Size" + i;
+                                        long fileSize = (long)JObj.get(MusicSize);
+
+                                        String filename = "tmp" + i + ".mp3";
+
+                                        ReceiveFileFromServer receiveFileFromServer =
+                                                new ReceiveFileFromServer(s.getInputStream(), s.getOutputStream(),
+                                                        filename, fileSize);
+                                        receiveFileFromServer.start();
+                                        receiveFileFromServer.join();
+
+                                    }
 
                                 }
-
 
                                 break;
                                 

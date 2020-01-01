@@ -798,7 +798,7 @@ public class DatabaseControler {
 
             //Se existir retorna falso
             while (resultSet.next()){
-                int playid = resultSet.getInt("id");
+                int playid = resultSet.getInt("play_id");
                 return playid;
             }
 
@@ -826,7 +826,7 @@ public class DatabaseControler {
 
         try{
 
-            String sql = "SELECT * playistmusic WHERE play_id = '" + playid + "'";
+            String sql = "SELECT * FROM playlistmusic WHERE play_id = '" + playid + "'";
             ResultSet resultSet = stmt.executeQuery(sql);
 
             while (resultSet.next()){
@@ -840,7 +840,7 @@ public class DatabaseControler {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            return list;
         }
 
         return list;
