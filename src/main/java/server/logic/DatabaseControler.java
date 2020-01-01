@@ -561,12 +561,12 @@ public class DatabaseControler {
                 return false;
             }
 
-            sql = "INSERT INTO playlist(user_id, name) " +
-                    " VALUES('" + id + "', '" + nome +"')";
-            resultSet = stmt.executeQuery(sql);
+            String insertSql = "INSERT INTO playlist(user_id, name)"
+                    + " VALUES('"+id+"', '"+nome+"')";
+            int resultSet2 = stmt.executeUpdate(insertSql);
 
-            sql = "SELECT * FROM playlist WHERE name = '" + nome + "' AND user_id = '" + id +"'";
-            resultSet = stmt.executeQuery(sql);
+            String sql2 = "SELECT * FROM playlist WHERE name = '" + nome + "' AND user_id = '" + id +"'";
+            resultSet = stmt.executeQuery(sql2);
 
             int playId = 0;
             while (resultSet.next()){
@@ -581,7 +581,7 @@ public class DatabaseControler {
 
                     sql = "INSERT INTO playlistmusic(music_id, play_id) " +
                             "VALUES('" + musicId +"','" + playId + "')";
-                    resultSet = stmt.executeQuery(sql);
+                    stmt.executeUpdate(sql);
 
                 }
 
@@ -606,7 +606,7 @@ public class DatabaseControler {
             String sql = "UPDATE playlist " +
                     "SET name = '" + nome + "'" +
                     "WHERE user_id = '" + id +"' AND name = '" + oldname + "'";
-            ResultSet resultSet = stmt.executeQuery(sql);
+            stmt.executeUpdate(sql);
         } catch (SQLException e) {
             return false;
         }
@@ -646,10 +646,10 @@ public class DatabaseControler {
         try{
 
             String deleteSql = "DELETE FROM playlist WHERE name = '" + nome +"' And user_id = '" + id + "'";
-            resultSet = stmt.executeQuery(deleteSql);
+            stmt.executeUpdate(deleteSql);
 
             deleteSql = "DELETE FROM playlistmusic WHERE play_id = '" + playlistId + "'";
-            resultSet = stmt.executeQuery(deleteSql);
+            stmt.executeUpdate(deleteSql);
 
         }catch (SQLException e) {
             return false;
