@@ -132,6 +132,8 @@ public class Interfacemain implements observer{
 
         String nome = Readers.readString("Insira o nome da playlist para reproduzir: ");
         data.setNome(nome);
+        
+        data.setMenu(15);
 
     }
 
@@ -149,6 +151,8 @@ public class Interfacemain implements observer{
             System.out.println(name);
 
         }
+        
+        data.setMenu(15);
 
     }
 
@@ -159,6 +163,8 @@ public class Interfacemain implements observer{
 
         data.setNome(nome);
         data.setAutor(NewName);
+        
+        data.setMenu(15);
 
     }
 
@@ -166,6 +172,8 @@ public class Interfacemain implements observer{
 
         String name = Readers.readString("Insira o nome da playlist que pretende eliminar: ");
         data.setNome(name);
+        
+        data.setMenu(15);
 
     }
 
@@ -187,6 +195,8 @@ public class Interfacemain implements observer{
         }while (!exit.equalsIgnoreCase("sim"));
 
         data.setNome(nome);
+        
+        data.setMenu(15);
 
     }
 
@@ -199,6 +209,8 @@ public class Interfacemain implements observer{
 
         data.setNome(nome);
         data.setAutor(author);
+        
+        data.setMenu(6);
 
     }
 
@@ -246,6 +258,8 @@ public class Interfacemain implements observer{
         data.setNome(nomeAlterar);
         data.setAutor(autorAlterar);
         data.setMusic(ano, nome, album, autor, genero, duration, null);
+        
+        data.setMenu(6);
 
     }
 
@@ -266,6 +280,8 @@ public class Interfacemain implements observer{
 
         }
 
+        data.setMenu(6);
+        
     }
 
     private void removeMusic(ConnectData data) {
@@ -275,6 +291,8 @@ public class Interfacemain implements observer{
 
         data.setNome(nome);
         data.setAutor(autor);
+        
+        data.setMenu(6);
 
     }
 
@@ -310,12 +328,13 @@ public class Interfacemain implements observer{
             System.out.println("removeMusic - Remover musica");
             System.out.println("changeMusic - Alterar musica");
             System.out.println("playMusic - Tocar musica");
+            System.out.println("voltar - Voltar para o menu anterior");
 
             cmd = Readers.readString("\nInsira a opcao que pretende: ");
 
         }while (!cmd.equals("listMusics") && !cmd.equals("createMusic")
                 && !cmd.equals("removeMusic") && !cmd.equals("changeMusic")
-                && !cmd.equals("playMusic"));
+                && !cmd.equals("playMusic") && !cmd.equals("voltar"));
 
         data.setCommand(cmd);
 
@@ -333,12 +352,13 @@ public class Interfacemain implements observer{
             System.out.println("removePlaylist - Remover playlists");
             System.out.println("changePlaylist - Alterar playlists");
             System.out.println("playPlaylist - Tocar playlists");
+            System.out.println("voltar - Voltar para o menu anterior");
 
             cmd = Readers.readString("\nInsira a opcao que pretende: ");
 
         }while (!cmd.equals("listPlaylists") && !cmd.equals("createPlaylist")
                 && !cmd.equals("removePlaylist") && !cmd.equals("changePlaylist")
-                && !cmd.equals("playPlaylist"));
+                && !cmd.equals("playPlaylist") && !cmd.equals("voltar"));
 
         data.setCommand(cmd);
 
@@ -386,6 +406,7 @@ public class Interfacemain implements observer{
         data.setPassword(pass);
         
         data.setMenu(8);
+        
     }
     
     private void registinter(ConnectData data) {
@@ -410,6 +431,7 @@ public class Interfacemain implements observer{
         
         //No fim de se registar ele volta ao menu para poder realizar login
         data.setMenu(7);
+        
     }
 
     private void tempshowreceb(ConnectData data) {

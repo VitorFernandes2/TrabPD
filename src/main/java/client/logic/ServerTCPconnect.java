@@ -5,8 +5,6 @@ import client.InterfaceGrafica.Interfacemain;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import mainObjects.Music;
 import org.json.simple.JSONObject;
@@ -98,7 +96,7 @@ public class ServerTCPconnect implements Runnable{
             int guardaMenu = 7;
             boolean didPush = false;
             boolean close = false;
-            Socket  s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
+            s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
             PrintWriter pr;
             InputStreamReader in;
             StringBuilder sb;
@@ -176,6 +174,7 @@ public class ServerTCPconnect implements Runnable{
                                 break;
                                 
                             case 8:
+                                guardaMenu = 8;
                                 this.upperclass.update(8, data);
                                 
                                 if (data.getCommand().equals("gotoMusics")){
@@ -218,6 +217,9 @@ public class ServerTCPconnect implements Runnable{
                                 }
                                 else if (data.getCommand().equals("listMusics")){
                                     data.setMenu(13);
+                                }
+                                else if (data.getCommand().equals("voltar")){
+                                    data.setMenu(8);
                                 }
                                 
                                 break;
@@ -264,6 +266,8 @@ public class ServerTCPconnect implements Runnable{
                                             s.getOutputStream());
                                     sendFileToServer.start();
                                 }
+                                
+                                data.setMenu(6);
                                 
                                 break;
                                 
@@ -402,6 +406,9 @@ public class ServerTCPconnect implements Runnable{
                                 }
                                 else if(data.getCommand().equals("playPlaylist")){
                                     this.data.setMenu(20);
+                                }
+                                else if(data.getCommand().equals("voltar")){
+                                    this.data.setMenu(8);
                                 }
                                 
                                 break;
