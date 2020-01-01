@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import ds.logic.gest.Server;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.ServerLogic;
@@ -99,6 +98,20 @@ public class DatabaseControler {
 
     public String getNamedb() {
         return namedb;
+    }
+
+    public void setNamedbPrincipal() throws SQLException {
+        this.namedb = "Principal";
+        String ResetString = "jdbc:mysql://localhost:3306/"+this.namedb+"?useTimezone=true&serverTimezone=UTC&useSSL=false";
+        this.connect = DriverManager.getConnection(ResetString,this.user,this.pass);
+        this.stmt = connect.createStatement();
+    }
+
+    public void setNamedb(String namedb) throws SQLException {
+        this.namedb = namedb;
+        String ResetString = "jdbc:mysql://localhost:3306/"+this.namedb+"?useTimezone=true&serverTimezone=UTC&useSSL=false";
+        this.connect = DriverManager.getConnection(ResetString,this.user,this.pass);
+        this.stmt = connect.createStatement();
     }
 
     public String getUser() {

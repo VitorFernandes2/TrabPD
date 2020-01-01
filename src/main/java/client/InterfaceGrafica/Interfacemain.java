@@ -2,12 +2,10 @@ package client.InterfaceGrafica;
 
 import client.Interfaces.observer;
 import client.logic.ConnectData;
-import com.mysql.cj.xdevapi.JsonArray;
 import mainObjects.Readers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Scanner;
 

@@ -1,7 +1,6 @@
 package ds.logic;
 
 
-import ds.logic.gest.Client;
 import ds.logic.gest.ClientList;
 import ds.logic.gest.Server;
 import ds.logic.gest.ServerList;
@@ -74,9 +73,21 @@ public class ManageServers extends Thread {
                         //Se for o principal
                         if (item.isPrinci() && !servers.isEmpty()){
                             servers.get(0).setPrinci();
-                            //Repensar em enviar um aviso ao novo servidor principal que o seu nome da base de dados passou a ser "Principal"
                             
-                            //---------------------------------------------------------------------------------------------------------------
+                            //Aviso do novo servidor principal que a sua base de dados mudou
+                            String IP = servers.get(0).getIP();
+                            String Port = servers.get(0).getPort();
+                            JSONObject jj = new JSONObject();
+                            jj.put("message", "giveadmin");
+                            jj.put("namebd", "Principal");
+                            String resetPrincipal = jj.toJSONString();
+                            byte[] buffs = resetPrincipal.getBytes();
+                            InetAddress serverIpReset = InetAddress.getByName(IP);
+                            int serverPortReset = Integer.parseInt(Port);
+                            packet = new DatagramPacket(buffs, buffs.length, serverIpReset, serverPortReset);
+                            socket.send(packet);
+                            //--------------------------------------------------------------
+                            
                         }
                         else{
                             //saida para reinicio dos checks de cada servidor
