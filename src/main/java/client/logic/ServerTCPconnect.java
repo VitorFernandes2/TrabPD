@@ -174,7 +174,7 @@ public class ServerTCPconnect implements Runnable{
                                 break;
                                 
                             case 8:
-                                guardaMenu = 8;
+                                guardaMenu = 7;
                                 this.upperclass.update(8, data);
                                 
                                 if (data.getCommand().equals("gotoMusics")){

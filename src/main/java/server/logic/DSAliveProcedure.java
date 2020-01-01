@@ -8,6 +8,9 @@ import server.ServerLogic;
 
 import java.io.IOException;
 import java.net.*;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DSAliveProcedure extends Thread {
 
@@ -35,7 +38,9 @@ public class DSAliveProcedure extends Thread {
                 socket.receive(packet);
 
                 String msg = new String(packet.getData(), 0 , packet.getLength());
-                System.out.println(msg);
+                
+                serverLogic.getSd().getObjMudance().put("output", msg);
+                serverLogic.notifyObserver(1);
 
                 //get the json message
                 JSONParser parser = new JSONParser();
@@ -45,8 +50,9 @@ public class DSAliveProcedure extends Thread {
 
                     long numberOfServers = (long) obj.get("numberOfServers");
                     serverLogic.getSd().setNumberOfServers(numberOfServers);
-
-                    System.out.printf("O numero de servidores e: " + numberOfServers);
+                    
+                    serverLogic.getSd().getObjMudance().put("output", "O numero de servidores e: " + numberOfServers);
+                    serverLogic.notifyObserver(1);
 
                     int Port = packet.getPort();
                     InetAddress IP = packet.getAddress();
@@ -61,19 +67,36 @@ public class DSAliveProcedure extends Thread {
 
                     long numberOfServers = (long) obj.get("numberOfServers");
                     serverLogic.getSd().setNumberOfServers(numberOfServers);
+                    
+                    serverLogic.getSd().getObjMudance().put("output", "Um servidor foi abaixo o numero de servidores e: " + numberOfServers);
+                    serverLogic.notifyObserver(1);
 
-                    System.out.printf("Um servidor foi abaixo o numero de servidores e: " + numberOfServers);
+                }
+                else if (obj.get("message").equals("giveadmin")){
+                    
+                    String namebd = (String) obj.get("namebd");
+                    
+                    serverLogic.getSd().getObjMudance().put("output", "Este servidor passou a ser o servidor principal: " + namebd);
+                    serverLogic.notifyObserver(1);
+                    
+                    serverLogic.getDbaction().setNamedb(namebd);
 
                 }
 
             }
 
         } catch (SocketException e) {
-            e.printStackTrace();
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no socket de pings de ligação.\n" + e.getMessage());
+            serverLogic.notifyObserver(4);
         } catch (IOException e) {
-            e.printStackTrace();
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro nos pings de ligação.\n" + e.getMessage());
+            serverLogic.notifyObserver(4);
         } catch (ParseException e) {
-            e.printStackTrace();
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Parse do objeto JSON nos pings de ligação.\n" + e.getMessage());
+            serverLogic.notifyObserver(4);
+        } catch (SQLException e) {
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Código de ligação à base de dados.\n" + e.getMessage());
+            serverLogic.notifyObserver(4);
         }
 
     }
