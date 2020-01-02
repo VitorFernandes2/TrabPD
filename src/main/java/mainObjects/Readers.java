@@ -13,4 +13,19 @@ public class Readers {
 
     }
 
+    public static int readInteger(String s) {
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(s);
+        int retorno = 0;
+
+        do {
+            while (!scanner.hasNextInt())
+                scanner.next();
+            retorno = scanner.nextInt();
+        }while (retorno < 0);
+
+        return retorno;
+
+    }
 }

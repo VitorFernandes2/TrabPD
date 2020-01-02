@@ -1,4 +1,4 @@
-package remoteService.ui;
+package ds.ui;
 
 import mainObjects.Readers;
 

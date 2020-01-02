@@ -1,13 +1,14 @@
 package ds.logic.gest;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Classe para proteção dos acessos ao array de servidores
  * 
  **/
-public class ServerList extends ArrayList<Server> {
-    
+public class ServerList extends ArrayList<Server> implements Serializable {
+    public static final long serialVersionUID = 1;
     @Override
     public synchronized Server remove(int index) {
         return super.remove(index);

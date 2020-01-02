@@ -1,13 +1,12 @@
-package remoteService;
+package ds;
 
-import remoteService.interfaces.AdministrationInterface;
-import remoteService.interfaces.ObserverInterface;
-import remoteService.ui.TextInterface;
+import ds.logic.gest.ServerList;
+import ds.ui.TextInterface;
+import mainObjects.Readers;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -21,14 +20,13 @@ public class RemoteService extends UnicastRemoteObject implements ObserverInterf
         try {
 
             //Localiza o servico remoto nomeado "piValueService"
-            String objectUrl = "rmi://127.0.0.1/remoteService"; //rmiregistry on localhost
+            String objectUrl = "rmi://localhost/remoteService"; //rmiregistry on localhost
 
             if(args.length > 0) {
                 objectUrl = "rmi://"+args[0]+"/remoteService";
             }
 
-            Remote remoteService = Naming.lookup(objectUrl);
-            AdministrationInterface service = (AdministrationInterface) remoteService;
+            AdministrationInterface service = (AdministrationInterface) Naming.lookup(objectUrl);
 
             String value = null;
 
@@ -40,12 +38,12 @@ public class RemoteService extends UnicastRemoteObject implements ObserverInterf
 
                 if (value.equals("listServers")){
 
-                    ArrayList<String> list = service.getAliveServers();
+                    System.out.println(service.getAliveServers());
 
                 }
                 else if (value.equals("endServer")){
 
-                    int id = 0;
+                    int id = Readers.readInteger("Insira o id a eliminar: ");
                     service.endServer(id);
 
                 }

@@ -1,9 +1,11 @@
 package ds.logic.gest;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Server {
+public class Server implements Serializable {
 
+    public static final long serialVersionUID = 1;
     private String IP; // ip do servidor
     private String Port; // porta do servidor
     private int numberClients; // numero de clientes

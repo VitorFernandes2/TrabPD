@@ -1,12 +1,30 @@
 package ds;
 
 import ds.logic.*;
+import ds.logic.gest.Server;
 import ds.logic.gest.ServerList;
 import mainObjects.Readers;
 
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Main {
+public class Main extends UnicastRemoteObject implements AdministrationInterface {
+
+    protected List<ObserverInterface> observers;
+    private static ServerList servers = new ServerList();
+
+    protected Main() throws RemoteException {
+
+        observers = new ArrayList<>();
+
+    }
 
     public static void main(String[] args) {
 
@@ -16,8 +34,6 @@ public class Main {
 
     public static void start(){
 
-        ServerList servers = new ServerList();
-            
         ManageStarts servertemp = null;
         ManageServers manageServers = null;
         try{
@@ -36,6 +52,17 @@ public class Main {
             manageServers.start();
         }
 
+        try{
+
+            LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+            Main service = new Main();
+            Naming.rebind("rmi://localhost/remoteService", service);
+
+        }catch(RemoteException | MalformedURLException e){
+
+        }
+
+
         String quitMessage = "";
         while (!quitMessage.equals("quit"))
             quitMessage = Readers.readString("\nInsira quit para terminar o ds: ");
@@ -48,5 +75,39 @@ public class Main {
         }
 
     }
-    
+
+    @Override
+    public String getAliveServers() throws RemoteException {
+
+        StringBuffer str = new StringBuffer();
+
+        for (Server item : servers) {
+            str.append(item.getIP() + " " + item.getPort() + "\n");
+        }
+
+        return str.toString();
+
+    }
+
+    @Override
+    public void endServer(int id) throws RemoteException {
+
+        if (id >= 0 && id < servers.size()){
+
+            servers.remove(id);
+
+        }
+
+    }
+
+    @Override
+    public void addObserver(ObserverInterface obs) throws RemoteException {
+        observers.add(obs);
+    }
+
+    @Override
+    public void removeObserver(ObserverInterface obs) throws RemoteException {
+        observers.remove(obs);
+    }
+
 }

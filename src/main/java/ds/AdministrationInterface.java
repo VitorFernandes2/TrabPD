@@ -1,6 +1,6 @@
-package ds.interfaces;
+package ds;
 
-import remoteService.interfaces.ObserverInterface;
+import ds.logic.gest.ServerList;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public interface AdministrationInterface extends Remote {
 
-    ArrayList<String> getAliveServers() throws RemoteException;
+    String getAliveServers() throws RemoteException;
     void endServer(int id) throws RemoteException;
     void addObserver(ObserverInterface obs) throws RemoteException;
     void removeObserver(ObserverInterface obs) throws RemoteException;
