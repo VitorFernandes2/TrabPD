@@ -27,6 +27,7 @@ public class MulticastUDP {
     private static InetAddress group;
     private static ServerLogic ci;
     private static int port; // TEMPPP
+    private static int uses;
     private static boolean corre;
 
     public MulticastUDP(ServerLogic ci) {
@@ -37,10 +38,10 @@ public class MulticastUDP {
     //public static void main(String[] args) throws UnknownHostException, IOException {
     public void comecamulticast() {
         try {
-            // TODO code application logic here
             
             group = InetAddress.getByName("225.4.5.6");
-            multicastSock = new MulticastSocket(3456);
+            uses = 3456;
+            multicastSock = new MulticastSocket(uses);
             multicastSock.joinGroup(group);
             corre = true;
             
@@ -64,12 +65,16 @@ public class MulticastUDP {
         MulticastUDP.corre = false;
     }
 
-    public static MulticastSocket getMulticastSock() {
+    public MulticastSocket getMulticastSock() {
         return multicastSock;
     }
 
-    public static InetAddress getGroup() {
+    public InetAddress getGroup() {
         return group;
+    }
+
+    public int getUses() {
+        return uses;
     }
 
     private static Runnable Receb = new Runnable() {
@@ -436,8 +441,6 @@ public class MulticastUDP {
                     }
                     
                     //-----------------------------------------------------------------------
-                    
-                    //updatedatabase(JObjrecebido);
                     
                 }
             } catch (IOException ex) {

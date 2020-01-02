@@ -95,25 +95,29 @@ public class ServerConnectionStarter {
         sd.Obj().put("output", "Server a correr.");
         
         sd.notifyObserver(1);
-
-        DSAliveProcedure aliveProcedure = new DSAliveProcedure(sd);
-        aliveProcedure.start();
         
         //Começa a comunicação em multicast
         MulticastUDP multi = new MulticastUDP(sd);
         multi.comecamulticast();
-        //---
+        //---------------------------------
+
+        //Inicio dos Ping
+        DSAliveProcedure aliveProcedure = new DSAliveProcedure(sd, multi);
+        aliveProcedure.start();
+        //---------------
         
         ThreadClientRequests threadclass = new ThreadClientRequests(sd); // pode ser mai pratica REVER
         
         threadclass.start();
 
-        Scanner myObj = new Scanner(System.in);  // TEMP - pausa para manter a thread a correr. escreve algo pra parar thread
+        Scanner myObj = new Scanner(System.in);
         
         String wait = myObj.nextLine();
         
         try {
+            //Desligo das ligacoes UDP com o DS para pings
             aliveProcedure.terminate();
+            //--------------------------------------------
             
             //Obriga a Thread do Servidor a parar
             threadclass.stopthread();
@@ -123,12 +127,13 @@ public class ServerConnectionStarter {
             multi.turnOff();
             //-------------------------------
             
-            System.exit(0);//retirar depois para tratamento de morte do servidor
+            //retirar depois para tratamento de morte do servidor
+            System.exit(0);//------------------------------------
+            //---------------------------------------------------
             
         } catch (IOException ex) {
             
             sd.Obj().put("output", "[ERROR] Terminação forçada do Servidor.\n" + ex.getMessage());
-            
             sd.notifyObserver(1);
             
         }

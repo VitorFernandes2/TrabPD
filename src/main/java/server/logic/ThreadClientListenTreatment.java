@@ -319,8 +319,8 @@ public class ThreadClientListenTreatment implements Runnable {
                         //----------------------------------
                     }
 
-                    //C�digo de envio para os outros servidores
-                    // mesmo que o comando n�o seja um sucesso
+                    //Codigo de envio para os outros servidores
+                    // mesmo que o comando nao seja um sucesso
                     // neste servidor os dados dele podem ser diferentes
                     // por isso enviados para o para todos
                     if(log){
@@ -353,23 +353,51 @@ public class ThreadClientListenTreatment implements Runnable {
             } catch (IOException ex) {
                 si.Obj().put("exception", "[ERROR] Erro no ciclo de tratamento de Mensagens do Cliente.\n" + ex.getMessage());
                 si.notifyObserver(4);
+                try {
+                    si.desconnetClient(Client);
+                } catch (IOException ex2) {
+                    si.Obj().put("exception", "[ERROR] Erro ao tentar desconectar o Cliente.\n" + ex2.getMessage());
+                    si.notifyObserver(4);
+                }
                 si.removeClient(Client);
                 si.removeListenClient(this);
                 return;
             } catch (ParseException ex) {
                 si.Obj().put("exception", "[ERROR] Erro na tradu��o do Json no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
                 si.notifyObserver(4);
+                try {
+                    si.desconnetClient(Client);
+                } catch (IOException ex2) {
+                    si.Obj().put("exception", "[ERROR] Erro ao tentar desconectar o Cliente.\n" + ex2.getMessage());
+                    si.notifyObserver(4);
+                }
                 si.removeClient(Client);
                 si.removeListenClient(this);
                 return;
             } catch (NullPointerException ex) {
                 si.getSd().getObjMudance().put("exception", "[ERROR] Erro de Nullpointer. Provavelmente o Cliente se desconectou no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
                 si.notifyObserver(4);
+                try {
+                    si.desconnetClient(Client);
+                } catch (IOException ex2) {
+                    si.Obj().put("exception", "[ERROR] Erro ao tentar desconectar o Cliente.\n" + ex2.getMessage());
+                    si.notifyObserver(4);
+                }
                 si.removeClient(Client);
                 si.removeListenClient(this);
                 return;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException ex) {
+                si.getSd().getObjMudance().put("exception", "[ERROR] Erro de InterruptedException. Provavelmente o Cliente foi interrumpido.\n" + ex.getMessage());
+                si.notifyObserver(4);
+                try {
+                    si.desconnetClient(Client);
+                } catch (IOException ex2) {
+                    si.Obj().put("exception", "[ERROR] Erro ao tentar desconectar o Cliente.\n" + ex2.getMessage());
+                    si.notifyObserver(4);
+                }
+                si.removeClient(Client);
+                si.removeListenClient(this);
+                return;
             }
 
         }
@@ -382,7 +410,7 @@ public class ThreadClientListenTreatment implements Runnable {
         }
 
         si.removeClient(Client);
-        //remo��o da Thread da base de dados do pr�prio servidor
+        //remocao da Thread da base de dados do pr�prio servidor
         si.removeListenClient(this);
 
     }
