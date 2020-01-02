@@ -252,6 +252,7 @@ public class ThreadClientListenTreatment implements Runnable {
 
                         ArrayList<String> musics = new ArrayList<>();
                         ArrayList<String> autors = new ArrayList<>();
+
                         for (long i = 0; i < size; i++) {
 
                             String MusicName = "nomeMusica" + i;

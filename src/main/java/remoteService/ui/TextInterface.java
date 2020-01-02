@@ -9,14 +9,14 @@ public class TextInterface {
         String value = null;
 
         do {
-
+            System.out.println("\n--------Servico Remoto--------");
             System.out.println("listServers - Listar servidores");
             System.out.println("endServer - Terminar servidor");
             System.out.println("regListener - Registar listener");
             System.out.println("delListener - Eliminar Listener");
             System.out.println("exit - Sair");
 
-            value = Readers.readString("Insira a opcao que pretende: ");
+            value = Readers.readString("\nInsira a opcao que pretende: ");
 
         }while (!value.equals("listServers") && !value.equals("endServer") &&
                 !value.equals("regListener") && !value.equals("delListener")
