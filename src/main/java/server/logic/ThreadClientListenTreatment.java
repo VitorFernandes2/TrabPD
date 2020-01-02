@@ -63,7 +63,7 @@ public class ThreadClientListenTreatment implements Runnable {
                     if (cmd.equals("createMusic")){
                         //passar para notify
                         System.out.println("Mandou a musica " + JObj.get("MusicName"));
-                        //------------------
+
                         String MusicName = (String) JObj.get("MusicName");
                         String MusicAuthor = (String) JObj.get("MusicAuthor");
                         String MusicYear = (String) JObj.get("MusicYear");
