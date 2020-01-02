@@ -27,11 +27,11 @@ public class ThreadClientListenTreatment implements Runnable {
         this.ID = Counter++;
         this.multi = multi;
     }
-    
+
     public void start() {
         new Thread(this).start();
     }
-    
+
     @Override
     public void run() {
         //Tratamento de mensagens
@@ -42,17 +42,17 @@ public class ThreadClientListenTreatment implements Runnable {
         si.Obj().put("output", "Client " + this.ID + " connected to tcp.");
         si.notifyObserver(1);
 
-        //Enquanto não se fechar o client
+        //Enquanto nï¿½o se fechar o client
         while(!Client.isClosed()){
             Sucesso = false;
             ped = false;
             try {
-                in = new InputStreamReader(Client.getInputStream()); // DUMMY CODE : modificar para enviar o q é preciso
+                in = new InputStreamReader(Client.getInputStream()); // DUMMY CODE : modificar para enviar o q ï¿½ preciso
                 pr = new PrintWriter(Client.getOutputStream());
 
                 //Recebe o que o Cliente enviou ao servidor
                 synchronized(in){
-                    
+
                     BufferedReader bf = new BufferedReader(in);
 
                     String str = bf.readLine();
@@ -63,12 +63,12 @@ public class ThreadClientListenTreatment implements Runnable {
                     String cmd = (String) JObj.get("Command");
 
                     if (cmd.equals("createMusic")){
-                        
+
                         ped = true;
-                        
+
                         si.getSd().getObjMudance().put("output", "\nMandou a musica " + JObj.get("MusicName"));
                         si.notifyObserver(1);
-                        
+
                         String MusicName = (String) JObj.get("MusicName");
                         String MusicAuthor = (String) JObj.get("MusicAuthor");
                         String MusicYear = (String) JObj.get("MusicYear");
@@ -113,9 +113,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if (cmd.equals("playMusic")){
-                        
+
                         ped = true;
-                        
+
                         String name = (String)JObj.get("name");
                         String author = (String)JObj.get("author");
 
@@ -136,9 +136,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if(cmd.equals("changeMusic")){
-                        
+
                         ped = true;
-                        
+
                         String name = (String)JObj.get("name");
                         String author = (String)JObj.get("author");
 
@@ -150,7 +150,7 @@ public class ThreadClientListenTreatment implements Runnable {
                         String MusicGenre = (String) JObj.get("MusicGenre");
                         String MusicPath = (String) JObj.get("MusicPath");
 
-                        //Sucesso na alteração
+                        //Sucesso na alteraï¿½ï¿½o
                         if (si.getDbaction().changeMusic(name, author, MusicName, MusicAuthor,
                                 MusicAlbum, MusicYear, MusicDuration, MusicGenre, si)){
 
@@ -160,7 +160,7 @@ public class ThreadClientListenTreatment implements Runnable {
                             pr.println(obj.toString());
                             pr.flush();
 
-                        } //Se não teve sucesso
+                        } //Se nï¿½o teve sucesso
                         else{
 
                             JSONObject obj = new JSONObject();
@@ -175,7 +175,7 @@ public class ThreadClientListenTreatment implements Runnable {
                     else if(cmd.equals("removeMusic")){
 
                         ped = true;
-                        
+
                         String name = (String)JObj.get("name");
                         String author = (String)JObj.get("author");
 
@@ -200,9 +200,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if(cmd.equals("listMusics")){
-                        
+
                         ped = true;
-                        
+
                         JSONObject obj = new JSONObject();
                         obj = si.getDbaction().listMusics();
 
@@ -222,9 +222,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if(cmd.equals("listPlaylist")){
-                        
+
                         ped = true;
-                        
+
                         JSONObject obj = new JSONObject();
                         String username = (String)JObj.get("username");
                         obj = si.getDbaction().listPlaylist(username, si);
@@ -267,6 +267,7 @@ public class ThreadClientListenTreatment implements Runnable {
 
                         ArrayList<String> musics = new ArrayList<>();
                         ArrayList<String> autors = new ArrayList<>();
+
                         for (long i = 0; i < size; i++) {
 
                             String MusicName = "nomeMusica" + i;
@@ -284,9 +285,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if(cmd.equals("playPlaylist")){
-                        
+
                         ped = true;
-                        
+
                         String username = (String)JObj.get("username");
                         String nome = (String)JObj.get("nome");
 
@@ -318,8 +319,8 @@ public class ThreadClientListenTreatment implements Runnable {
                         //----------------------------------
                     }
 
-                    //Código de envio para os outros servidores
-                    // mesmo que o comando não seja um sucesso
+                    //Cï¿½digo de envio para os outros servidores
+                    // mesmo que o comando nï¿½o seja um sucesso
                     // neste servidor os dados dele podem ser diferentes
                     // por isso enviados para o para todos
                     if(log){
@@ -334,7 +335,7 @@ public class ThreadClientListenTreatment implements Runnable {
                         multi.getMulticastSock().send(packet);
                     }
                     //-----------------------------------------
-                    
+
                     si.notifyObserver(1);
 
                     if(!ped){
@@ -346,7 +347,7 @@ public class ThreadClientListenTreatment implements Runnable {
                         pr.println(obj.toString());
                         pr.flush();
                     }
-                    
+
                 }
                 //------------------------------------------
             } catch (IOException ex) {
@@ -356,7 +357,7 @@ public class ThreadClientListenTreatment implements Runnable {
                 si.removeListenClient(this);
                 return;
             } catch (ParseException ex) {
-                si.Obj().put("exception", "[ERROR] Erro na tradução do Json no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
+                si.Obj().put("exception", "[ERROR] Erro na traduï¿½ï¿½o do Json no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
                 si.notifyObserver(4);
                 si.removeClient(Client);
                 si.removeListenClient(this);
@@ -379,13 +380,13 @@ public class ThreadClientListenTreatment implements Runnable {
             si.Obj().put("exception", "[ERROR] Erro ao tentar desconectar o Cliente.\n" + ex.getMessage());
             si.notifyObserver(4);
         }
-        
+
         si.removeClient(Client);
-        //remoção da Thread da base de dados do próprio servidor
+        //remoï¿½ï¿½o da Thread da base de dados do prï¿½prio servidor
         si.removeListenClient(this);
 
     }
-    
+
     public String commandParse(String command){
         boolean hasTypeLog = false;
         boolean hasTypeReg = false;
@@ -405,9 +406,9 @@ public class ThreadClientListenTreatment implements Runnable {
         for(String zone : zones){
             String parte = zone.replace("|", " ");
             String [] cmd = parte.split(" ");
-            //vai verificar se o comando é inicializado corretamente
+            //vai verificar se o comando ï¿½ inicializado corretamente
             if(cmd[0].equalsIgnoreCase("tipo") && !hasTypeLog && !hasTypeReg && !hasTypeOut){
-                //vai verificar se o tipo de comando é o correto
+                //vai verificar se o tipo de comando ï¿½ o correto
                 if(cmd[1].equalsIgnoreCase("login")){
                     hasTypeLog = true;
                 }
@@ -480,13 +481,13 @@ public class ThreadClientListenTreatment implements Runnable {
                 }
             }
             else {
-                //caso exista mais linhas de comando para além desta ou o comando introduzido tenha sido mal escrito
+                //caso exista mais linhas de comando para alï¿½m desta ou o comando introduzido tenha sido mal escrito
                 //ou seja de outro tipo
                 Sucesso = false;
                 return "Erro de comando";
             }
         }
-        
+
         if(hasPasswordLog && hasTypeLog && hasUserNameLog){
             //Verifica se o utilizador se encontra nos dados do servidor como logado
             if(si.getClientsLogs().contains(username.trim())){
@@ -500,7 +501,7 @@ public class ThreadClientListenTreatment implements Runnable {
             }
         }
         else if(hasPasswordReg && hasTypeReg && hasUserNameReg && hasNameReg){
-            //Verifica se o utilizador é registado de forma correta
+            //Verifica se o utilizador ï¿½ registado de forma correta
             if(si.getDbaction().insertuser(name, username, password, si)){
                 Sucesso = true;
                 return "Registo com sucesso";
@@ -528,5 +529,5 @@ public class ThreadClientListenTreatment implements Runnable {
             return "Erro total de comando";
         }
     }
-    
+
 }
