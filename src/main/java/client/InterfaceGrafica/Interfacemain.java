@@ -223,12 +223,12 @@ public class Interfacemain implements observer{
         double duration = 0;
 
         do {
-            duracao = Readers.readString("Insira o duracao da musica: ");
+            duracao = Readers.readString("Insira o duracao (em minutos e segundos) da musica (3:09 -> 3.09): ");
             duration = Double.parseDouble(duracao);
-        }while (duration == 0);
+        }while (duration <= 0);
 
         String genero = Readers.readString("Insira o genero da musica: ");
-        String caminho = Readers.readString("Insira o local da musica: ");
+        String caminho = Readers.readString("Insira o local da musica (ex: C:\\Users\\Utilizador\\Desktop\\ISEC\\TerceiroAno\\1Semestre\\PD\\12.mp3): ");
 
         data.setMusic(ano, nome, album, autor, genero, duration, caminho);
 
@@ -247,7 +247,7 @@ public class Interfacemain implements observer{
         double duration = 0;
 
         do {
-            duracao = Readers.readString("Insira a nova duracao da musica: ");
+            duracao = Readers.readString("Insira a nova duracao (em minutos e segundos) da musica (3:09 -> 3.09): ");
             duration = Double.parseDouble(duracao);
         }while (duration == 0);
 

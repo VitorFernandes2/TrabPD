@@ -306,17 +306,45 @@ public class DatabaseControler {
         return false;
     }
     
-    public boolean insertmusic(String name,String artist,String album, String year, double duration, String genre, String localname, ServerLogic sl){
+    public boolean insertMulticastMusic(String name,String artist,String album, String year, double duration, String genre, String localname, ServerLogic sl){
+        //Comando sql para ir buscar todas as músicas
         try {
-            String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre, localname)"
-            + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"', '"+localname+"')";
+            String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while (resultSet.next()){
+
+                String nome = resultSet.getString("name");
+                return false;
+
+            }
+
+            String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre)"
+                    + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"')";
             stmt.executeUpdate(insertSql);
-        } catch (SQLException ex) {
-            sl.Obj().put("exception", "[ERROR] InsertMusicPrivate -> " + ex.getMessage());
-            sl.notifyObserver(4);
-            return false;
+
+            sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
+            resultSet = stmt.executeQuery(sql);
+
+            while (resultSet.next()){
+
+                int id = resultSet.getInt("music_id");
+                String path = id +".mp3";
+                String updateSql = "UPDATE musics"
+                        + " SET localname = '"+ path + "'"
+                        + " WHERE music_id = "+ id;
+                stmt.executeUpdate(updateSql);
+                return true;
+
+            }
+
+        } catch (SQLException e) {
+             sl.Obj().put("exception", "[ERROR] InsertMulticastMusic -> " + e.getMessage());
+             sl.notifyObserver(4);
+             return true;
         }
-        return true;
+
+        return false;
     }
     
     public boolean insertmusic(int music_id, String name,String artist,String album, String year, double duration, String genre, String localname, ServerLogic sl){
@@ -496,48 +524,48 @@ public class DatabaseControler {
      
     }
    
-   public String insertMusic(String name,String artist,String album, String year, double duration, String genre, ServerLogic sl){
+    public String insertMusic(String name,String artist,String album, String year, double duration, String genre, ServerLogic sl){
 
         //Comando sql para ir buscar todas as músicas
-       try {
-           String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
-           ResultSet resultSet = stmt.executeQuery(sql);
+        try {
+            String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
+            ResultSet resultSet = stmt.executeQuery(sql);
 
-           while (resultSet.next()){
+            while (resultSet.next()){
 
-               String nome = resultSet.getString("name");
-               return null;
+                String nome = resultSet.getString("name");
+                return null;
 
-           }
+            }
 
-           String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre)"
-                   + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"')";
-           stmt.executeUpdate(insertSql);
+            String insertSql = "INSERT INTO musics(name, artist, album, year, duration, genre)"
+                    + " VALUES('"+name+"', '"+artist+"', '"+album+"', '"+year+"', '"+duration+"', '"+genre+"')";
+            stmt.executeUpdate(insertSql);
 
-           sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
-           resultSet = stmt.executeQuery(sql);
+            sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
+            resultSet = stmt.executeQuery(sql);
 
-           while (resultSet.next()){
+            while (resultSet.next()){
 
-               int id = resultSet.getInt("music_id");
-               String path = id +".mp3";
-               String updateSql = "UPDATE musics"
-                       + " SET localname = '"+ path + "'"
-                       + " WHERE music_id = "+ id;
-               stmt.executeUpdate(updateSql);
-               return path;
+                int id = resultSet.getInt("music_id");
+                String path = id +".mp3";
+                String updateSql = "UPDATE musics"
+                        + " SET localname = '"+ path + "'"
+                        + " WHERE music_id = "+ id;
+                stmt.executeUpdate(updateSql);
+                return path;
 
-           }
+            }
 
-       } catch (SQLException e) {
-            sl.Obj().put("exception", "[ERROR] InsertMusic -> " + e.getMessage());
-            sl.notifyObserver(4);
-            return null;
-       }
+        } catch (SQLException e) {
+             sl.Obj().put("exception", "[ERROR] InsertMusic -> " + e.getMessage());
+             sl.notifyObserver(4);
+             return null;
+        }
 
-       return null;
+        return null;
 
-   }
+    }
 
     public String getFileName(String name,String artist, ServerLogic sl){
 

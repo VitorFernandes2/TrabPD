@@ -37,6 +37,7 @@ public class ThreadClientListenTreatment implements Runnable {
         //Tratamento de mensagens
         String out = null;
         boolean log = false;
+        boolean ped = false;
 
         si.Obj().put("output", "Client " + this.ID + " connected to tcp.");
         si.notifyObserver(1);
@@ -44,6 +45,7 @@ public class ThreadClientListenTreatment implements Runnable {
         //Enquanto não se fechar o client
         while(!Client.isClosed()){
             Sucesso = false;
+            ped = false;
             try {
                 in = new InputStreamReader(Client.getInputStream()); // DUMMY CODE : modificar para enviar o q é preciso
                 pr = new PrintWriter(Client.getOutputStream());
@@ -61,9 +63,12 @@ public class ThreadClientListenTreatment implements Runnable {
                     String cmd = (String) JObj.get("Command");
 
                     if (cmd.equals("createMusic")){
-                        //passar para notify
-                        System.out.println("Mandou a musica " + JObj.get("MusicName"));
-                        //------------------
+                        
+                        ped = true;
+                        
+                        si.getSd().getObjMudance().put("output", "\nMandou a musica " + JObj.get("MusicName"));
+                        si.notifyObserver(1);
+                        
                         String MusicName = (String) JObj.get("MusicName");
                         String MusicAuthor = (String) JObj.get("MusicAuthor");
                         String MusicYear = (String) JObj.get("MusicYear");
@@ -108,7 +113,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if (cmd.equals("playMusic")){
-
+                        
+                        ped = true;
+                        
                         String name = (String)JObj.get("name");
                         String author = (String)JObj.get("author");
 
@@ -129,7 +136,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if(cmd.equals("changeMusic")){
-
+                        
+                        ped = true;
+                        
                         String name = (String)JObj.get("name");
                         String author = (String)JObj.get("author");
 
@@ -165,6 +174,8 @@ public class ThreadClientListenTreatment implements Runnable {
                     }
                     else if(cmd.equals("removeMusic")){
 
+                        ped = true;
+                        
                         String name = (String)JObj.get("name");
                         String author = (String)JObj.get("author");
 
@@ -189,7 +200,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if(cmd.equals("listMusics")){
-
+                        
+                        ped = true;
+                        
                         JSONObject obj = new JSONObject();
                         obj = si.getDbaction().listMusics();
 
@@ -209,7 +222,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if(cmd.equals("listPlaylist")){
-
+                        
+                        ped = true;
+                        
                         JSONObject obj = new JSONObject();
                         String username = (String)JObj.get("username");
                         obj = si.getDbaction().listPlaylist(username, si);
@@ -269,7 +284,9 @@ public class ThreadClientListenTreatment implements Runnable {
 
                     }
                     else if(cmd.equals("playPlaylist")){
-
+                        
+                        ped = true;
+                        
                         String username = (String)JObj.get("username");
                         String nome = (String)JObj.get("nome");
 
@@ -320,13 +337,15 @@ public class ThreadClientListenTreatment implements Runnable {
                     
                     si.notifyObserver(1);
 
-                    JSONObject obj = new JSONObject();
+                    if(!ped){
+                        JSONObject obj = new JSONObject();
 
-                    obj.put("tipo", "resposta");
-                    obj.put("sucesso", Sucesso);
-                    obj.put("msg", out + " do user " + " Cliente de ID: " + this.ID);
-                    pr.println(obj.toString());
-                    pr.flush();
+                        obj.put("tipo", "resposta");
+                        obj.put("sucesso", Sucesso);
+                        obj.put("msg", out + " do user " + " Cliente de ID: " + this.ID);
+                        pr.println(obj.toString());
+                        pr.flush();
+                    }
                     
                 }
                 //------------------------------------------

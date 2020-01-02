@@ -163,7 +163,7 @@ public class MulticastUDP {
                         String MusicPath = (String) JObj.get("MusicPath");
                         
                         if(!ci.getDbaction().contaismusic(MusicName, MusicAuthor, MusicAlbum, ci)){
-                            ci.getDbaction().insertmusic(MusicName, MusicAuthor, MusicAlbum, MusicYear, MusicDuration, MusicGenre, MusicPath, ci);
+                            ci.getDbaction().insertMulticastMusic(MusicName, MusicAuthor, MusicAlbum, MusicYear, MusicDuration, MusicGenre, MusicPath, ci);
                         }
                         
                     }
