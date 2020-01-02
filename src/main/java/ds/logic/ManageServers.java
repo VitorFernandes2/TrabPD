@@ -89,7 +89,7 @@ public class ManageServers extends Thread {
                             //--------------------------------------------------------------
                             
                         }
-                        else{
+                        else if(!servers.isEmpty()){
                             //saida para reinicio dos checks de cada servidor
                             break;
                         }

@@ -408,9 +408,16 @@ public class Interfacemain implements observer{
     }
     
     private void registinter(ConnectData data) {
+        String name = new String();
         String user = new String();
         String pass = new String();
         System.out.println("\n Registo (não aceitavel espacos em branco): ");
+
+        do{
+            System.out.print("\n Name:");
+            Scanner myObj = new Scanner(System.in);
+            name = myObj.nextLine();
+        }while(user.contains(" "));
 
         do{
             System.out.print("\n Username:");
@@ -424,6 +431,7 @@ public class Interfacemain implements observer{
             pass = myObj.nextLine();
         }while(pass.contains(" "));
         
+        data.setName(name);
         data.setUsername(user);
         data.setPassword(pass);
         

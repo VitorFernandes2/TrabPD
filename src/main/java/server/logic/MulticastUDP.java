@@ -123,10 +123,11 @@ public class MulticastUDP {
                         JSONObject JObj = (JSONObject) JsonParser.parse(cmd.trim());
                         int UserId = Integer.parseInt((String) JObj.get("UserId"));
                         String UserName = (String) JObj.get("UserName");
+                        String UserUserName = (String) JObj.get("UserUserName");
                         String UserPassword = (String) JObj.get("UserPassword");
                         
                         if(!ci.getDbaction().contaisUserMultiCast(UserName, ci)){
-                            ci.getDbaction().insertuserMultiCast(UserId, UserName, UserName, UserPassword, ci);
+                            ci.getDbaction().insertuserMultiCast(UserId, UserName, UserUserName, UserPassword, ci);
                         }
                         
                     }
@@ -204,6 +205,7 @@ public class MulticastUDP {
                         String username = (String)JObj.get("username");
                         String oldName = (String)JObj.get("name");
                         String newName = (String)JObj.get("newName");
+                        
                         ci.getDbaction().changePlaylist(oldName,newName,username, ci);
 
                     }
@@ -240,7 +242,7 @@ public class MulticastUDP {
                             autors.add(MusicAutorInput);
 
                         }
-
+                        
                         ci.getDbaction().createPlaylist(name, username, musics, autors, ci);
 
                     }
@@ -264,16 +266,19 @@ public class MulticastUDP {
                                 String selectSql = ("SELECT * FROM `users`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
                                 String user_id;
+                                String name;
                                 String username;
                                 String password;
                                 while(resultSet.next()){
                                     user_id = String.valueOf(resultSet.getInt("user_id"));
+                                    name = resultSet.getString("name");
                                     username = resultSet.getString("username");
                                     password = resultSet.getString("password");
                                     JSONObject jo = new JSONObject();
                                     jo.put("Command", "createcopyUser");
                                     jo.put("UserId", user_id);
-                                    jo.put("UserName", username.trim());
+                                    jo.put("UserName", name.trim());
+                                    jo.put("UserUserName", username.trim());
                                     jo.put("UserPassword", password.trim());
                                     byte[] b = String.valueOf(jo.toString()).getBytes();
                                     DatagramPacket packetUser = new DatagramPacket(b, b.length, group, 3456);
@@ -478,12 +483,14 @@ public class MulticastUDP {
         boolean hasTypeLog = false;
         boolean hasTypeReg = false;
         boolean hasTypeOut = false;
+        boolean hasNameReg = false;
         boolean hasUserNameLog = false;
         boolean hasUserNameReg = false;
         boolean hasUserNameOut = false;
         boolean hasPasswordLog = false;
         boolean hasPasswordReg = false;
         boolean hasPasswordOut = false;
+        String name = "";
         String username = "";
         String password = "";
         command = command.replace(" ", "");
@@ -505,6 +512,19 @@ public class MulticastUDP {
                 }
                 else{
                     return "Sem tipo definido [1] !\n";
+                }
+            }
+            else if(cmd[0].equalsIgnoreCase("name") && !hasNameReg){
+                if(cmd[1] == null || cmd[1].length() == 0){
+                    return "Sem Name defenido!\n";
+                }
+                //vai verificar se o nome do utilizador existe na base de dados
+                name = cmd[1];
+                if(hasTypeReg){
+                    hasUserNameReg = !ci.getDbaction().contaisNameMultiCast(name, ci);
+                }
+                else{
+                    return "Erro de comando";
                 }
             }
             else if(cmd[0].equalsIgnoreCase("username") && !hasUserNameLog && !hasUserNameReg && !hasUserNameOut){
@@ -558,8 +578,8 @@ public class MulticastUDP {
                 return "Login sem sucesso.\n";
             }
         }
-        else if(hasPasswordReg && hasTypeReg && hasUserNameReg){
-            if(ci.getDbaction().insertuserMultiCast(username, username, password, ci)){
+        else if(hasPasswordReg && hasTypeReg && hasUserNameReg && hasNameReg){
+            if(ci.getDbaction().insertuserMultiCast(name, username, password, ci)){
                 return "Registo com sucesso.\n";
             }
             else{

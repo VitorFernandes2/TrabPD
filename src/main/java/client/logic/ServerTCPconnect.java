@@ -135,7 +135,7 @@ public class ServerTCPconnect implements Runnable{
                                 this.upperclass.update(10, data);
                                 
                                 sb = new StringBuilder();
-                                sb.append("tipo|registo;username|").append(data.getUsername()).append(";password|").append(data.getPassword());
+                                sb.append("tipo|registo;name|").append(data.getName()).append(";username|").append(data.getUsername()).append(";password|").append(data.getPassword());
                                 
                                 obj = new JSONObject();
                                 obj.put("Command", sb.toString());

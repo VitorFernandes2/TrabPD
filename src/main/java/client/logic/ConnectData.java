@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class ConnectData {
     
+    private String name;
     private String username;
     private String password;
     private JSONObject JObj = new JSONObject();
@@ -30,6 +31,14 @@ public class ConnectData {
 
     public void setJObj(JSONObject JObj) {
         this.JObj = JObj;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUsername() {

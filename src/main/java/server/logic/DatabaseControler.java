@@ -249,6 +249,25 @@ public class DatabaseControler {
         return true;
     }
     
+    public boolean contaisNameMultiCast(String name, ServerLogic sl){
+        try {
+            String selectSql = ("SELECT name FROM `users` WHERE name = \"" + name + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("name");
+                if(procu.equals(name)){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] ContainsName Multicast -> " + ex.getMessage());
+            sl.notifyObserver(4);
+           return false;
+        }
+        return false;
+    }
+    
     public boolean contaisUserMultiCast(String username, ServerLogic sl){
         try {
             String selectSql = ("SELECT username FROM `users` WHERE username = \"" + username + "\"");
@@ -261,7 +280,7 @@ public class DatabaseControler {
                 }
             }
         } catch (SQLException ex) {
-            sl.Obj().put("exception", "[ERROR] ContainUser Multicast -> " + ex.getMessage());
+            sl.Obj().put("exception", "[ERROR] ContainsUser Multicast -> " + ex.getMessage());
             sl.notifyObserver(4);
            return false;
         }
@@ -374,6 +393,25 @@ public class DatabaseControler {
            return "-1";
         }
         return "-1";
+    }
+    
+    public boolean contaisName(String name, ServerLogic sl){ 
+        try {
+            String selectSql = ("SELECT name FROM `users` WHERE name = \"" + name + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("name");
+                if(procu.equals(name)){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            sl.Obj().put("exception", "[ERROR] ContainsName -> " + ex.getMessage());
+            sl.notifyObserver(4);
+           return false;
+        }
+        return false;
     }
     
     public boolean contaisUser(String username, ServerLogic sl){ 

@@ -371,12 +371,14 @@ public class ThreadClientListenTreatment implements Runnable {
         boolean hasTypeLog = false;
         boolean hasTypeReg = false;
         boolean hasTypeOut = false;
+        boolean hasNameReg = false;
         boolean hasUserNameLog = false;
         boolean hasUserNameReg = false;
         boolean hasUserNameOut = false;
         boolean hasPasswordLog = false;
         boolean hasPasswordReg = false;
         boolean hasPasswordOut = false;
+        String name = "";
         String username = "";
         String password = "";
         command = command.replace(" ", "");
@@ -401,8 +403,24 @@ public class ThreadClientListenTreatment implements Runnable {
                     return "Erro de comando";
                 }
             }
+            else if(cmd[0].equalsIgnoreCase("name") && !hasNameReg){
+                if(cmd[1] == null || cmd[1].length() == 0){
+                    Sucesso = false;
+                    return "Sem Name defenido";
+                }
+                //vai verificar se o nome de utilizador existe na base de dados
+                name = cmd[1];
+                if(hasTypeReg){
+                    hasNameReg = !si.getDbaction().contaisName(name, si);
+                }
+                else{
+                    Sucesso = false;
+                    return "Erro de comando";
+                }
+            }
             else if(cmd[0].equalsIgnoreCase("username") && !hasUserNameLog && !hasUserNameReg && !hasUserNameOut){
                 if(cmd[1] == null || cmd[1].length() == 0){
+                    Sucesso = false;
                     return "Sem Username defenido";
                 }
                 //vai verificar se o utilizador existe na base de dados
@@ -423,6 +441,7 @@ public class ThreadClientListenTreatment implements Runnable {
             }
             else if(cmd[0].equalsIgnoreCase("password") && !hasPasswordLog && !hasPasswordReg && !hasPasswordOut){
                 if(cmd[1] == null || cmd[1].length() == 0){
+                    Sucesso = false;
                     return "Sem Password defenida";
                 }
                 //vai verificar que a password introduzida cuincide com a introduzida para aquele username
@@ -461,9 +480,9 @@ public class ThreadClientListenTreatment implements Runnable {
                 return "Login com sucesso";
             }
         }
-        else if(hasPasswordReg && hasTypeReg && hasUserNameReg){
+        else if(hasPasswordReg && hasTypeReg && hasUserNameReg && hasNameReg){
             //Verifica se o utilizador é registado de forma correta
-            if(si.getDbaction().insertuser(username, username, password, si)){
+            if(si.getDbaction().insertuser(name, username, password, si)){
                 Sucesso = true;
                 return "Registo com sucesso";
             }
