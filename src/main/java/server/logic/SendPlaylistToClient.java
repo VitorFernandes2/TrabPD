@@ -9,9 +9,9 @@ import java.util.ArrayList;
 
 public class SendPlaylistToClient extends Thread{
 
-    PrintWriter pr;
-    OutputStream out;
-    ArrayList<String> list;
+    private PrintWriter pr;
+    private OutputStream out;
+    private ArrayList<String> list;
 
     public SendPlaylistToClient(PrintWriter pr, OutputStream out, ArrayList<String> list) {
         this.pr = pr;
