@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -82,7 +83,7 @@ public class MulticastUDP {
                     
                     //Código para a atualização da base de dados, a partir do comando enviado
                     
-                    String cmd = new String(buffer);
+                    String cmd = new String(packet.getData(), 0, packet.getLength());
                     
                     ci.Obj().put("output", "Recebe: " + cmd.trim());
                     ci.notifyObserver(1);
@@ -167,27 +168,80 @@ public class MulticastUDP {
                     }
                     else if (cmd.contains("changeMusic")){
 
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd);
 
+                        String name = (String)JObj.get("name");
+                        String author = (String)JObj.get("author");
+
+                        String MusicName = (String) JObj.get("MusicName");
+                        String MusicAuthor = (String) JObj.get("MusicAuthor");
+                        String MusicYear = (String) JObj.get("MusicYear");
+                        String MusicAlbum = (String) JObj.get("MusicAlbum");
+                        double MusicDuration = (double) JObj.get("MusicDuration");
+                        String MusicGenre = (String) JObj.get("MusicGenre");
+
+                        ci.getDbaction().changeMusic(name, author, MusicName, MusicAuthor,
+                                MusicAlbum, MusicYear, MusicDuration, MusicGenre, ci);
 
                     }
                     else if (cmd.contains("removeMusic")){
 
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd);
 
+                        String name = (String)JObj.get("name");
+                        String author = (String)JObj.get("author");
+
+                        ci.getDbaction().removeMusic(name, author, ci);
 
                     }
                     else if (cmd.contains("changePlaylist")){
 
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd);
 
+                        String username = (String)JObj.get("username");
+                        String oldName = (String)JObj.get("name");
+                        String newName = (String)JObj.get("newName");
+                        ci.getDbaction().changePlaylist(oldName,newName,username, ci);
 
                     }
                     else if (cmd.contains("removePlaylist")){
 
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd);
 
+                        String username = (String)JObj.get("username");
+                        String name = (String)JObj.get("name");
+                        ci.getDbaction().removePlaylist(name,username,ci);
 
                     }
                     else if (cmd.contains("createPlaylist")){
 
+                        JSONParser JsonParser = new JSONParser();
+                        JSONObject JObj = (JSONObject) JsonParser.parse(cmd);
 
+                        String username = (String)JObj.get("username");
+                        String name = (String)JObj.get("name");
+                        long size = (long)JObj.get("numberOfMusics");
+
+                        ArrayList<String> musics = new ArrayList<>();
+                        ArrayList<String> autors = new ArrayList<>();
+                        for (long i = 0; i < size; i++) {
+
+                            String MusicName = "nomeMusica" + i;
+                            String autor = "autorMusica" + i;
+
+                            String MusicNameInput = (String)JObj.get(MusicName);
+                            String MusicAutorInput = (String)JObj.get(autor);
+
+                            musics.add(MusicNameInput);
+                            autors.add(MusicAutorInput);
+
+                        }
+
+                        ci.getDbaction().createPlaylist(name, username, musics, autors, ci);
 
                     }
                     //Tratamento de login/registo/logout
