@@ -165,6 +165,31 @@ public class MulticastUDP {
                         }
                         
                     }
+                    else if (cmd.contains("changeMusic")){
+
+
+
+                    }
+                    else if (cmd.contains("removeMusic")){
+
+
+
+                    }
+                    else if (cmd.contains("changePlaylist")){
+
+
+
+                    }
+                    else if (cmd.contains("removePlaylist")){
+
+
+
+                    }
+                    else if (cmd.contains("createPlaylist")){
+
+
+
+                    }
                     //Tratamento de login/registo/logout
                     else{
                         String result = commandParse(cmd);
