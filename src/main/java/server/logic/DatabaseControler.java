@@ -89,7 +89,7 @@ public class DatabaseControler {
             stmt.execute(tableSql4);
 
         } catch (SQLException ex) {
-            sl.Obj().put("exception", "[ERROR] Inicializa��o da Base de Dados -> " + ex.getMessage());
+            sl.Obj().put("exception", "[ERROR] Inicializao da Base de Dados -> " + ex.getMessage());
             sl.notifyObserver(4);
             return false;
         }
@@ -307,7 +307,7 @@ public class DatabaseControler {
     }
     
     public boolean insertMulticastMusic(String name,String artist,String album, String year, double duration, String genre, String localname, ServerLogic sl){
-        //Comando sql para ir buscar todas as m�sicas
+        //Comando sql para ir buscar todas as msicas
         try {
             String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
             ResultSet resultSet = stmt.executeQuery(sql);
@@ -526,7 +526,7 @@ public class DatabaseControler {
    
     public String insertMusic(String name,String artist,String album, String year, double duration, String genre, ServerLogic sl){
 
-        //Comando sql para ir buscar todas as m�sicas
+        //Comando sql para ir buscar todas as msicas
         try {
             String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
             ResultSet resultSet = stmt.executeQuery(sql);
@@ -569,7 +569,7 @@ public class DatabaseControler {
 
     public String getFileName(String name,String artist, ServerLogic sl){
 
-        //Comando sql para ir buscar todas as m�sicas
+        //Comando sql para ir buscar todas as msicas
         try {
             String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
             ResultSet resultSet = stmt.executeQuery(sql);
@@ -593,7 +593,7 @@ public class DatabaseControler {
 
     public String getFileName2(String name,String artist){
 
-        //Comando sql para ir buscar todas as m�sicas
+        //Comando sql para ir buscar todas as msicas
         try {
             String sql = "SELECT * FROM musics WHERE name = '" + name + "' AND artist = '" + artist + "'";
             ResultSet resultSet = stmt.executeQuery(sql);

@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Joao Coelho
  * 
- * REVER!!! Pode ser mau implmentato... serve para fazer a conceção de datos entre observer e observable
+ * REVER!!! Pode ser mau implmentato... serve para fazer a conceo de datos entre observer e observable
  */
 public class ConnectData {
     

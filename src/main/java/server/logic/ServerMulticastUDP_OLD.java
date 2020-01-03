@@ -16,7 +16,7 @@ public class ServerMulticastUDP_OLD extends Thread implements Constants{
     private boolean terminate;
     private String groupIP;
     private int groupPORT;
-    private ComunicationInterface ci; //Layer de comunicação
+    private ComunicationInterface ci; //Layer de comunicao
 
     public ServerMulticastUDP_OLD(String groupIP, int groupPORT, ComunicationInterface ci) {
         this.groupIP = groupIP;

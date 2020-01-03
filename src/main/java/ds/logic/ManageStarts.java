@@ -121,7 +121,7 @@ public class ManageStarts implements Runnable {
         try {
             socket.send(packete);
         } catch (IOException ex) {
-            System.out.println("Não foi possivel enviar a role (principal ou não) para o servidor. Erro :" + ex.getLocalizedMessage());
+            System.out.println("Nao foi possivel enviar a role (principal ou nao) para o servidor. Erro :" + ex.getLocalizedMessage());
         }
         
     }
@@ -134,7 +134,7 @@ public class ManageStarts implements Runnable {
             JSONObject obj = new JSONObject();
 
             if (servers.size() == 0){
-                System.out.println("[ERROR] Não foi encontrado nenhum servidor (nenhum servidor ativo)");
+                System.out.println("[ERROR] Nao foi encontrado nenhum servidor (nenhum servidor ativo)");
                 obj.put("msg","sair");
             }
             else{
@@ -143,7 +143,7 @@ public class ManageStarts implements Runnable {
                 Server serverToCli = servers.get(0);
                 int min = serverToCli.getNumberClients();
 
-                //Verifica todos os servidores e vê aquele que tiver menos clientes
+                //Verifica todos os servidores e va aquele que tiver menos clientes
                 for (Server item: servers)
                     if (item.isOn())
                         if (item.getNumberClients() < min){

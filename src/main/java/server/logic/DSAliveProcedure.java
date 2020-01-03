@@ -32,7 +32,7 @@ public class DSAliveProcedure extends Thread {
 
         try {
 
-            //Socket que vai receber a mensagem para saber se está vivo
+            //Socket que vai receber a mensagem para saber se est vivo
             socket = new DatagramSocket(serverLogic.getSd().getServerPort());
 
             while (!finished){
@@ -90,7 +90,7 @@ public class DSAliveProcedure extends Thread {
                     
                     serverLogic.getDbaction().setNamedb(namebd);
                     
-                    //Cópia dos dados mais atualizados da base de dados anterior para a Principal
+                    //Cpia dos dados mais atualizados da base de dados anterior para a Principal
                     
                     try {
                         String OldString = "jdbc:mysql://localhost:3306/" + oldNamebd + "?useTimezone=true&serverTimezone=UTC&useSSL=false";
@@ -124,7 +124,7 @@ public class DSAliveProcedure extends Thread {
                             serverLogic.notifyObserver(4);
                             break;
                         }
-                        //Código para a cópia das músicas
+                        //Cdigo para a cpia das msicas
                         try {
                             String selectSql = ("SELECT * FROM `musics`");
                             ResultSet resultSet = stmt2.executeQuery(selectSql);
@@ -164,7 +164,7 @@ public class DSAliveProcedure extends Thread {
                             serverLogic.notifyObserver(4);
                             break;
                         }
-                        //Código para cópia das playlists
+                        //Cdigo para cpia das playlists
                         try {
                             String selectSql = ("SELECT * FROM `playlist`");
                             ResultSet resultSet = stmt2.executeQuery(selectSql);
@@ -189,7 +189,7 @@ public class DSAliveProcedure extends Thread {
                             serverLogic.notifyObserver(4);
                             break;
                         }
-                        //Código para cópia das músicas assoserverLogicadas a cada playlist
+                        //Cdigo para cpia das msicas assoserverLogicadas a cada playlist
                         try {
                             String selectSql = ("SELECT * FROM `playlistmusic`");
                             ResultSet resultSet = stmt2.executeQuery(selectSql);
@@ -230,16 +230,16 @@ public class DSAliveProcedure extends Thread {
             }
 
         } catch (SocketException e) {
-            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no socket de pings de ligação.\n" + e.getMessage());
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no socket de pings de ligao.\n" + e.getMessage());
             serverLogic.notifyObserver(4);
         } catch (IOException e) {
-            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro nos pings de ligação.\n" + e.getMessage());
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro nos pings de ligao.\n" + e.getMessage());
             serverLogic.notifyObserver(4);
         } catch (ParseException e) {
-            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Parse do objeto JSON nos pings de ligação.\n" + e.getMessage());
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Parse do objeto JSON nos pings de ligao.\n" + e.getMessage());
             serverLogic.notifyObserver(4);
         } catch (SQLException e) {
-            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Código de ligação à base de dados.\n" + e.getMessage());
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Cdigo de ligao  base de dados.\n" + e.getMessage());
             serverLogic.notifyObserver(4);
         }
         

@@ -52,10 +52,10 @@ public class MulticastUDP {
             ci.notifyObserver(1);
             
         } catch (UnknownHostException ex) {
-            ci.Obj().put("exception", "[ERROR] Lançamento de Thread Multicast [1] (UnknownHost) -> " + ex.getMessage());
+            ci.Obj().put("exception", "[ERROR] Lancamento de Thread Multicast [1] (UnknownHost) -> " + ex.getMessage());
             ci.notifyObserver(4);
         } catch (IOException ex) {
-            ci.Obj().put("exception", "[ERROR] Lançamento de Thread Multicast [2] (IO) -> " + ex.getMessage());
+            ci.Obj().put("exception", "[ERROR] Lancamento de Thread Multicast [2] (IO) -> " + ex.getMessage());
             ci.notifyObserver(4);
         }
         
@@ -86,14 +86,14 @@ public class MulticastUDP {
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                     multicastSock.receive(packet);
                     
-                    //Código para a atualização da base de dados, a partir do comando enviado
+                    //Codigo para a atualizacao da base de dados, a partir do comando enviado
                     
                     String cmd = new String(packet.getData(), 0, packet.getLength());
                     
                     ci.Obj().put("output", "Recebe: " + cmd.trim());
                     ci.notifyObserver(1);
                     
-                    //Tratamento de cópia de musics para as playlists para a nova base de dados
+                    //Tratamento de copia de musics para as playlists para a nova base de dados
                     if(cmd.contains("createcopyPlayListMusics")){
                         
                         JSONParser JsonParser = new JSONParser();
@@ -107,7 +107,7 @@ public class MulticastUDP {
                         }
                         
                     }
-                    //Tratamento de cópia de playlists para a nova base de dados
+                    //Tratamento de copia de playlists para a nova base de dados
                     else if(cmd.contains("createcopyPlayLists")){
                         
                         JSONParser JsonParser = new JSONParser();
@@ -121,7 +121,7 @@ public class MulticastUDP {
                         }
                         
                     }
-                    //Tratamento de cópia de users para a nova base de dados
+                    //Tratamento de copia de users para a nova base de dados
                     else if(cmd.contains("createcopyUser")){
                         
                         JSONParser JsonParser = new JSONParser();
@@ -136,7 +136,7 @@ public class MulticastUDP {
                         }
                         
                     }
-                    //Tratamento de cópia de músicas para a nova base de dados
+                    //Tratamento de copia de msicas para a nova base de dados
                     else if(cmd.contains("createcopyMusic")){
                         
                         JSONParser JsonParser = new JSONParser();
@@ -255,13 +255,13 @@ public class MulticastUDP {
                     else{
                         String result = commandParse(cmd);
                         if(!result.contains("Sem Tipo definido [2] !\n")){
-                            System.out.println("\nRecebi: " + cmd + "\nTentativa de execução de comando: " + result);
+                            System.out.println("\nRecebi: " + cmd + "\nTentativa de execucao de comando: " + result);
                         }
                     }
                     
-                    //Código para cópia total das necessidades dos dados de cada servidor criado
+                    //Cdigo para copia total das necessidades dos dados de cada servidor criado
                     if(cmd.trim().equals("copiar") && !ci.getDbaction().getNamedb().equals("Principal")){
-                        //Código de Cópia da base de dados original
+                        //Cdigo de Cpia da base de dados original
                         try {
                             String PrincipalString = "jdbc:mysql://localhost:3306/Principal?useTimezone=true&serverTimezone=UTC&useSSL=false";
                             Connection connectPrincipal = DriverManager.getConnection(PrincipalString,ci.getDbaction().getUser(),ci.getDbaction().getPass());
@@ -294,7 +294,7 @@ public class MulticastUDP {
                                 ci.notifyObserver(4);
                                 break;
                             }
-                            //Código para a cópia das músicas
+                            //Cdigo para a copia das msicas
                             try {
                                 String selectSql = ("SELECT * FROM `musics`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
@@ -334,7 +334,7 @@ public class MulticastUDP {
                                 ci.notifyObserver(4);
                                 break;
                             }
-                            //Código para cópia das playlists
+                            //Cdigo para copia das playlists
                             try {
                                 String selectSql = ("SELECT * FROM `playlist`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
@@ -359,7 +359,7 @@ public class MulticastUDP {
                                 ci.notifyObserver(4);
                                 break;
                             }
-                            //Código para cópia das músicas associadas a cada playlist
+                            //Cdigo para copia das msicas associadas a cada playlist
                             try {
                                 String selectSql = ("SELECT * FROM `playlistmusic`");
                                 ResultSet resultSet = stmt2.executeQuery(selectSql);
@@ -395,14 +395,14 @@ public class MulticastUDP {
                         }
                         //-----------------------------------------
                         
-                        //Pedido de logins existentes à base de dados principal
+                        //Pedido de logins existentes  base de dados principal
                         byte[] l = String.valueOf("logins").getBytes();
                         DatagramPacket packetLogs = new DatagramPacket(l, l.length, group, 3456);
                         multicastSock.send(packetLogs);
                         //-----------------------------------------------------
                         
                     }
-                    //Código de cópia de logins existentes na base de dados principal
+                    //Cdigo de copia de logins existentes na base de dados principal
                     else if(cmd.trim().equals("logins") && ci.getDbaction().getNamedb().equals("Principal")){
                         try {
                             String PrincipalString = "jdbc:mysql://localhost:3306/Principal?useTimezone=true&serverTimezone=UTC&useSSL=false";
@@ -444,10 +444,10 @@ public class MulticastUDP {
                     
                 }
             } catch (IOException ex) {
-                ci.Obj().put("exception", "[ERROR] Package não foi recebida em bom estado.\n" + ex.getMessage());
+                ci.Obj().put("exception", "[ERROR] Package nao foi recebida em bom estado.\n" + ex.getMessage());
                 ci.notifyObserver(4);
             } catch (ParseException ex) {
-                ci.Obj().put("exception", "[ERROR] Parser não foi corretamente executada.\n" + ex.getMessage());
+                ci.Obj().put("exception", "[ERROR] Parser nao foi corretamente executada.\n" + ex.getMessage());
                 ci.notifyObserver(4);
             }
             ci.Obj().put("exception", "[ERROR] Servidor deixou de receber mensagens por multicast.");
@@ -458,7 +458,7 @@ public class MulticastUDP {
     private static Runnable Env = new Runnable() { // TEMPPP
         public void run() {
             try{
-                //Pedido de cópia de base de dados principal por parte do servidor
+                //Pedido de copia de base de dados principal por parte do servidor
                 byte[] c = String.valueOf("copiar").getBytes();
                 DatagramPacket packetUser = new DatagramPacket(c, c.length, group, 3456);
                 multicastSock.send(packetUser);
@@ -501,9 +501,9 @@ public class MulticastUDP {
         for(String zone : zones){
             String parte = zone.replace("|", " ");
             String [] cmd = parte.split(" ");
-            //vai verificar se o comando é inicializado corretamente
+            //vai verificar se o comando  inicializado corretamente
             if(cmd[0].equalsIgnoreCase("tipo") && !hasTypeLog && !hasTypeReg && !hasTypeOut){
-                //vai verificar se o tipo de comando é o correto
+                //vai verificar se o tipo de comando  o correto
                 if(cmd[1].equalsIgnoreCase("login")){
                     hasTypeLog = true;
                 }
@@ -563,7 +563,7 @@ public class MulticastUDP {
                 }
             }
             else {
-                //caso exista mais linhas de comando para além desta ou o comando introduzido tenha sido mal escrito
+                //caso exista mais linhas de comando para alm desta ou o comando introduzido tenha sido mal escrito
                 //ou seja de outro tipo
                 return "Sem Tipo definido [2] !\n";
             }
@@ -571,7 +571,7 @@ public class MulticastUDP {
         
         if(hasPasswordLog && hasTypeLog && hasUserNameLog){
             //Verifica se o utilizador se encontra na base de dados como logado
-            //Caso o servidor não tenha o nome de cliente logado, esse é adicionado
+            //Caso o servidor nao tenha o nome de cliente logado, esse  adicionado
             // aos dados desse servidor
             if(!ci.getClientsLogs().contains(username.trim())){
                 ci.addClientsLogs(username.trim());
@@ -590,7 +590,7 @@ public class MulticastUDP {
             }
         }
         else if(hasPasswordOut && hasTypeOut && hasUserNameOut){
-            //Caso o servidor tenha o nome de cliente logado, esse é retirado
+            //Caso o servidor tenha o nome de cliente logado, esse  retirado
             // dos dados desse servidor
             if(ci.getClientsLogs().contains(username.trim())){
                 ci.removeClientsLogs(username.trim());

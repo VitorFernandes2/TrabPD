@@ -63,7 +63,7 @@ public class DsConnect {
     
     
     /*
-        Serve para mandar ao Ds a informação acerca do cliente e coseguir receber informação
+        Serve para mandar ao Ds a informao acerca do cliente e coseguir receber informao
         relativa ao servidor que este cliente se vai alistar
      */
     public String run() {
@@ -74,7 +74,7 @@ public class DsConnect {
 
         try {
 
-            //Criação da socket UDP
+            //Criao da socket UDP
             socket = new DatagramSocket();
             socket.setSoTimeout(10000);
             address = InetAddress.getByName(DsIp);
@@ -85,14 +85,14 @@ public class DsConnect {
             obj.put("IP", IP);
             obj.put("Port", Port);
 
-            //Criação do packet de envio dos dados relativos ao cliente para o DS
+            //Criao do packet de envio dos dados relativos ao cliente para o DS
             packet = new DatagramPacket(obj.toString().getBytes(),
                     obj.toString().getBytes().length, address, Integer.parseInt(DsPort));
         
             socket.send(packet);
             
             // --------------- TEMP ---------------------
-            System.out.println("DEBUG - Envio packet para ligação ao ds");
+            System.out.println("DEBUG - Envio packet para ligao ao ds");
             this.IP = packet.getAddress().getHostAddress(); // voltar a adicionar o ip, pois pode ter mudado
             // ----------------endTEMP------------------
             
@@ -111,7 +111,7 @@ public class DsConnect {
             JSONParser JsonParser = new JSONParser();
             JSONObject JObj = (JSONObject) JsonParser.parse(strObj);
             
-            System.out.println("DEBUG - " + JObj.toString()); // Testar que objeto é returnado
+            System.out.println("DEBUG - " + JObj.toString()); // Testar que objeto  returnado
 
             return JObj.toString();
             //Colocar aqui tratamento do servidor agregado

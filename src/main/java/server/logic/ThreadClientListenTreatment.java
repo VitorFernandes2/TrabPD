@@ -42,12 +42,12 @@ public class ThreadClientListenTreatment implements Runnable {
         si.Obj().put("output", "Client " + this.ID + " connected to tcp.");
         si.notifyObserver(1);
 
-        //Enquanto n�o se fechar o client
+        //Enquanto no se fechar o client
         while(!Client.isClosed()){
             Sucesso = false;
             ped = false;
             try {
-                in = new InputStreamReader(Client.getInputStream()); // DUMMY CODE : modificar para enviar o q � preciso
+                in = new InputStreamReader(Client.getInputStream()); // DUMMY CODE : modificar para enviar o q  preciso
                 pr = new PrintWriter(Client.getOutputStream());
 
                 //Recebe o que o Cliente enviou ao servidor
@@ -150,7 +150,7 @@ public class ThreadClientListenTreatment implements Runnable {
                         String MusicGenre = (String) JObj.get("MusicGenre");
                         String MusicPath = (String) JObj.get("MusicPath");
 
-                        //Sucesso na altera��o
+                        //Sucesso na alterao
                         if (si.getDbaction().changeMusic(name, author, MusicName, MusicAuthor,
                                 MusicAlbum, MusicYear, MusicDuration, MusicGenre, si)){
 
@@ -160,7 +160,7 @@ public class ThreadClientListenTreatment implements Runnable {
                             pr.println(obj.toString());
                             pr.flush();
 
-                        } //Se n�o teve sucesso
+                        } //Se no teve sucesso
                         else{
 
                             JSONObject obj = new JSONObject();
@@ -325,13 +325,13 @@ public class ThreadClientListenTreatment implements Runnable {
                     // por isso enviados para o para todos
                     if(log){
                         byte[] b = String.valueOf(cmd).getBytes();
-                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
+                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), multi.getUses());
                         multi.getMulticastSock().send(packet);
                         log = false;
                     }
                     else{
                         byte[] b = String.valueOf(JObj.toString()).getBytes();
-                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), 3456);
+                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), multi.getUses());
                         multi.getMulticastSock().send(packet);
                     }
                     //-----------------------------------------
@@ -363,7 +363,7 @@ public class ThreadClientListenTreatment implements Runnable {
                 si.removeListenClient(this);
                 return;
             } catch (ParseException ex) {
-                si.Obj().put("exception", "[ERROR] Erro na tradu��o do Json no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
+                si.Obj().put("exception", "[ERROR] Erro na traducao do Json no tratamento de Mensagens do Cliente.\n" + ex.getMessage());
                 si.notifyObserver(4);
                 try {
                     si.desconnetClient(Client);
@@ -410,7 +410,7 @@ public class ThreadClientListenTreatment implements Runnable {
         }
 
         si.removeClient(Client);
-        //remocao da Thread da base de dados do pr�prio servidor
+        //remocao da Thread da base de dados do prprio servidor
         si.removeListenClient(this);
 
     }
@@ -434,9 +434,9 @@ public class ThreadClientListenTreatment implements Runnable {
         for(String zone : zones){
             String parte = zone.replace("|", " ");
             String [] cmd = parte.split(" ");
-            //vai verificar se o comando � inicializado corretamente
+            //vai verificar se o comando  inicializado corretamente
             if(cmd[0].equalsIgnoreCase("tipo") && !hasTypeLog && !hasTypeReg && !hasTypeOut){
-                //vai verificar se o tipo de comando � o correto
+                //vai verificar se o tipo de comando  o correto
                 if(cmd[1].equalsIgnoreCase("login")){
                     hasTypeLog = true;
                 }
@@ -509,7 +509,7 @@ public class ThreadClientListenTreatment implements Runnable {
                 }
             }
             else {
-                //caso exista mais linhas de comando para al�m desta ou o comando introduzido tenha sido mal escrito
+                //caso exista mais linhas de comando para alm desta ou o comando introduzido tenha sido mal escrito
                 //ou seja de outro tipo
                 Sucesso = false;
                 return "Erro de comando";
@@ -529,7 +529,7 @@ public class ThreadClientListenTreatment implements Runnable {
             }
         }
         else if(hasPasswordReg && hasTypeReg && hasUserNameReg && hasNameReg){
-            //Verifica se o utilizador � registado de forma correta
+            //Verifica se o utilizador  registado de forma correta
             if(si.getDbaction().insertuser(name, username, password, si)){
                 Sucesso = true;
                 return "Registo com sucesso";

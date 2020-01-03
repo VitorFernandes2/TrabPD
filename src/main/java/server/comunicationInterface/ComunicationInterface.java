@@ -20,7 +20,7 @@ public class ComunicationInterface implements observerServer{
                 break;
                 
             case 2:
-                System.out.println("Pedido de Ligação ao DS.");
+                System.out.println("Pedido de Ligao ao DS.");
                 break;
                 
             case 4:

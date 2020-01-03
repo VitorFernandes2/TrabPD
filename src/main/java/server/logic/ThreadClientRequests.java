@@ -21,10 +21,6 @@ public class ThreadClientRequests implements Runnable {
         this.multi = multi;
     }
     
-    public ThreadClientRequests(ServerLogic si) {
-        this.si = si;
-    }
-    
     public synchronized void start() {
         new Thread(this).start();
     }
@@ -34,11 +30,11 @@ public class ThreadClientRequests implements Runnable {
         
         try {
             try {
-                // set do valor do socket TCP de comunicação deste Servidor
+                // set do valor do socket TCP de comunicao deste Servidor
                 si.setServer(new ServerSocket(si.getServerPort()));
                 //---------------------------------------------------------
                 
-                // notify visual do inicio da ligação TCP e o seu porto
+                // notify visual do inicio da ligao TCP e o seu porto
                 si.Obj().put("output", "TCP link started in port: " + si.getServerPort() + ".");
                 si.notifyObserver(1);
                 //-----------------------------------------------------
@@ -52,7 +48,7 @@ public class ThreadClientRequests implements Runnable {
                 }
 
             } catch (IOException ex) {
-                si.Obj().put("exception", "[ERROR] Não foi possivel criar o socket TCP ou Servidor forçado a parar.\n" + ex.getMessage());
+                si.Obj().put("exception", "[ERROR] No foi possivel criar o socket TCP ou Servidor forado a parar.\n" + ex.getMessage());
                 si.notifyObserver(4);
                 si.desconnetAllClients();
             }
@@ -60,7 +56,7 @@ public class ThreadClientRequests implements Runnable {
             si.desconnetAllClients();
             
         } catch (IOException ex) {
-            si.Obj().put("exception", "[ERROR] Não foi possivel desconectar todos os Clientes e/ou as suas Threads.\n" + ex.getMessage());
+            si.Obj().put("exception", "[ERROR] No foi possivel desconectar todos os Clientes e/ou as suas Threads.\n" + ex.getMessage());
             si.notifyObserver(4);
         }
 

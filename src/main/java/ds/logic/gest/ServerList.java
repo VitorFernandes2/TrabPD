@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Classe para proteção dos acessos ao array de servidores
+ * Classe para proteo dos acessos ao array de servidores
  * 
  **/
 public class ServerList extends ArrayList<Server> implements Serializable {

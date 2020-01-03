@@ -33,7 +33,7 @@ public class ServerTCPconnect implements Runnable{
             ip = (String) JObj.get("IP");
             port = (String) JObj.get("Port");
             
-            data.getJObj().put("output", "Iniciou a aplicação no porto: " + port + ".\nCom o IP: " + ip + ".\n");
+            data.getJObj().put("output", "Iniciou a aplicao no porto: " + port + ".\nCom o IP: " + ip + ".\n");
             upperclass.update(86, data);
             
             s = new Socket(this.ip, Integer.parseInt(this.port));
@@ -96,7 +96,7 @@ public class ServerTCPconnect implements Runnable{
             int guardaMenu = 7;
             boolean didPush = false;
             boolean close = false;
-            s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
+            s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q  preciso
             PrintWriter pr;
             InputStreamReader in;
             StringBuilder sb;
@@ -519,7 +519,7 @@ public class ServerTCPconnect implements Runnable{
                                 pr.println(obj.toString());
                                 pr.flush();
 
-                                //Recebe as músicas
+                                //Recebe as msicas
                                 in = new InputStreamReader(s.getInputStream());
                                 bf = new BufferedReader(in);
 
@@ -577,7 +577,7 @@ public class ServerTCPconnect implements Runnable{
                             data.getJObj().put("output", JObj.toString());
                             upperclass.update(86, data);
                         }
-                        //Fecho da Aplicação
+                        //Fecho da Aplicao
                         else if(close){
                             break;
                         }
@@ -612,7 +612,7 @@ public class ServerTCPconnect implements Runnable{
                     JObjE.put("exception", e.toString());
                     data.setJObj(JObjE);
                     upperclass.update(404, data);
-                    //Provisório para fechar aplicação quando o servidor for abaixo
+                    //Provisrio para fechar aplicao quando o servidor for abaixo
                     this.setCommand("exit");
                     //-------------------------------------------------------------
                 }
@@ -626,7 +626,7 @@ public class ServerTCPconnect implements Runnable{
             JObjE.put("exception", e.toString());
             data.setJObj(JObjE);
             upperclass.update(5, data);
-            //Provisório para fechar aplicação quando o servidor for abaixo
+            //Provisrio para fechar aplicao quando o servidor for abaixo
             this.setCommand("exit");
             //-------------------------------------------------------------
         } catch (ParseException e) {
@@ -645,7 +645,7 @@ public class ServerTCPconnect implements Runnable{
         JObjE.put("exception", "Desligando o Cliente.");
         data.setJObj(JObjE);
         upperclass.update(5, data);
-        //Provisório para fechar aplicação quando o servidor for abaixo
+        //Provisrio para fechar aplicao quando o servidor for abaixo
         this.setCommand("exit");
         //-------------------------------------------------------------
 

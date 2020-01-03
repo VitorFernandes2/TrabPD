@@ -11,7 +11,7 @@ import server.ServerLogic;
 
 /**
  *
- * @author Luís António Moreira Ferreira da Silva
+ * @author Lus Antnio Moreira Ferreira da Silva
  */
 public class ServerConnectionStarter {
     private ServerLogic sd;
@@ -46,13 +46,13 @@ public class ServerConnectionStarter {
             // recebe o tipo de servidor pelo ds
             byte[] b1r = new byte[1024]; // onde vais receber os bytes, se a msg for maior do q o tamanho, ela fica cortada.
         
-            DatagramPacket dp1 = new DatagramPacket(b1r,b1r.length); // so é necessario fazer o datagrampacket com ip e port se for pra receber coisas.
+            DatagramPacket dp1 = new DatagramPacket(b1r,b1r.length); // so  necessario fazer o datagrampacket com ip e port se for pra receber coisas.
 
-            socket.receive(dp1); // recebe o packet pela socket já criada
+            socket.receive(dp1); // recebe o packet pela socket j criada
 
-            String str = new String(dp1.getData()); // traduz a informação recebida para string
+            String str = new String(dp1.getData()); // traduz a informao recebida para string
             int valorrec = Integer.parseInt(str.trim());
-            System.out.println("O meu principal é: " + valorrec);
+            System.out.println("O meu principal o: " + valorrec);
 
             socket.close();
             
@@ -96,7 +96,7 @@ public class ServerConnectionStarter {
         
         sd.notifyObserver(1);
         
-        //Começa a comunicação em multicast
+        //Comea a comunicao em multicast
         MulticastUDP multi = new MulticastUDP(sd);
         multi.comecamulticast();
         //---------------------------------
@@ -106,7 +106,7 @@ public class ServerConnectionStarter {
         aliveProcedure.start();
         //---------------
         
-        ThreadClientRequests threadclass = new ThreadClientRequests(sd); // pode ser mai pratica REVER
+        ThreadClientRequests threadclass = new ThreadClientRequests(sd, multi); // pode ser mai pratica REVER
         
         threadclass.start();
 
@@ -123,7 +123,7 @@ public class ServerConnectionStarter {
             threadclass.stopthread();
             //-----------------------------------
             
-            //Código de terminio de Multicast
+            //Cdigo de terminio de Multicast
             multi.turnOff();
             //-------------------------------
             
@@ -133,7 +133,7 @@ public class ServerConnectionStarter {
             
         } catch (IOException ex) {
             
-            sd.Obj().put("output", "[ERROR] Terminação forçada do Servidor.\n" + ex.getMessage());
+            sd.Obj().put("output", "[ERROR] Terminacao forcada do Servidor.\n" + ex.getMessage());
             sd.notifyObserver(1);
             
         }

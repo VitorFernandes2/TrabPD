@@ -17,7 +17,7 @@ public class Interfacemain implements observer{
         switch(acao){
             
             case 1:
-                System.out.println("[ERROR] Excepção lançada na conexão UDP com ds");
+                System.out.println("[ERROR] Excepao lanada na conexo UDP com ds");
                 break;
                 
             case 2:
@@ -34,9 +34,9 @@ public class Interfacemain implements observer{
                 break;
             
             case 5:
-                System.out.println("[ERROR] Excepção de IO lançada. Provavelmente o servidor" + "\n" + "[ERROR] desligou/perdeu-se a conecção ao servidor");
+                System.out.println("[ERROR] Excepo de IO lancada. Provavelmente o servidor" + "\n" + "[ERROR] desligou/perdeu-se a conecao ao servidor");
                 String exc3 = (String) data.getJObj().get("exception");
-                System.out.println("[ERROR] Excepção lançada aqui no notifier 5: " + exc3);
+                System.out.println("[ERROR] Excepo lancada aqui no notifier 5: " + exc3);
                 break;
 
             //Menu de musicas
@@ -114,7 +114,7 @@ public class Interfacemain implements observer{
 
             case 444:
                 String exc = (String) data.getJObj().get("exception");
-                System.out.println("[ERROR] Excepção lançada aqui no notifier: " + exc);
+                System.out.println("[ERROR] Excepcao lancada aqui no notifier: " + exc);
                 break;
 
             case 86:
@@ -386,7 +386,7 @@ public class Interfacemain implements observer{
     private void logininter(ConnectData data) {
         String user = new String();
         String pass = new String();
-        System.out.println("\n Autenticação (não aceitavel espacos em branco): ");
+        System.out.println("\n Autenticao (nao aceitavel espacos em branco): ");
 
         do{
             System.out.print("\n Username:");
@@ -411,7 +411,7 @@ public class Interfacemain implements observer{
         String name = new String();
         String user = new String();
         String pass = new String();
-        System.out.println("\n Registo (não aceitavel espacos em branco): ");
+        System.out.println("\n Registo (nao aceitavel espacos em branco): ");
 
         do{
             System.out.print("\n Name:");
