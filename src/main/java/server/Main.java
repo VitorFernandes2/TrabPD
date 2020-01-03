@@ -21,7 +21,7 @@ public class Main {
 
         ServerConnectionStarter scs = new ServerConnectionStarter(sml);
 
-        SpringApplication.run(Main.class, args);
+        //SpringApplication.run(Main.class, args);
 
         scs.connect();
 
