@@ -19,10 +19,10 @@ public class ServerData {
     private List<ThreadClientListenTreatment> Servers;
     private List<String> ClientsLogs;
     private int ServerPort;
-    private DatabaseControler dbaction;
+    private static DatabaseControler dbaction;
     private long numberOfServers;
 
-    public DatabaseControler getDbaction() {
+    public static DatabaseControler getDbaction() {
         return dbaction;
     }
 
