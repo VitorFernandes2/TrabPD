@@ -19,10 +19,9 @@ public class Main {
         
         sml.addinterface(serverItf);
 
-        ServerConnectionStarter scs = new ServerConnectionStarter(sml);
-
         //SpringApplication.run(Main.class, args);
 
+        ServerConnectionStarter scs = new ServerConnectionStarter(sml);
         scs.connect();
 
     }

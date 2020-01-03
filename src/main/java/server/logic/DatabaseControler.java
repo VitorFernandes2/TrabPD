@@ -479,7 +479,24 @@ public class DatabaseControler {
         }
         return false;
     }
-    
+
+    public boolean verifyUserPassword2(String username, String Password){
+        try {
+            String selectSql = ("SELECT password FROM `users` WHERE username = \"" + username + "\"");
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            String procu;
+            while(resultSet.next()){
+                procu = resultSet.getString("password");
+                if(procu.equals(Password)){
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            return false;
+        }
+        return false;
+    }
+
     public ResultSet getRawDatabaseinfo(){
         try {
             String selectSql = ("SELECT * FROM " + namedb);
