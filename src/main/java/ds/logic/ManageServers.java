@@ -89,12 +89,10 @@ public class ManageServers extends Thread {
                             //--------------------------------------------------------------
                             
                         }
-                        else if(!servers.isEmpty()){
+                        else if(servers.isEmpty()){
                             //saida para reinicio dos checks de cada servidor
                             break;
                         }
-
-                        ClientList clients = item.getClients();
 
                         ServerList serverAux2 = new ServerList();
                         serverAux2.addAll(servers);
@@ -116,8 +114,6 @@ public class ManageServers extends Thread {
                             socket.send(packet);
 
                         }
-
-                        //Tratar dos clientes
 
                     }
 

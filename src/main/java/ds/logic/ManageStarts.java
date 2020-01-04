@@ -12,8 +12,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ManageStarts implements Runnable {
 
@@ -81,6 +79,15 @@ public class ManageStarts implements Runnable {
                     System.out.println("Encontrei um servidor");
                     tratamentoServidores(Packet, Port, Socket);
 
+                } else if ("dataEraseServer".equals(msg)) {
+
+                    //Eliminar um servidor desligado
+                    String Port = (String) JObj.get("Port");
+                    System.out.println(Port);
+
+                    System.out.println("Encontrei um pedido de desligar de servidor");
+                    tratamentoEraseServidores(Packet, Port, Socket);
+
                 }
 
             }
@@ -113,6 +120,41 @@ public class ManageStarts implements Runnable {
         
         /// tratamento de principal
         byte[] b = String.valueOf(resposta).getBytes();
+        
+        DatagramPacket packete = new DatagramPacket(b,
+                    b.length,
+                    packet.getAddress(), packet.getPort());
+
+        try {
+            socket.send(packete);
+        } catch (IOException ex) {
+            System.out.println("Nao foi possivel enviar a role (principal ou nao) para o servidor. Erro :" + ex.getLocalizedMessage());
+        }
+        
+    }
+
+    private void tratamentoEraseServidores(DatagramPacket packet, String Port, DatagramSocket socket){
+
+        String IP = packet.getAddress().getHostAddress();
+
+        System.out.println(IP);
+        boolean erased = false;
+
+        if(!servers.isEmpty()){
+            //Verifica todos os servidores
+            for (Server item: servers){
+                System.out.println("Portos: " + item.getPort());
+                System.out.println("Porto enviado: " + Port);
+                if (item.getPort().equals(Port)){
+                    item.turnOff();
+                    erased = true;
+                    break;
+                }
+            }
+        }
+        
+        /// tratamento de principal
+        byte[] b = String.valueOf(erased).getBytes();
         
         DatagramPacket packete = new DatagramPacket(b,
                     b.length,
@@ -174,5 +216,5 @@ public class ManageStarts implements Runnable {
         }
 
     }
-
+    
 }

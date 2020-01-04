@@ -90,8 +90,10 @@ public class MulticastUDP {
                     
                     String cmd = new String(packet.getData(), 0, packet.getLength());
                     
-                    ci.Obj().put("output", "Recebe: " + cmd.trim());
-                    ci.notifyObserver(1);
+                    if(cmd.length() > 5){
+                        ci.Obj().put("output", "Recebe: " + cmd.trim());
+                        ci.notifyObserver(1);
+                    }
                     
                     //Tratamento de copia de musics para as playlists para a nova base de dados
                     if(cmd.contains("createcopyPlayListMusics")){
