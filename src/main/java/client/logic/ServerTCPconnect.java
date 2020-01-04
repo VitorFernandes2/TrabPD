@@ -530,7 +530,7 @@ public class ServerTCPconnect implements Runnable{
                                                     "tmp.mp3", fileSize);
                                     receiveFileFromServer.start();
                                     receiveFileFromServer.join();
-                                    
+                                    PlayMusic.playMusic("tmp.mp3");
                                 }
                                 //------------------------
                                 
@@ -794,6 +794,8 @@ public class ServerTCPconnect implements Runnable{
                                                         filename, fileSize);
                                         receiveFileFromServer.start();
                                         receiveFileFromServer.join();
+
+                                        PlayMusic.playMusic(filename);
 
                                     }
 
