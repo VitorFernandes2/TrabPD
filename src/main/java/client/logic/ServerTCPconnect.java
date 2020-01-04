@@ -72,13 +72,16 @@ public class ServerTCPconnect implements Runnable{
             ip = (String) JObj.get("IP");
             port = (String) JObj.get("Port");
             
+            this.data = datacomun;
+            this.upperclass = man;
+            
             JObjE = new JSONObject();
             JObjE.put("output", "Ligacao ao Servidor de IP: " + ip + "\nCom Porto: " + port);
             data.setJObj(JObjE);
             upperclass.update(86, data);
             
-            this.data = datacomun;
-            this.upperclass = man;
+            //this.data = datacomun;
+            //this.upperclass = man;
             
         }
         catch (ParseException e){
