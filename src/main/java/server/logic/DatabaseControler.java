@@ -656,8 +656,14 @@ public class DatabaseControler {
 
         }
 
-
         try {
+
+            int id = getMusicId(name,artist,sl);
+            if (id != -1){
+                String deleteSql = "DELETE FROM playlistmusic WHERE music_id = '" + id + "'";
+                stmt.executeUpdate(deleteSql);
+            }
+
             String deleteSql = "DELETE FROM musics WHERE name = '" + name +"' And artist = '" + artist + "'";
             stmt.executeUpdate(deleteSql);
         } catch (SQLException ex) {

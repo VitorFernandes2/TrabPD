@@ -551,6 +551,7 @@ public class ServerTCPconnect implements Runnable{
                                 pr = new PrintWriter(s.getOutputStream());
                                 pr.println(obj.toString());
                                 pr.flush();
+
                                 didPush = true;
                                 //------------------------
                                 
