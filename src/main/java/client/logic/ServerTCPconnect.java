@@ -551,7 +551,6 @@ public class ServerTCPconnect implements Runnable{
                                 pr = new PrintWriter(s.getOutputStream());
                                 pr.println(obj.toString());
                                 pr.flush();
-
                                 didPush = true;
                                 //------------------------
                                 
@@ -580,13 +579,14 @@ public class ServerTCPconnect implements Runnable{
                                     data.setJObj(JObjE);
                                     upperclass.update(86, data);
                                     data.setMenu(6);
-                                } else{
-                                JSONParser JsonParser3 = new JSONParser();
-                                JSONObject JObj3 = (JSONObject) JsonParser3.parse(str3);
-                                
-                                data.setJObj(JObj3);
-                                
-                                this.upperclass.update(13, data);
+                                }
+                                else{
+                                    JSONParser JsonParser3 = new JSONParser();
+                                    JSONObject JObj3 = (JSONObject) JsonParser3.parse(str3);
+
+                                    data.setJObj(JObj3);
+
+                                    this.upperclass.update(13, data);
                                 }
                                 //------------------------
                                 
@@ -747,14 +747,15 @@ public class ServerTCPconnect implements Runnable{
                                     data.setJObj(JObjE);
                                     upperclass.update(86, data);
                                     data.setMenu(15);
-                                } else{
+                                } 
+                                else{
                                 
-                                JsonParser = new JSONParser();
-                                JObj = (JSONObject) JsonParser.parse(str);
-                                
-                                data.setJObj(JObj);
-                                
-                                this.upperclass.update(19, data);
+                                    JsonParser = new JSONParser();
+                                    JObj = (JSONObject) JsonParser.parse(str);
+
+                                    data.setJObj(JObj);
+
+                                    this.upperclass.update(19, data);
                                 }
                                 //------------------------
                                 
@@ -821,7 +822,7 @@ public class ServerTCPconnect implements Runnable{
                                 break;
                             //Procurar musica
                             case 21:
-                                guardaMenu = 6;
+                                guardaMenu = 21;
                                 this.upperclass.update(21, data);
                                 obj = new JSONObject();
                                 obj.put("Command", "searchMusic");
@@ -843,14 +844,15 @@ public class ServerTCPconnect implements Runnable{
                                     data.setJObj(JObjE);
                                     upperclass.update(86, data);
                                     //data.setMenu(6);
-                                }else{
+                                }
+                                else{
 
-                                JSONParser JsonParser5 = new JSONParser();
-                                JSONObject JObj5 = (JSONObject) JsonParser5.parse(str5);
-                                
-                                data.setJObj(JObj5);
-                                
-                                this.upperclass.update(13, data);
+                                    JSONParser JsonParser5 = new JSONParser();
+                                    JSONObject JObj5 = (JSONObject) JsonParser5.parse(str5);
+
+                                    data.setJObj(JObj5);
+
+                                    this.upperclass.update(13, data);
                                 }
                                 data.setMenu(6);
                                 
@@ -858,7 +860,7 @@ public class ServerTCPconnect implements Runnable{
                                 break;
                             // procura playlist
                             case 22:
-                                guardaMenu = 6;
+                                guardaMenu = 22;
                                 this.upperclass.update(22, data);
                                 obj = new JSONObject();
                                 obj.put("Command", "searchPlaylist");
@@ -880,13 +882,14 @@ public class ServerTCPconnect implements Runnable{
                                     JObjE.put("output", "Nao foi encontrado musicas ou comando invalido");
                                     data.setJObj(JObjE);
                                     upperclass.update(86, data);
-                                } else{
-                                JSONParser JsonParser6 = new JSONParser();
-                                JSONObject JObj6 = (JSONObject) JsonParser6.parse(str6);
-                                
-                                data.setJObj(JObj6);
-                                
-                                this.upperclass.update(19, data);
+                                }
+                                else{
+                                    JSONParser JsonParser6 = new JSONParser();
+                                    JSONObject JObj6 = (JSONObject) JsonParser6.parse(str6);
+
+                                    data.setJObj(JObj6);
+
+                                    this.upperclass.update(19, data);
                                 }
                                 data.setMenu(15);
                                 
@@ -1009,6 +1012,7 @@ public class ServerTCPconnect implements Runnable{
                             pr.flush();
 
                             //Mensagem de confirmacao ou negacao
+                            in = new InputStreamReader(s.getInputStream());
                             BufferedReader bf2 = new BufferedReader(in);
 
                             String str2 = bf2.readLine();
@@ -1034,7 +1038,7 @@ public class ServerTCPconnect implements Runnable{
                                     this.setCommand("exit");
                                     //-------------------------------------------------------------
                                 }
-
+                                PlayMusic.playMusic("tmp.mp3");
                             }
                             break;
                         case 12:
@@ -1047,16 +1051,25 @@ public class ServerTCPconnect implements Runnable{
                             pr.flush();
 
                             //Mensagem de confirmacao ou negacao
+                            in = new InputStreamReader(s.getInputStream());
                             BufferedReader bf3 = new BufferedReader(in);
 
                             String str3 = bf3.readLine();
 
-                            JSONParser JsonParser3 = new JSONParser();
-                            JSONObject JObj3 = (JSONObject) JsonParser3.parse(str3);
+                            if(str3 == null){
+                                JObjE.put("output","Nao existe lista ou comando inválido");
+                                data.setJObj(JObjE);
+                                upperclass.update(86, data);
+                                data.setMenu(6);
+                            }
+                            else{
+                                JSONParser JsonParser3 = new JSONParser();
+                                JSONObject JObj3 = (JSONObject) JsonParser3.parse(str3);
 
-                            data.setJObj(JObj3);
+                                data.setJObj(JObj3);
 
-                            this.upperclass.update(13, data);
+                                this.upperclass.update(13, data);
+                            }
                             break;
                         case 14:
                             pr.println(obj.toString());
@@ -1079,26 +1092,38 @@ public class ServerTCPconnect implements Runnable{
                             didPush = true;
                             break;
                         case 19:
+                            pr = new PrintWriter(s.getOutputStream());
                             pr.println(obj.toString());
                             pr.flush();
 
                             //Mensagem de confirmacao ou negacao
+                            in = new InputStreamReader(s.getInputStream());
                             bf = new BufferedReader(in);
 
                             str = bf.readLine();
 
-                            JsonParser = new JSONParser();
-                            JObj = (JSONObject) JsonParser.parse(str);
+                            if(str == null){
+                                JObjE.put("output", "Nao existe playlist ou comando invalido");
+                                data.setJObj(JObjE);
+                                upperclass.update(86, data);
+                                data.setMenu(15);
+                            } 
+                            else{
 
-                            data.setJObj(JObj);
+                                JsonParser = new JSONParser();
+                                JObj = (JSONObject) JsonParser.parse(str);
 
-                            this.upperclass.update(19, data);
+                                data.setJObj(JObj);
+
+                                this.upperclass.update(19, data);
+                            }
                             break;
                         case 20:
                             pr.println(obj.toString());
                             pr.flush();
 
                             //Recebe as músicas
+                            in = new InputStreamReader(s.getInputStream());
                             bf = new BufferedReader(in);
 
                             str = bf.readLine();
@@ -1141,9 +1166,49 @@ public class ServerTCPconnect implements Runnable{
                                         //-------------------------------------------------------------
                                     }
 
+                                    PlayMusic.playMusic(filename);
+
                                 }
 
                             }
+                            break;
+                            case 21:
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            //Mensagem com a resposta (estilo list text)
+                            in = new InputStreamReader(s.getInputStream());
+                            BufferedReader bf5 = new BufferedReader(in);
+
+                            String str5 = bf5.readLine();
+
+                            JSONParser JsonParser5 = new JSONParser();
+                            JSONObject JObj5 = (JSONObject) JsonParser5.parse(str5);
+
+                            data.setJObj(JObj5);
+
+                            this.upperclass.update(13, data);
+
+                            data.setMenu(6);
+                            break;
+                        case 22:
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                            //Mensagem com a resposta (estilo list text)
+                            in = new InputStreamReader(s.getInputStream());
+                            BufferedReader bf6 = new BufferedReader(in);
+
+                            String str6 = bf6.readLine();
+
+                            JSONParser JsonParser6 = new JSONParser();
+                            JSONObject JObj6 = (JSONObject) JsonParser6.parse(str6);
+
+                            data.setJObj(JObj6);
+
+                            this.upperclass.update(19, data);
+
+                            data.setMenu(15);
                             break;
                     }
 
