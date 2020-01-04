@@ -424,9 +424,53 @@ public class ThreadClientListenTreatment implements Runnable {
                         log = false;
                     }
                     else{
-                        byte[] b = String.valueOf(JObj.toString()).getBytes();
-                        DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), multi.getUses());
-                        multi.getMulticastSock().send(packet);
+
+                        if (cmd.contains("createMusic")){
+
+                            String MusicName = (String) JObj.get("MusicName");
+                            String MusicAuthor = (String) JObj.get("MusicAuthor");
+
+                            String path = si.getDbaction().getFileName(MusicName, MusicAuthor, si);
+                            if (path != null){
+
+                                File file = new File(path);
+                                JObj.put("size", file.length());
+
+                            }
+                            else {
+                                JObj.put("size", 0);
+                            }
+
+                            byte[] b = String.valueOf(JObj.toString()).getBytes();
+                            DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), multi.getUses());
+                            multi.getMulticastSock().send(packet);
+
+                            b = new byte[254];
+
+                            if (path != null){
+
+                                FileInputStream in = new FileInputStream(path);
+                                int bytes = 0;
+
+                                do{
+                                    bytes = in.read(b);
+                                    if (bytes < 0)
+                                        break;
+                                    packet = new DatagramPacket(b, b.length, multi.getGroup(), multi.getUses());
+                                    multi.getMulticastSock().send(packet);
+                                }while (bytes > 0);
+
+                            }
+
+                        }
+                        else{
+
+                            byte[] b = String.valueOf(JObj.toString()).getBytes();
+                            DatagramPacket packet = new DatagramPacket(b, b.length, multi.getGroup(), multi.getUses());
+                            multi.getMulticastSock().send(packet);
+
+                        }
+
                     }
                     //-----------------------------------------
 

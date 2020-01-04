@@ -1,5 +1,6 @@
 package server.logic;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -178,9 +179,30 @@ public class MulticastUDP {
                         double MusicDuration = (double) JObj.get("MusicDuration");
                         String MusicGenre = (String) JObj.get("MusicGenre");
                         String MusicPath = (String) JObj.get("MusicPath");
+                        long size = (long) JObj.get("size");
                         
                         if(!ci.getDbaction().contaismusic(MusicName, MusicAuthor, MusicAlbum, ci)){
                             ci.getDbaction().insertMulticastMusic(MusicName, MusicAuthor, MusicAlbum, MusicYear, MusicDuration, MusicGenre, MusicPath, ci);
+
+                            buffer = new byte [254];
+                            int current = 0;
+                            int bytes = 0;
+
+                            int id = ci.getDbaction().getMusicId(MusicName, MusicAuthor, ci);
+                            String path = "multi_" + ci.getDbaction().getMusicPath(id);
+
+                            FileOutputStream out = new FileOutputStream(path);
+                            do {
+
+                                packet = new DatagramPacket(buffer, buffer.length);
+                                multicastSock.receive(packet);
+
+                                out.write(packet.getData(), 0, packet.getLength());
+
+                            }while (current < size);
+
+                            out.close();
+
                         }
                         
                     }
@@ -476,17 +498,7 @@ public class MulticastUDP {
                     DatagramPacket packetUser = new DatagramPacket(c, c.length, group, 3456);
                     multicastSock.send(packetUser);
                 }
-                //----------------------------------------------------------------
-                while(corre){
-                    
-                    TimeUnit.SECONDS.sleep(2);
-                    int msg = port;
-                    byte[] b = String.valueOf(msg).getBytes(); 
-                    DatagramPacket packet = new DatagramPacket(b, b.length,group,3456);
-                    multicastSock.send(packet);
-                    
-                }
-            } catch (IOException | InterruptedException e){
+            } catch (IOException e){
                 ci.Obj().put("exception", "[ERROR] Servidor deixou de enviar mensagens por multicast." + e.getMessage());
                 ci.notifyObserver(4);
             }
