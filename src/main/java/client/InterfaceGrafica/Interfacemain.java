@@ -384,7 +384,7 @@ public class Interfacemain implements observer{
 
         do{
 
-            System.out.println("\nPlaylists:");
+            System.out.println("\nPlaylists: (login obrigatorio)");
             System.out.println("listPlaylists - Listar as playlists na base de dados");
             System.out.println("searchPlaylists - Procurar por playlists na base de dados");
             System.out.println("createPlaylist - Criar uma playlists");
