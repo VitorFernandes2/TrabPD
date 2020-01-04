@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,10 +30,12 @@ public class MulticastUDP {
     private static int port; // TEMPPP
     private static int uses;
     private static boolean corre;
+    private static List<String> copias;
 
     public MulticastUDP(ServerLogic ci) {
         this.ci = ci;
-        this.port = ci.getSd().getServerPort(); // TEMPPPP
+        this.port = ci.getSd().getServerPort();
+        this.copias = new ArrayList<>();
     }
     
     //public static void main(String[] args) throws UnknownHostException, IOException {
@@ -90,10 +93,17 @@ public class MulticastUDP {
                     
                     String cmd = new String(packet.getData(), 0, packet.getLength());
                     
-                    if(cmd.length() > 5){
-                        ci.Obj().put("output", "Recebe: " + cmd.trim());
-                        ci.notifyObserver(1);
+                    if(copias.contains(cmd)){
+                        continue;
                     }
+                    else{
+                        if(cmd.contains("createcopy")){
+                            copias.add(cmd);
+                        }
+                    }
+                    
+                    ci.Obj().put("output", "Recebe: " + cmd.trim());
+                    ci.notifyObserver(1);
                     
                     //Tratamento de copia de musics para as playlists para a nova base de dados
                     if(cmd.contains("createcopyPlayListMusics")){
@@ -461,9 +471,11 @@ public class MulticastUDP {
         public void run() {
             try{
                 //Pedido de copia de base de dados principal por parte do servidor
-                byte[] c = String.valueOf("copiar").getBytes();
-                DatagramPacket packetUser = new DatagramPacket(c, c.length, group, 3456);
-                multicastSock.send(packetUser);
+                if(!ci.getDbaction().getNamedb().equals("Principal")){
+                    byte[] c = String.valueOf("copiar").getBytes();
+                    DatagramPacket packetUser = new DatagramPacket(c, c.length, group, 3456);
+                    multicastSock.send(packetUser);
+                }
                 //----------------------------------------------------------------
                 while(corre){
                     
@@ -472,7 +484,6 @@ public class MulticastUDP {
                     byte[] b = String.valueOf(msg).getBytes(); 
                     DatagramPacket packet = new DatagramPacket(b, b.length,group,3456);
                     multicastSock.send(packet);
-                    //System.out.println("Enviei val: " + msg);
                     
                 }
             } catch (IOException | InterruptedException e){

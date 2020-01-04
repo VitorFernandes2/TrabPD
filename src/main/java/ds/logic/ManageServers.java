@@ -36,6 +36,10 @@ public class ManageServers extends Thread {
 
                 ServerList serversAux = new ServerList();
                 serversAux.addAll(servers);
+                
+                if(serversAux.isEmpty()){
+                    continue;
+                }
 
                 for (Server item : serversAux) {
 
@@ -89,11 +93,12 @@ public class ManageServers extends Thread {
                             //--------------------------------------------------------------
                             
                         }
+                        //Se não for o principal e não existirem mais servidores
                         else if(servers.isEmpty()){
                             //saida para reinicio dos checks de cada servidor
                             break;
                         }
-
+                        
                         ServerList serverAux2 = new ServerList();
                         serverAux2.addAll(servers);
 
@@ -101,7 +106,6 @@ public class ManageServers extends Thread {
 
                         for (Server item2 : serverAux2){
 
-                            System.out.println();
                             JSONObject objSend2 = new JSONObject();
                             objSend2.put("message", "ServerDown");
                             objSend2.put("numberOfServers", serverAux2.size());
@@ -114,7 +118,7 @@ public class ManageServers extends Thread {
                             socket.send(packet);
 
                         }
-
+                        
                     }
 
                 }

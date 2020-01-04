@@ -100,18 +100,31 @@ public class DatabaseControler {
         return namedb;
     }
 
-    public void setNamedbPrincipal() throws SQLException {
-        this.namedb = "Principal";
-        String ResetString = "jdbc:mysql://localhost:3306/"+this.namedb+"?useTimezone=true&serverTimezone=UTC&useSSL=false";
-        this.connect = DriverManager.getConnection(ResetString,this.user,this.pass);
-        this.stmt = connect.createStatement();
-    }
-
     public void setNamedb(String namedb) throws SQLException {
         this.namedb = namedb;
         String ResetString = "jdbc:mysql://localhost:3306/"+this.namedb+"?useTimezone=true&serverTimezone=UTC&useSSL=false";
         this.connect = DriverManager.getConnection(ResetString,this.user,this.pass);
         this.stmt = connect.createStatement();
+        
+        String tableSql = "CREATE TABLE IF NOT EXISTS users"
+        + "(user_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
+        + "username varchar(30), password TINYTEXT NOT NULL)";
+        stmt.execute(tableSql);
+
+        String tableSql2 = "CREATE TABLE IF NOT EXISTS musics"
+        + "(music_id int PRIMARY KEY AUTO_INCREMENT, name varchar(30),"
+        + "artist varchar(30), album varchar(30), year varchar(30), duration double, genre varchar(30), localname varchar(90))";
+        stmt.execute(tableSql2);
+
+        String tableSql3 = "CREATE TABLE IF NOT EXISTS playlist"
+        + "(play_id int PRIMARY KEY AUTO_INCREMENT,"
+        + "user_id int, name varchar(30))";
+        stmt.execute(tableSql3);
+
+        String tableSql4 = "CREATE TABLE IF NOT EXISTS playlistmusic"
+                + "(id int PRIMARY KEY AUTO_INCREMENT, music_id int,"
+                + "play_id int)";
+        stmt.execute(tableSql4);
     }
 
     public String getUser() {

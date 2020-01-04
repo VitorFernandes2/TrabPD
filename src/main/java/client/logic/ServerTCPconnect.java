@@ -3,11 +3,8 @@ package client.logic;
 import client.InterfaceGrafica.Interfacemain;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import mainObjects.Music;
 import org.json.simple.JSONObject;
@@ -74,9 +71,11 @@ public class ServerTCPconnect implements Runnable{
 
             ip = (String) JObj.get("IP");
             port = (String) JObj.get("Port");
-
-            System.out.println(ip);
-            System.out.println(port);
+            
+            JObjE = new JSONObject();
+            JObjE.put("output", "Ligacao ao Servidor de IP: " + ip + "\nCom Porto: " + port);
+            data.setJObj(JObjE);
+            upperclass.update(86, data);
             
             this.data = datacomun;
             this.upperclass = man;
@@ -246,8 +245,11 @@ public class ServerTCPconnect implements Runnable{
                     JObj = (JSONObject) JsonParser.parse(str);
 
                     if (JObj.get("message").equals("receiveFiles")){
-
-                        System.out.println(JObj.toString());
+                        
+                        JObjE = new JSONObject();
+                        JObjE.put("output", JObj.toString());
+                        data.setJObj(JObjE);
+                        upperclass.update(86, data);
 
                         long numberOfFiles = (long)JObj.get("numberOfFiles");
 
@@ -272,8 +274,6 @@ public class ServerTCPconnect implements Runnable{
                     }
                     break;
             }
-            
-            System.out.println("Enviado para o novo servidor: " + obj.toString());
             
             //Tratamento dos didPush
             if(didPush){
@@ -300,8 +300,6 @@ public class ServerTCPconnect implements Runnable{
                 data.getJObj().put("output", JObj.toString());
                 upperclass.update(86, data);
             }
-            
-            System.out.println("Close = " + close);
             
         } catch (IOException ex) {
             JObjE = new JSONObject();
@@ -489,7 +487,6 @@ public class ServerTCPconnect implements Runnable{
                                 this.upperclass.update(9, data);
                                 
                                 Music music = data.getMusic();
-                                System.out.printf(music.toString());
                                 
                                 obj = new JSONObject();
                                 obj.put("Command", "createMusic");
@@ -804,7 +801,10 @@ public class ServerTCPconnect implements Runnable{
 
                                 if (JObj.get("message").equals("receiveFiles")){
 
-                                    System.out.println(JObj.toString());
+                                    JObjE = new JSONObject();
+                                    JObjE.put("output", JObj.toString());
+                                    data.setJObj(JObjE);
+                                    upperclass.update(86, data);
 
                                     long numberOfFiles = (long)JObj.get("numberOfFiles");
 
@@ -833,24 +833,20 @@ public class ServerTCPconnect implements Runnable{
                                 
                         }
                         
-                        System.out.println("ESTOU AQUI [-1]");
-                        
                         //Envio para tratamento
                         if(didPush){
                             didPush = false;
                             in = new InputStreamReader(s.getInputStream());
                             bf = new BufferedReader(in);
-                            System.out.println("ESTOU AQUI [-99]");
+                            
                             String str4 = bf.readLine();
-                            System.out.println("O que está cá dentro: " + str4);
-                            System.out.println("ESTOU AQUI [-99]");
+                            
                             JsonParser = new JSONParser();
-                            System.out.println("ESTOU AQUI [-99]");
+                            
                             JObj = new JSONObject();
                             JObj = (JSONObject) JsonParser.parse(str4);
-                            System.out.println("ESTOU AQUI [-99]");
+                            
                             boolean Sucesso = (boolean) JObj.get("sucesso");
-                            System.out.println("ESTOU AQUI [-99]");
                             
                             if(!Sucesso){
                                 switch(guardaMenu){
@@ -885,13 +881,9 @@ public class ServerTCPconnect implements Runnable{
                     if(returnado.equalsIgnoreCase("error")){
                         break;
                     }
-
-                    System.out.println("ESTOU AQUI [1]");
                     
                     JSONParser JsonParserReset = new JSONParser();
                     JSONObject JObjReset = (JSONObject) JsonParserReset.parse(returnado);
-
-                    System.out.println("ESTOU AQUI [2]");
                     
                     String ipReset = (String) JObjReset.get("IP");
                     String portReset = (String) JObjReset.get("Port");
@@ -901,11 +893,7 @@ public class ServerTCPconnect implements Runnable{
 
                     port = portReset;
                     
-                    System.out.println("ESTOU AQUI [3]");
-                    
                     this.resetTCP(ipReset, portReset);
-                    
-                    System.out.println("ESTOU AQUI [4]");
                     
                     //Tratamento do ultimo comando inserido
                     pr = new PrintWriter(s.getOutputStream());
@@ -1059,7 +1047,10 @@ public class ServerTCPconnect implements Runnable{
 
                             if (JObj.get("message").equals("receiveFiles")){
 
-                                System.out.println(JObj.toString());
+                                JObjE = new JSONObject();
+                                JObjE.put("output", JObj.toString());
+                                data.setJObj(JObjE);
+                                upperclass.update(86, data);
 
                                 long numberOfFiles = (long)JObj.get("numberOfFiles");
 
@@ -1095,8 +1086,6 @@ public class ServerTCPconnect implements Runnable{
                             break;
                     }
 
-                    System.out.println("Enviado para o novo servidor: " + obj.toString());
-
                     //Tratamento dos didPush
                     if(didPush){
                         didPush = false;
@@ -1125,8 +1114,6 @@ public class ServerTCPconnect implements Runnable{
                     else if(close){
                         break;
                     }
-                    
-                    System.out.println("ESTOU AQUI [5]");
                     
                 } catch (InterruptedException e) {
                     JObjE = new JSONObject();
