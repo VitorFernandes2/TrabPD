@@ -225,7 +225,9 @@ public class ThreadClientListenTreatment implements Runnable {
                         if (si.getDbaction().removeMusic(name, author, si)){
 
                             JSONObject obj = new JSONObject();
-                            obj.put("message", "removeDone");
+                            obj.put("tipo", "resposta");
+                            obj.put("sucesso", true);
+                            obj.put("msg", out + " do user " + " Cliente de ID: " + this.ID);
 
                             pr.println(obj.toString());
                             pr.flush();
@@ -234,7 +236,9 @@ public class ThreadClientListenTreatment implements Runnable {
                         else {
 
                             JSONObject obj = new JSONObject();
-                            obj.put("message", "removeNotDone");
+                            obj.put("tipo", "resposta");
+                            obj.put("sucesso", false);
+                            obj.put("msg", out + " do user " + " Cliente de ID: " + this.ID);
 
                             pr.println(obj.toString());
                             pr.flush();
@@ -294,6 +298,30 @@ public class ThreadClientListenTreatment implements Runnable {
                         JSONObject obj = new JSONObject();
                         String username = (String)JObj.get("username");
                         obj = si.getDbaction().listPlaylist(username, si);
+
+                        if (obj != null){
+
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+                        else {
+
+                            obj.put("message", "noPlaylistList");
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+
+                    }
+                    else if(cmd.equals("searchPlaylist")){
+
+                        String extra = (String) JObj.get("Commandextra");
+                        ped = true;
+
+                        JSONObject obj = new JSONObject();
+                        String username = (String)JObj.get("username");
+                        obj = si.getDbaction().listPlaylist(username, si, extra);
 
                         if (obj != null){
 
