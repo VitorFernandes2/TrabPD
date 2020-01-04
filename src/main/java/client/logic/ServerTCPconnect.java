@@ -22,41 +22,6 @@ public class ServerTCPconnect implements Runnable{
     Interfacemain upperclass;
     JSONObject JObjE;
     JSONObject obj;
-    
-    public ServerTCPconnect(String json){
-        
-        try{
-
-            JSONParser JsonParser = new JSONParser();
-            JSONObject JObj = (JSONObject) JsonParser.parse(json);
-
-            ip = (String) JObj.get("IP");
-            port = (String) JObj.get("Port");
-            
-            data.getJObj().put("output", "Iniciou a aplicacao no porto: " + port + ".\nCom o IP: " + ip + ".\n");
-            upperclass.update(86, data);
-            
-            s = new Socket(this.ip, Integer.parseInt(this.port));
-            
-            //Inicializacao do objeto de comando
-            obj = new JSONObject();
-            obj.put("Command", "");
-            //----------------------------------
-            
-        }
-        catch (ParseException e){
-            JObjE = new JSONObject();
-            JObjE.put("exception", "[ERROR] Parse de JSON com erros no Reset de Socket. " + e.toString());
-            data.setJObj(JObjE);
-            upperclass.update(444, data);
-        } catch (IOException e) {
-            JObjE = new JSONObject();
-            JObjE.put("exception", "[ERROR] Reset de Socket com erros. " + e.toString());
-            data.setJObj(JObjE);
-            upperclass.update(444, data);
-        }
-        
-    }
 
     public ServerTCPconnect(String json, ConnectData datacomun,Interfacemain man) {
 
@@ -79,9 +44,6 @@ public class ServerTCPconnect implements Runnable{
             JObjE.put("output", "Ligacao ao Servidor de IP: " + ip + "\nCom Porto: " + port);
             data.setJObj(JObjE);
             upperclass.update(86, data);
-            
-            //this.data = datacomun;
-            //this.upperclass = man;
             
         }
         catch (ParseException e){

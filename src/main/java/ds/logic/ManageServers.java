@@ -36,10 +36,6 @@ public class ManageServers extends Thread {
 
                 ServerList serversAux = new ServerList();
                 serversAux.addAll(servers);
-                
-                if(serversAux.isEmpty()){
-                    continue;
-                }
 
                 for (Server item : serversAux) {
 
