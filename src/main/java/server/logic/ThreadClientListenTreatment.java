@@ -267,6 +267,30 @@ public class ThreadClientListenTreatment implements Runnable {
                         }
 
                     }
+                    else if(cmd.equals("searchPlaylist")){
+
+                        String extra = (String) JObj.get("Commandextra");
+                        ped = true;
+
+                        JSONObject obj = new JSONObject();
+                        String username = (String)JObj.get("username");
+                        obj = si.getDbaction().listPlaylist(username, si, extra);
+
+                        if (obj != null){
+
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+                        else {
+
+                            obj.put("message", "noPlaylistList");
+                            pr.println(obj.toString());
+                            pr.flush();
+
+                        }
+
+                    }
                     else if(cmd.equals("changePlaylist")){
 
                         String username = (String)JObj.get("username");

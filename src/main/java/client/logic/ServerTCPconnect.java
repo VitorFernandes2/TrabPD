@@ -675,6 +675,9 @@ public class ServerTCPconnect implements Runnable{
                                 else if(data.getCommand().equals("voltar")){
                                     this.data.setMenu(8);
                                 }
+                                else if (data.getCommand().equals("searchPlaylists")){
+                                    data.setMenu(22);
+                                }
                                 
                                 break;
                                 
@@ -866,6 +869,35 @@ public class ServerTCPconnect implements Runnable{
                                 
                                 break;
   
+                            case 22:
+                                guardaMenu = 6;
+                                this.upperclass.update(22, data);
+                                obj = new JSONObject();
+                                obj.put("Command", "searchPlaylist");
+                                obj.put("Commandextra", data.getCommand());
+                                obj.put("username", this.data.getUsername());
+                                
+                                //Envia os dados
+                                pr = new PrintWriter(s.getOutputStream());
+                                pr.println(obj.toString());
+                                pr.flush();
+                                
+                                //Mensagem com a resposta (estilo list text)
+                                in = new InputStreamReader(s.getInputStream());
+                                BufferedReader bf6 = new BufferedReader(in);
+                                
+                                String str6 = bf6.readLine();
+                                
+                                JSONParser JsonParser6 = new JSONParser();
+                                JSONObject JObj6 = (JSONObject) JsonParser6.parse(str6);
+                                
+                                data.setJObj(JObj6);
+                                
+                                this.upperclass.update(19, data);
+                                
+                                data.setMenu(15);
+                                
+                                break;
                                 
                         }
                         

@@ -116,6 +116,11 @@ public class Interfacemain implements observer{
             case 21:
                 this.Searchnumber(data);
                 break;
+                
+            //View de pesquisa Playlist
+            case 22:
+                this.SearchnumberPlaylist(data);
+                break;
 
             case 444:
                 String exc = (String) data.getJObj().get("exception");
@@ -381,6 +386,7 @@ public class Interfacemain implements observer{
 
             System.out.println("\nPlaylists:");
             System.out.println("listPlaylists - Listar as playlists na base de dados");
+            System.out.println("searchPlaylists - Procurar por playlists na base de dados");
             System.out.println("createPlaylist - Criar uma playlists");
             System.out.println("removePlaylist - Remover playlists");
             System.out.println("changePlaylist - Alterar playlists");
@@ -391,7 +397,7 @@ public class Interfacemain implements observer{
 
         }while (!cmd.equals("listPlaylists") && !cmd.equals("createPlaylist")
                 && !cmd.equals("removePlaylist") && !cmd.equals("changePlaylist")
-                && !cmd.equals("playPlaylist") && !cmd.equals("voltar"));
+                && !cmd.equals("playPlaylist") && !cmd.equals("voltar") && !cmd.equals("searchPlaylists"));
 
         data.setCommand(cmd);
 
@@ -477,6 +483,20 @@ public class Interfacemain implements observer{
 
     private void tempshowreceb(ConnectData data) {
         System.out.println(data.getJObj().toString());
+    }
+
+    private void SearchnumberPlaylist(ConnectData data) {
+                System.out.println("Entrou no SearchPlayList");
+        System.out.println("---Como Utilizar---");
+        System.out.println("  -> Escreva o nome da Playlist para procurar por nome (ex: Playlist1) ");
+        System.out.println("  -> Escreva o nome : filtro : parametro para utilizar filtros (ex: Playlist1 : name : Music1)");
+        System.out.println("  -> Filtros possiveis: name, artist, album, year");
+        System.out.println("Nota: esta pesquisa mostra só o nome da playlist pesquisada");
+        
+        String comando = Readers.readString("Insira o Comando: ");
+        
+        data.setCommand(comando);
+        data.setMenu(6);
     }
     
 }

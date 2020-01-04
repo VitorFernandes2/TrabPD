@@ -976,6 +976,64 @@ public class DatabaseControler {
         return obj;
 
     }
+    
+    public JSONObject listPlaylist(String username, ServerLogic sl, String search){
+            
+        boolean filt = false;
+        String[] parts = null;
+        if(search.contains(":")){
+            parts = search.split(" : ");
+            filt = true;
+            if(parts.length < 3){
+                return null;
+            }
+        }
+            
+        JSONObject obj = new JSONObject();
+        int id = 0;
+        String selectSql = null;
+        ResultSet resultSet = null;
+
+        id = getUserID(username);
+        if (id == -1)
+            return null;
+
+        try {
+
+            if(filt == false){
+                selectSql = "SELECT name FROM playlist WHERE user_id = '" + id +"'" + " AND name = '" + search + "'";
+            }else{
+                if(parts[1].equals("artist") || parts[1].equals("name") || parts[1].equals("album") || parts[1].equals("year")){
+                    //SELECT playlist.name FROM playlist,playlistmusic,musics WHERE user_id = '1' AND playlist.name = 'playcorre' AND playlistmusic.music_id = musics.music_id AND playlistmusic.play_id = playlist.play_id AND musics.artist = 'me'
+                    selectSql = "SELECT playlist.name FROM playlist,playlistmusic,musics WHERE user_id = '" + id + "'" 
+                            + " AND playlist.name = '" + parts[0] + "'" + " AND playlistmusic.music_id = musics.music_id" 
+                            + " AND playlistmusic.play_id = playlist.play_id" + " AND musics." + parts[1] +" = '"+ parts[2] +"'";
+                }else{
+                    return null;
+                }
+
+            }
+            resultSet = stmt.executeQuery(selectSql);
+            int i = 0;
+            while(resultSet.next()){
+
+                i++;
+                String nome = "playlist" + (i - 1);
+                obj.put(nome, resultSet.getString("name"));
+
+            }
+
+            obj.put("numberOfPlaylists", i);
+
+        } catch (SQLException ex) {
+            return null;
+        }catch (Exception e){
+            return null;
+        }
+
+        return obj;
+
+    }
 
     public int getPlaylistID(String nome, int id){
 
