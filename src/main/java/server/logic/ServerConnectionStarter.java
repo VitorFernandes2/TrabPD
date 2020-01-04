@@ -114,18 +114,71 @@ public class ServerConnectionStarter {
         
         String wait = myObj.nextLine();
         
+        
+        try {
+            // abre socket para UDP para receber o resgisto no DS
+            socket = new DatagramSocket(0);
+
+            InetAddress address = InetAddress.getByName(this.sd.getDsIP());
+
+            sd.Obj().put("msg", "dataEraseServer");
+            
+            sd.Obj().put("Port", "" + sd.getServerPort());
+
+            String StrToSend = sd.Obj().toString();
+            
+            byte [] buf = StrToSend.getBytes();
+            
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, address, Integer.parseInt(this.sd.getDsPort()));
+
+            socket.send(packet);
+            
+            // recebe o tipo de servidor pelo ds
+            byte[] b1r = new byte[1024]; // onde vais receber os bytes, se a msg for maior do q o tamanho, ela fica cortada.
+        
+            DatagramPacket dp1 = new DatagramPacket(b1r,b1r.length); // so  necessario fazer o datagrampacket com ip e port se for pra receber coisas.
+
+            socket.receive(dp1); // recebe o packet pela socket j criada
+
+            String str = new String(dp1.getData()); // traduz a informao recebida para string
+
+            System.out.println("Desligado: " + str);
+            
+            socket.close();
+            
+        } catch (SocketException ex) {
+            
+            sd.Obj().put("exception", ex.getMessage());
+            
+            sd.notifyObserver(4);
+            
+        } catch (UnknownHostException ex) {
+            
+            sd.Obj().put("exception", ex.getMessage());
+            
+            sd.notifyObserver(4);
+            
+        } catch (IOException ex) {
+            
+            sd.Obj().put("exception", ex.getMessage());
+            
+            sd.notifyObserver(4);
+            
+        }
+        
+        
         try {
             //Desligo das ligacoes UDP com o DS para pings
-            aliveProcedure.terminate();
+            aliveProcedure.terminate();//-----------------
             //--------------------------------------------
             
             //Obriga a Thread do Servidor a parar
-            threadclass.stopthread();
+            threadclass.stopthread();//----------
             //-----------------------------------
             
             //Cdigo de terminio de Multicast
-            multi.turnOff();
-            //-------------------------------
+            multi.turnOff();//--------------
+            //------------------------------
             
             //retirar depois para tratamento de morte do servidor
             System.exit(0);//------------------------------------

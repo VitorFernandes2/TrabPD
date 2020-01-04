@@ -90,12 +90,12 @@ public class DSAliveProcedure extends Thread {
                     
                     serverLogic.getDbaction().setNamedb(namebd);
                     
-                    //Cpia dos dados mais atualizados da base de dados anterior para a Principal
+                    //Copia dos dados mais atualizados da base de dados anterior para a Principal
                     
                     try {
                         String OldString = "jdbc:mysql://localhost:3306/" + oldNamebd + "?useTimezone=true&serverTimezone=UTC&useSSL=false";
-                        Connection connectPrinserverLogicpal = DriverManager.getConnection(OldString,serverLogic.getDbaction().getUser(),serverLogic.getDbaction().getPass());
-                        Statement stmt2 = connectPrinserverLogicpal.createStatement();
+                        Connection connectPrincipal = DriverManager.getConnection(OldString,serverLogic.getDbaction().getUser(),serverLogic.getDbaction().getPass());
+                        Statement stmt2 = connectPrincipal.createStatement();
 
                         try {
                             String selectSql = ("SELECT * FROM `users`");
@@ -210,12 +210,12 @@ public class DSAliveProcedure extends Thread {
                                 mudp.getMulticastSock().send(packetUser);
                             }
                         } catch (SQLException ex) {
-                            serverLogic.Obj().put("exception", "[ERROR] Copia das Musicas assoserverLogicadas a cada Playlist -> " + ex.getMessage());
+                            serverLogic.Obj().put("exception", "[ERROR] Copia das Musicas associadas a cada Playlist -> " + ex.getMessage());
                             serverLogic.notifyObserver(4);
                             break;
                         }
 
-                        connectPrinserverLogicpal.close();
+                        connectPrincipal.close();
                         stmt2.close();
 
                     } catch (SQLException ex) {
@@ -230,16 +230,16 @@ public class DSAliveProcedure extends Thread {
             }
 
         } catch (SocketException e) {
-            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no socket de pings de ligao.\n" + e.getMessage());
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no socket de pings de ligacao.\n" + e.getMessage());
             serverLogic.notifyObserver(4);
         } catch (IOException e) {
-            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro nos pings de ligao.\n" + e.getMessage());
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro nos pings de ligacao.\n" + e.getMessage());
             serverLogic.notifyObserver(4);
         } catch (ParseException e) {
-            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Parse do objeto JSON nos pings de ligao.\n" + e.getMessage());
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Parse do objeto JSON nos pings de ligacao.\n" + e.getMessage());
             serverLogic.notifyObserver(4);
         } catch (SQLException e) {
-            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Cdigo de ligao  base de dados.\n" + e.getMessage());
+            serverLogic.getSd().getObjMudance().put("exception", "[ERROR] Erro no Codigo de ligacao  base de dados.\n" + e.getMessage());
             serverLogic.notifyObserver(4);
         }
         
@@ -247,6 +247,7 @@ public class DSAliveProcedure extends Thread {
 
     public void terminate(){
         this.finished = true;
+        
     }
 
 }
