@@ -111,6 +111,11 @@ public class Interfacemain implements observer{
             case 20:
                 this.playPlayList(data);
                 break;
+                
+            //View de pesquisa
+            case 21:
+                this.Searchnumber(data);
+                break;
 
             case 444:
                 String exc = (String) data.getJObj().get("exception");
@@ -281,6 +286,35 @@ public class Interfacemain implements observer{
         data.setMenu(6);
         
     }
+    
+    private void Searchnumber(ConnectData data){
+
+        System.out.println("Entrou no Searchnumber");
+        System.out.println("---Como Utilizar---");
+        System.out.println("  -> Escreva o nome da musica para procurar por nome (ex: don't stop me now) ");
+        System.out.println("  -> Escreva o nome : filtro : parametro para utilizar filtros (ex: don't stop me now : autor : Queen)");
+        System.out.println("  -> Filtros possiveis: artist, album, year, genre, duration");
+        
+        String comando = Readers.readString("Insira o Comando: ");
+        
+        /*JSONObject obj = data.getJObj();
+
+        long numberMusics = (long)obj.get("numberOfMusics");
+
+        for (long i = 1; i <= numberMusics; i++) {
+
+            String nome = "music" + i;
+            JSONArray array = (JSONArray) obj.get(nome);
+
+            System.out.println(nome + "\n" + array.get(0) + "\n" + array.get(1) + "\n"
+                    + array.get(2) + "\n" + array.get(3) + "\n"
+                    + array.get(4) + "\n" + array.get(5) + "\n");
+
+        }*/
+        data.setCommand(comando);
+        data.setMenu(6);
+        
+    }
 
     private void removeMusic(ConnectData data) {
 
@@ -322,6 +356,7 @@ public class Interfacemain implements observer{
 
             System.out.println("\nMusicas:");
             System.out.println("listMusics - Listar as musicas na base de dados");
+            System.out.println("searchMusics - Procurar musicas");
             System.out.println("createMusic - Criar uma musica");
             System.out.println("removeMusic - Remover musica");
             System.out.println("changeMusic - Alterar musica");
@@ -332,7 +367,7 @@ public class Interfacemain implements observer{
 
         }while (!cmd.equals("listMusics") && !cmd.equals("createMusic")
                 && !cmd.equals("removeMusic") && !cmd.equals("changeMusic")
-                && !cmd.equals("playMusic") && !cmd.equals("voltar"));
+                && !cmd.equals("playMusic") && !cmd.equals("voltar") && !cmd.equals("searchMusics"));
 
         data.setCommand(cmd);
 

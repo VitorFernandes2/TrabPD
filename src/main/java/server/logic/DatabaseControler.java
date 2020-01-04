@@ -708,6 +708,63 @@ public class DatabaseControler {
         return Jobj;
 
     }
+    
+    public JSONObject listMusics(String search){
+            
+        boolean filt = false;
+        String[] parts = null;
+        if(search.contains(":")){
+            parts = search.split(" : ");
+            filt = true;
+            if(parts.length < 3){
+                return null;
+            }
+        }
+            
+        JSONObject Jobj = new JSONObject();
+        Jobj.put("message", "musicsList");
+        try {
+            
+            String selectSql = "";
+            if(filt == false){
+                selectSql = "SELECT * FROM musics WHERE name = '" + search + "'" ;
+            }else{
+                if(parts[1].equals("artist") || parts[1].equals("album") || parts[1].equals("year")  || parts[1].equals("duration")  || parts[1].equals("genre")){
+                    selectSql = "SELECT * FROM musics WHERE name = '" + parts[0] + "' AND " +parts[1] + " = '" + parts[2] + "'";
+                }else{
+                    return null;
+                }
+
+            }
+            
+            ResultSet resultSet = stmt.executeQuery(selectSql);
+            int i = 0;
+            while(resultSet.next()){
+
+                i++;
+                String nome = "music" + i;
+                JSONArray array = new JSONArray();
+                array.add(resultSet.getString("name"));
+                array.add(resultSet.getString("artist"));
+                array.add(resultSet.getString("album"));
+                array.add(resultSet.getString("year"));
+                array.add(resultSet.getDouble("duration"));
+                array.add(resultSet.getString("genre"));
+                Jobj.put(nome, array);
+
+            }
+
+            Jobj.put("numberOfMusics", i);
+
+        } catch (SQLException ex) {
+            return null;
+        } catch (Exception e){
+            return null;
+        }
+
+        return Jobj;
+
+    }
 
     public int getMusicId(String nome, String autor, ServerLogic sl){
 
