@@ -92,8 +92,7 @@ public class ServerConnectionStarter {
             
         }
         
-        sd.Obj().put("output", "Server a correr.");
-        
+        sd.Obj().put("output", "Server a correr.\nA iniciar Pings.");
         sd.notifyObserver(1);
         
         //Comea a comunicao em multicast
@@ -106,6 +105,9 @@ public class ServerConnectionStarter {
         aliveProcedure.start();
         //---------------
         
+        sd.Obj().put("output", "Pings iniciados.\nPode receber clientes.");
+        sd.notifyObserver(1);
+        
         ThreadClientRequests threadclass = new ThreadClientRequests(sd, multi); // pode ser mai pratica REVER
         
         threadclass.start();
@@ -116,7 +118,7 @@ public class ServerConnectionStarter {
         
         
         try {
-            // abre socket para UDP para receber o resgisto no DS
+            // abre socket para UDP para receber o desligar do servidor no DS
             socket = new DatagramSocket(0);
 
             InetAddress address = InetAddress.getByName(this.sd.getDsIP());

@@ -2,6 +2,8 @@ package server.logic;
 
 import java.io.*;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -61,8 +63,49 @@ public class ThreadClientListenTreatment implements Runnable {
                     JSONObject JObj = (JSONObject) JsonParser.parse(str);
 
                     String cmd = (String) JObj.get("Command");
+                    
+                    if(cmd.equals("exit")){
+                        //Envio de mensagem ao DS que este servidor tem menos um cliente
+                        DatagramSocket socket = new DatagramSocket(0);
 
-                    if (cmd.equals("createMusic")){
+                        InetAddress address = InetAddress.getByName(this.si.getDsIP());
+
+                        si.Obj().put("msg", "dataEraseClient");
+
+                        si.Obj().put("Port", "" + si.getServerPort());
+                        
+                        si.Obj().put("ClientPort", "" + Client.getPort());
+                        
+                        si.Obj().put("ClientIP", "" + Client.getInetAddress());
+
+                        String StrToSend = si.Obj().toString();
+
+                        byte [] buf = StrToSend.getBytes();
+
+                        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, Integer.parseInt(this.si.getDsPort()));
+
+                        socket.send(packet);
+
+                        // recebe o tipo de servidor pelo ds
+                        byte[] b1r = new byte[1024]; // onde vais receber os bytes, se a msg for maior do q o tamanho, ela fica cortada.
+
+                        //so necessario fazer o datagrampacket com ip e port se for pra receber coisas.
+                        DatagramPacket dp1 = new DatagramPacket(b1r,b1r.length);
+
+                        // recebe o packet pela socket j criada
+                        socket.receive(dp1);
+
+                        // traduz a informao recebida para string
+                        str = new String(dp1.getData());
+
+                        si.Obj().put("output", "Client " + this.ID + " foi desligado: " + str);
+                        si.notifyObserver(1);
+
+                        socket.close();
+                        //--------------------------------------------------------------
+                        break;
+                    }
+                    else if (cmd.equals("createMusic")){
 
                         ped = true;
 

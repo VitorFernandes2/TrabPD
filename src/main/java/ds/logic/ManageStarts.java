@@ -66,7 +66,7 @@ public class ManageStarts implements Runnable {
 
                     //Cliente
                     String Port = (String) JObj.get("Port");
-                    System.out.println("Encontrei um cliente");
+                    System.out.println("Encontrei um cliente.");
                     tratamentoClientes(Socket, Packet.getAddress(),
                             ("" + Packet.getPort()));
 
@@ -76,17 +76,26 @@ public class ManageStarts implements Runnable {
                     String Port = (String) JObj.get("Port");
                     System.out.println(Port);
 
-                    System.out.println("Encontrei um servidor");
+                    System.out.println("Encontrei um servidor.");
                     tratamentoServidores(Packet, Port, Socket);
-
+                    
                 } else if ("dataEraseServer".equals(msg)) {
 
                     //Eliminar um servidor desligado
                     String Port = (String) JObj.get("Port");
                     System.out.println(Port);
 
-                    System.out.println("Encontrei um pedido de desligar de servidor");
+                    System.out.println("Encontrei um pedido de desligar de servidor.");
                     tratamentoEraseServidores(Packet, Port, Socket);
+
+                } else if ("dataEraseClient".equals(msg)) {
+
+                    //Eliminar um cliente que saiu do servidor
+                    String Port = (String) JObj.get("Port");
+                    System.out.println(Port);
+
+                    System.out.println("O servidor de porto " + Port + " teve um cliente que saiu.");
+                    tratamentoEraseClientes(Packet, Port, Socket, (String) JObj.get("ClientPort"), (String) JObj.get("ClientIP"));
 
                 }
 
@@ -143,8 +152,6 @@ public class ManageStarts implements Runnable {
         if(!servers.isEmpty()){
             //Verifica todos os servidores
             for (Server item: servers){
-                System.out.println("Portos: " + item.getPort());
-                System.out.println("Porto enviado: " + Port);
                 if (item.getPort().equals(Port)){
                     item.turnOff();
                     erased = true;
@@ -155,6 +162,40 @@ public class ManageStarts implements Runnable {
         
         /// tratamento de principal
         byte[] b = String.valueOf(erased).getBytes();
+        
+        DatagramPacket packete = new DatagramPacket(b,
+                    b.length,
+                    packet.getAddress(), packet.getPort());
+
+        try {
+            socket.send(packete);
+        } catch (IOException ex) {
+            System.out.println("Nao foi possivel enviar a role (principal ou nao) para o servidor. Erro :" + ex.getLocalizedMessage());
+        }
+        
+    }
+
+    private void tratamentoEraseClientes(DatagramPacket packet, String Port, DatagramSocket socket, String ClientPort, String ClientIP){
+
+        String IP = packet.getAddress().getHostAddress();
+        boolean lessOne = false;
+
+        if(!servers.isEmpty()){
+            //Verifica todos os servidores
+            for (Server item: servers){
+                if (item.getPort().equals(Port)){
+                    Client teee = new Client(ClientIP, ClientPort);
+                    System.out.println("Removed client IP: " + teee.getIp());
+                    System.out.println("Removed client Port: " + teee.getPort());
+                    item.removeClient(teee);
+                    lessOne = true;
+                    break;
+                }
+            }
+        }
+        
+        /// tratamento de principal
+        byte[] b = String.valueOf(lessOne).getBytes();
         
         DatagramPacket packete = new DatagramPacket(b,
                     b.length,
