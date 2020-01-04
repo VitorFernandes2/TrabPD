@@ -1,8 +1,5 @@
 package client.logic;
 
-import sun.audio.*;
-
-import javax.sound.sampled.*;
 import java.io.*;
 
 public class PlayMusic {
