@@ -292,7 +292,8 @@ public class MulticastUDP {
                     else{
                         String result = commandParse(cmd);
                         if(!result.contains("Sem Tipo definido [2] !\n")){
-                            System.out.println("\nRecebi: " + cmd + "\nTentativa de execucao de comando: " + result);
+                            ci.Obj().put("output", "\nRecebi: " + cmd + "\nTentativa de execucao de comando: " + result);
+                            ci.notifyObserver(1);
                         }
                     }
                     
