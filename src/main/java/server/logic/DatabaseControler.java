@@ -1077,6 +1077,7 @@ public class DatabaseControler {
             return null;
 
         ArrayList<String> list = new ArrayList<>();
+        ArrayList<String> aux = new ArrayList<>();
 
         try{
 
@@ -1086,15 +1087,19 @@ public class DatabaseControler {
             while (resultSet.next()){
 
                 int musicId = resultSet.getInt("music_id");
-                String path = getMusicPath(musicId);
-
-                if (path != null)
-                    list.add(path);
+                aux.add(String.valueOf(musicId));
 
             }
 
+            for(String path : aux){
+                String ppp = getMusicPath(Integer.parseInt(path));
+                list.add(ppp);
+            }
+
         } catch (SQLException e) {
-            return list;
+            sl.Obj().put("exception", "[ERROR] playPlaylist -> " + e.getMessage());
+            sl.notifyObserver(4);
+            return null;
         }
 
         return list;

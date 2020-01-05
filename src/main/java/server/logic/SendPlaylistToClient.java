@@ -47,6 +47,11 @@ public class SendPlaylistToClient extends Thread{
             SendFileToClient sendFileToClient =
                     new SendFileToClient(list.get(i), out);
             sendFileToClient.start();
+            try {
+                sendFileToClient.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
         }
 
