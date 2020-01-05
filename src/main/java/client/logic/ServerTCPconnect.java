@@ -63,232 +63,6 @@ public class ServerTCPconnect implements Runnable{
         }
     }
     
-    public boolean resetAction(int guardaMenu, JSONObject obj, boolean didPush) {
-        PrintWriter pr = null;
-        boolean close = false;
-        try {
-            //Tratamento do comando introduzido antes de mudar para o novo servidor
-            pr = new PrintWriter(s.getOutputStream());
-            InputStreamReader in = new InputStreamReader(s.getInputStream());
-            BufferedReader bf;
-            String str;
-            switch(guardaMenu){
-                case 2:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    didPush = true;
-                    break;
-                case 3:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    didPush = true;
-                    break;
-                case 7:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    close = true;
-                    break;
-                case 8:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    didPush = true;
-                    data.setMenu(7);
-                    break;
-                case 9:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    
-                    bf = new BufferedReader(in);
-                    
-                    str = bf.readLine();
-                    
-                    JSONParser JsonParser = new JSONParser();
-                    JSONObject JObj = (JSONObject) JsonParser.parse(str);
-                    data.setJObj(JObj);
-                    
-                    this.upperclass.update(3, data);
-                    
-                    //Se puder enviar o ficheiro
-                    if (JObj.get("message").equals("sendFile")){
-                        SendFileToServer sendFileToServer = new SendFileToServer(data.getMusic().getPath(),
-                                s.getOutputStream());
-                        sendFileToServer.start();
-                    }
-                    
-                    data.setMenu(6);
-                    break;
-                case 11:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    
-                    //Mensagem de confirmacao ou negacao
-                    BufferedReader bf2 = new BufferedReader(in);
-                    
-                    String str2 = bf2.readLine();
-                    
-                    JSONParser JsonParser2 = new JSONParser();
-                    JSONObject JObj2 = (JSONObject) JsonParser2.parse(str2);
-                    
-                    if (JObj2.get("message").equals("receiveFile")){
-                        
-                        long fileSize = (long)JObj2.get("size");
-                        ReceiveFileFromServer receiveFileFromServer =
-                                new ReceiveFileFromServer(s.getInputStream(), s.getOutputStream(),
-                                        "tmp.mp3", fileSize);
-                        receiveFileFromServer.start();
-                        receiveFileFromServer.join();
-                        
-                    }
-                    break;
-                case 12:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    didPush = true;
-                    break;
-                case 13:
-                    pr.println(obj.toString());
-                    pr.flush();
-
-                    //Mensagem de confirmacao ou negacao
-                    BufferedReader bf3 = new BufferedReader(in);
-
-                    String str3 = bf3.readLine();
-
-                    JSONParser JsonParser3 = new JSONParser();
-                    JSONObject JObj3 = (JSONObject) JsonParser3.parse(str3);
-
-                    data.setJObj(JObj3);
-
-                    this.upperclass.update(13, data);
-                    break;
-                case 14:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    didPush = true;
-                    break;
-                case 16:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    didPush = true;
-                    break;
-                case 17:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    didPush = true;
-                    break;
-                case 18:
-                    pr.println(obj.toString());
-                    pr.flush();
-                    didPush = true;
-                    break;
-                case 19:
-                    pr.println(obj.toString());
-                    pr.flush();
-
-                    //Mensagem de confirmacao ou negacao
-                    bf = new BufferedReader(in);
-
-                    str = bf.readLine();
-
-                    JsonParser = new JSONParser();
-                    JObj = (JSONObject) JsonParser.parse(str);
-
-                    data.setJObj(JObj);
-
-                    this.upperclass.update(19, data);
-                    break;
-                case 20:
-                    pr.println(obj.toString());
-                    pr.flush();
-
-                    //Recebe as músicas
-                    bf = new BufferedReader(in);
-
-                    str = bf.readLine();
-
-                    JsonParser = new JSONParser();
-                    JObj = (JSONObject) JsonParser.parse(str);
-
-                    if (JObj.get("message").equals("receiveFiles")){
-                        
-                        JObjE = new JSONObject();
-                        JObjE.put("output", JObj.toString());
-                        data.setJObj(JObjE);
-                        upperclass.update(86, data);
-
-                        long numberOfFiles = (long)JObj.get("numberOfFiles");
-
-                        for (int i = 0; i < numberOfFiles; i++) {
-
-                            String playNome = "Nome" + i;
-                            String name = (String)JObj.get(playNome);
-
-                            String MusicSize = "Size" + i;
-                            long fileSize = (long)JObj.get(MusicSize);
-
-                            String filename = "tmp" + i + ".mp3";
-
-                            ReceiveFileFromServer receiveFileFromServer =
-                                    new ReceiveFileFromServer(s.getInputStream(), s.getOutputStream(),
-                                            filename, fileSize);
-                            receiveFileFromServer.start();
-                            receiveFileFromServer.join();
-
-                        }
-
-                    }
-                    break;
-            }
-            
-            //Tratamento dos didPush
-            if(didPush){
-                didPush = false;
-                bf = new BufferedReader(in);
-
-                str = bf.readLine();
-
-                JSONParser JsonParser = new JSONParser();
-                JSONObject JObj = (JSONObject) JsonParser.parse(str);
-                boolean Sucesso = (boolean) JObj.get("sucesso");
-
-                if(!Sucesso){
-                    switch(guardaMenu){
-                        case 2:
-                            data.setMenu(7);
-                            break;
-                        case 3:
-                            data.setMenu(7);
-                            break;
-                    }
-                }
-
-                data.getJObj().put("output", JObj.toString());
-                upperclass.update(86, data);
-            }
-            
-        } catch (IOException ex) {
-            JObjE = new JSONObject();
-            JObjE.put("exception", "[ERROR] Erro na reposicao de comando no case " + guardaMenu + ". " + ex.getMessage());
-            data.setJObj(JObjE);
-            upperclass.update(444, data);
-        } catch (InterruptedException ex) {
-            JObjE = new JSONObject();
-            JObjE.put("exception", "[ERROR] Erro na interrupcao no case " + guardaMenu + ". " + ex.getMessage());
-            data.setJObj(JObjE);
-            upperclass.update(444, data);
-        } catch (ParseException ex) {
-            JObjE = new JSONObject();
-            JObjE.put("exception", "[ERROR] Erro na traducao do objeto JSON no case " + guardaMenu + ". " + ex.getMessage());
-            data.setJObj(JObjE);
-            upperclass.update(444, data);
-        } finally {
-            pr.close();
-        }
-        
-        return close;
-        
-    }
-    
     public synchronized void start() {
         new Thread(this).start();
     }
@@ -300,8 +74,8 @@ public class ServerTCPconnect implements Runnable{
             boolean didPush = false;
             boolean close = false;
             s = new Socket(this.ip, Integer.parseInt(this.port)); // DUMMY CODE : modificar para enviar o q é preciso
-            PrintWriter pr;
-            InputStreamReader in;
+            PrintWriter pr = null;
+            InputStreamReader in = null;
             StringBuilder sb;
             BufferedReader bf;
             String str = new String();
@@ -616,7 +390,6 @@ public class ServerTCPconnect implements Runnable{
                                 pr = new PrintWriter(s.getOutputStream());
                                 pr.println(obj.toString());
                                 pr.flush();
-                                didPush = true;
                                 //------------------------
                                 
                                 break;
@@ -936,6 +709,7 @@ public class ServerTCPconnect implements Runnable{
                         
                     }
                 } catch (SocketException e) {
+                    didPush = false;
                     data.getJObj().put("output", "[ERROR] Redirecionamento do utilizador para outro servidor.");
                     upperclass.update(86, data);
                     
@@ -1074,7 +848,6 @@ public class ServerTCPconnect implements Runnable{
                         case 14:
                             pr.println(obj.toString());
                             pr.flush();
-                            didPush = true;
                             break;
                         case 16:
                             pr.println(obj.toString());
@@ -1253,11 +1026,18 @@ public class ServerTCPconnect implements Runnable{
                 
             }
             
+            //Provisório para fechar aplicação quando o servidor for abaixo
+            this.setCommand("exit");
+            //-------------------------------------------------------------
+            
+            pr.println(obj.toString());
+            pr.flush();
+            
             s.close();
 
         } catch (SocketException e) {
             JObjE = new JSONObject();
-            JObjE.put("exception", "[ERROR] Socket de ServerTCPconnect " + e.toString());
+            JObjE.put("exception", "[ERROR] Nao foi possivel ligar ao servidor: " + e.toString());
             data.setJObj(JObjE);
             upperclass.update(5, data);
             //Provisório para fechar aplicação quando o servidor for abaixo
@@ -1276,9 +1056,9 @@ public class ServerTCPconnect implements Runnable{
         }
 
         JObjE = new JSONObject();
-        JObjE.put("exception", "Desligando o Cliente.");
+        JObjE.put("output", "Desligando o Cliente.");
         data.setJObj(JObjE);
-        upperclass.update(5, data);
+        upperclass.update(86, data);
         //Provisório para fechar aplicação quando o servidor for abaixo
         this.setCommand("exit");
         //-------------------------------------------------------------

@@ -14,6 +14,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main extends UnicastRemoteObject implements AdministrationInterface {
 
@@ -61,11 +62,13 @@ public class Main extends UnicastRemoteObject implements AdministrationInterface
         }catch(RemoteException | MalformedURLException e){
 
         }
-
-
+        
         String quitMessage = "";
-        while (!quitMessage.equals("quit"))
-            quitMessage = Readers.readString("\nInsira quit para terminar o ds: ");
+        Scanner sc = new Scanner(System.in);
+        while (!quitMessage.equals("quit")){
+            System.out.println("\nInsira quit para terminar o ds: ");
+            quitMessage = sc.nextLine();
+        }
 
         if (manageServers != null) {
             manageServers.terminate();
@@ -73,7 +76,9 @@ public class Main extends UnicastRemoteObject implements AdministrationInterface
         if (servertemp != null) {
             servertemp.terminate();
         }
-
+        
+        System.exit(0);
+        
     }
 
     @Override

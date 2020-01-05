@@ -39,7 +39,7 @@ public class ThreadClientRequests implements Runnable {
                 si.notifyObserver(1);
                 //-----------------------------------------------------
                 
-                while(!si.getServer().isClosed()){
+                while(!si.getServer().isClosed() && multi.isCorre()){
                     s = si.getServer().accept();
                     si.addClients(s);
                     tclt = new ThreadClientListenTreatment(s, si, multi);
@@ -48,15 +48,16 @@ public class ThreadClientRequests implements Runnable {
                 }
 
             } catch (IOException ex) {
-                si.Obj().put("exception", "[ERROR] No foi possivel criar o socket TCP ou Servidor forado a parar.\n" + ex.getMessage());
+                si.Obj().put("exception", "[ERROR] No foi possivel criar o socket TCP ou Servidor forcado a parar. " + ex.getMessage());
                 si.notifyObserver(4);
                 si.desconnetAllClients();
+                return;
             }
             
             si.desconnetAllClients();
             
         } catch (IOException ex) {
-            si.Obj().put("exception", "[ERROR] No foi possivel desconectar todos os Clientes e/ou as suas Threads.\n" + ex.getMessage());
+            si.Obj().put("exception", "[ERROR] No foi possivel desconectar todos os Clientes e/ou as suas Threads. " + ex.getMessage());
             si.notifyObserver(4);
         }
 

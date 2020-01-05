@@ -76,6 +76,20 @@ public class DSAliveProcedure extends Thread {
                     serverLogic.notifyObserver(1);
 
                 }
+                else if (obj.get("message").equals("orderToDie")){
+
+                    long numberOfServers = (long) obj.get("numberOfServers");
+                    serverLogic.getSd().setNumberOfServers(numberOfServers);
+                    
+                    serverLogic.getSd().getObjMudance().put("output", "Numero de servidores para serem desligados: " + numberOfServers);
+                    serverLogic.notifyObserver(1);
+                    mudp.turnOff();
+                    serverLogic.desconnetAllClients();
+                    serverLogic.getServer().close();
+                    this.terminate();
+                    return;
+                    
+                }
                 else if (obj.get("message").equals("giveadmin")){
                     
                     String namebd = (String) obj.get("namebd");
@@ -247,7 +261,10 @@ public class DSAliveProcedure extends Thread {
 
     public void terminate(){
         this.finished = true;
-        
+    }
+
+    public boolean isFinished() {
+        return finished;
     }
 
 }

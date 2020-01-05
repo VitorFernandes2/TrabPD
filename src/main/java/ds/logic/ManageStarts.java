@@ -11,7 +11,10 @@ import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ManageStarts implements Runnable {
 
@@ -22,6 +25,7 @@ public class ManageStarts implements Runnable {
     //Dados do DS
     private String IP;
     private String Port;
+    private DatagramSocket Socket;
 
     //Variável de gestão de servidores
     private ServerList servers;
@@ -40,15 +44,14 @@ public class ManageStarts implements Runnable {
     //Thread para receber todos os novos servidores
     @Override
     public void run() {
-
-        DatagramSocket Socket;
+        
         DatagramPacket Packet;
 
         try {
 
             Socket = new DatagramSocket(Integer.parseInt(Port));
 
-            while (!finish) {
+            while (!finish && !Socket.isClosed()) {
 
                 System.out.println("Estou a espera de Objectos: "); // TEMP
                 byte[] buf = new byte[TotalBytes];
@@ -78,7 +81,7 @@ public class ManageStarts implements Runnable {
 
                     System.out.println("Encontrei um servidor.");
                     tratamentoServidores(Packet, Port, Socket);
-                    
+
                 } else if ("dataEraseServer".equals(msg)) {
 
                     //Eliminar um servidor desligado
@@ -97,6 +100,8 @@ public class ManageStarts implements Runnable {
                     System.out.println("O servidor de porto " + Port + " teve um cliente que saiu.");
                     tratamentoEraseClientes(Packet, Port, Socket, (String) JObj.get("ClientPort"), (String) JObj.get("ClientIP"));
 
+                } else if ("Desliga DS".equals(msg)) {
+                    Socket.close();
                 }
 
             }

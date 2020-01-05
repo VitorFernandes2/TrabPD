@@ -69,6 +69,10 @@ public class ServerData {
         this.ServerPort = ServerPort;
     }
     
+    public void removeAllListen(){
+        Servers.clear();
+    }
+    
     public ThreadClientListenTreatment getListen(ThreadClientListenTreatment Listen){
         return Servers.get(Servers.indexOf(Listen));
     }
@@ -84,7 +88,8 @@ public class ServerData {
     public void desconnetAllClientsAndClientListeners() throws IOException {
         desconnetAllClients();
         removeAllClients();
-        for(ThreadClientListenTreatment Listen : Servers){
+        List<ThreadClientListenTreatment> serverAux = Servers;
+        for(ThreadClientListenTreatment Listen : serverAux){
             removeListenClient(Listen);
         }
     }

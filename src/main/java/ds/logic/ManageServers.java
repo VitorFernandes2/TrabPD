@@ -8,6 +8,8 @@ import org.json.simple.JSONObject;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ManageServers extends Thread {
 
@@ -194,15 +196,16 @@ public class ManageServers extends Thread {
                         }
                         
                     }
+                    
                 }
 
                 Thread.sleep(10000);
 
             }
-
+            
         } catch (UnknownHostException e) {
             e.printStackTrace();
-         } catch (SocketException e) {
+        } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -214,6 +217,44 @@ public class ManageServers extends Thread {
 
     public void terminate(){
         terminate = true;
+        
+        DatagramPacket packet;
+        DatagramSocket socket;
+
+        try {
+
+            socket = new DatagramSocket();
+        
+            ServerList serversAux = new ServerList();
+            serversAux.addAll(servers);
+
+            //Avisa cada servidor que tem de morrer
+            
+            for (Server item : serversAux) {
+                
+                JSONObject objSend = new JSONObject();
+                objSend.put("message", "orderToDie");
+                objSend.put("numberOfServers", serversAux.size());
+
+                String msgToSend = objSend.toJSONString();
+                byte[] buf = msgToSend.getBytes();
+                InetAddress serverIp = InetAddress.getByName(item.getIP());
+                int serverPort = Integer.parseInt(item.getPort());
+                packet = new DatagramPacket(buf, buf.length, serverIp, serverPort);
+                socket.send(packet);
+
+            }
+            
+            servers.clear();
+        
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
 
 }

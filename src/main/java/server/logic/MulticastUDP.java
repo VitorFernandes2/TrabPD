@@ -630,4 +630,8 @@ public class MulticastUDP {
         }
     }
     
+    public boolean isCorre() {
+        return corre;
+    }
+    
 }

@@ -57,6 +57,8 @@ public class DatabaseControler {
             else
                 namedb = numbtoletter();
                 
+            System.out.println("Nome da base de dados: " + namedb);
+            
             stmt = connect.createStatement();
             String CreateSql = ("CREATE DATABASE IF NOT EXISTS " + namedb);
             stmt.execute(CreateSql); 
@@ -686,7 +688,7 @@ public class DatabaseControler {
                     " WHERE name = '" + name +"' AND artist = '" + artist + "'";
             stmt.executeUpdate(deleteSql);
         } catch (SQLException ex) {
-            sl.Obj().put("exception", "[ERROR] Logout -> " + ex.getMessage());
+            sl.Obj().put("exception", "[ERROR] ChangeMusic -> " + ex.getMessage());
             sl.notifyObserver(4);
             return false;
         }
