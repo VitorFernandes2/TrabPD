@@ -206,6 +206,10 @@ public class ServerConnectionStarter {
                 wait = myObj.nextLine();
             }while(!wait.equals("sim") && !wait.equals("nao"));
             
+            //Limpeza dos logins dos clientes anteriores
+            sd.getSd().getClientsLogs().clear();
+            //------------------------------------------
+            
             if(wait.equals("nao")){
                 return;
             }

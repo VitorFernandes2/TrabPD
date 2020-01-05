@@ -234,7 +234,19 @@ public class Interfacemain implements observer{
 
         do {
             duracao = Readers.readString("Insira o duracao (em minutos e segundos) da musica (3:09 -> 3.09): ");
-            duration = Double.parseDouble(duracao);
+            try{
+                duration = Double.parseDouble(duracao);
+            } 
+            catch (NumberFormatException ex){
+                duration = -1;
+                data.getJObj().put("output", "Valor não aceite");
+                this.update(86, data);
+            } 
+            catch (NullPointerException ex){
+                duration = -1;
+                data.getJObj().put("output", "Valor não aceite");
+                this.update(86, data);
+            }
         }while (duration <= 0);
 
         String genero = Readers.readString("Insira o genero da musica: ");
@@ -258,7 +270,19 @@ public class Interfacemain implements observer{
 
         do {
             duracao = Readers.readString("Insira a nova duracao (em minutos e segundos) da musica (3:09 -> 3.09): ");
-            duration = Double.parseDouble(duracao);
+            try{
+                duration = Double.parseDouble(duracao);
+            } 
+            catch (NumberFormatException ex){
+                duration = -1;
+                data.getJObj().put("output", "Valor não aceite");
+                this.update(86, data);
+            } 
+            catch (NullPointerException ex){
+                duration = -1;
+                data.getJObj().put("output", "Valor não aceite");
+                this.update(86, data);
+            }
         }while (duration <= 0);
 
         String genero = Readers.readString("Insira o novo genero da musica: ");

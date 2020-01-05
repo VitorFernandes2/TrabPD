@@ -168,14 +168,21 @@ public class ThreadClientListenTreatment implements Runnable {
                         JSONObject obj = new JSONObject();
                         obj.put("message", "receiveFile");
                         File file = new File(path);
-                        obj.put("size", file.length());
+                        if(file.exists()){
+                            obj.put("size", file.length());
 
-                        pr.println(obj.toString());
-                        pr.flush();
+                            pr.println(obj.toString());
+                            pr.flush();
 
-                        SendFileToClient sendFileToClient =
-                                new SendFileToClient(path, Client.getOutputStream());
-                        sendFileToClient.start();
+                            SendFileToClient sendFileToClient =
+                                    new SendFileToClient(path, Client.getOutputStream());
+                            sendFileToClient.start();
+                        }
+                        else{
+                            obj.put("message", "doesntExistFile");
+                            pr.println(obj.toString());
+                            pr.flush();
+                        }
 
                     }
                     else if(cmd.equals("changeMusic")){
@@ -343,14 +350,14 @@ public class ThreadClientListenTreatment implements Runnable {
                         String username = (String)JObj.get("username");
                         String oldName = (String)JObj.get("name");
                         String newName = (String)JObj.get("newName");
-                        si.getDbaction().changePlaylist(oldName,newName,username, si);
+                        Sucesso = si.getDbaction().changePlaylist(oldName,newName,username, si);
 
                     }
                     else if(cmd.equals("removePlaylist")){
 
                         String username = (String)JObj.get("username");
                         String name = (String)JObj.get("name");
-                        si.getDbaction().removePlaylist(name,username,si);
+                        Sucesso = si.getDbaction().removePlaylist(name,username,si);
 
                     }
                     else if(cmd.equals("createPlaylist")){
@@ -375,7 +382,7 @@ public class ThreadClientListenTreatment implements Runnable {
 
                         }
 
-                        si.getDbaction().createPlaylist(name, username, musics, autors, si);
+                        Sucesso = si.getDbaction().createPlaylist(name, username, musics, autors, si);
 
                     }
                     else if(cmd.equals("playPlaylist")){

@@ -83,6 +83,15 @@ public class DSAliveProcedure extends Thread {
                     
                     serverLogic.getSd().getObjMudance().put("output", "Numero de servidores para serem desligados: " + numberOfServers);
                     serverLogic.notifyObserver(1);
+                    
+                    int Port = packet.getPort();
+                    InetAddress IP = packet.getAddress();
+
+                    String reply = "Goodbye!";
+                    buf = reply.getBytes();
+                    packet = new DatagramPacket(buf, buf.length, IP, Port);
+                    socket.send(packet);
+                    
                     mudp.turnOff();
                     serverLogic.desconnetAllClients();
                     serverLogic.getServer().close();
