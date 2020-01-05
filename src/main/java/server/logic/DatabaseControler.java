@@ -708,12 +708,12 @@ public class DatabaseControler {
                 i++;
                 String nome = "music" + i;
                 JSONArray array = new JSONArray();
-                array.add(resultSet.getString("name"));
-                array.add(resultSet.getString("artist"));
-                array.add(resultSet.getString("album"));
-                array.add(resultSet.getString("year"));
-                array.add(resultSet.getDouble("duration"));
-                array.add(resultSet.getString("genre"));
+                array.add("Nome: " + resultSet.getString("name"));
+                array.add("Artista: " + resultSet.getString("artist"));
+                array.add("Album: " + resultSet.getString("album"));
+                array.add("Ano: " + resultSet.getString("year"));
+                array.add("Duracao: " + resultSet.getDouble("duration"));
+                array.add("Genero: " + resultSet.getString("genre"));
                 Jobj.put(nome, array);
 
             }
