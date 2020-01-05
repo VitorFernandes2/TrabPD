@@ -20,10 +20,10 @@ public class RemoteService extends UnicastRemoteObject implements ObserverInterf
         try {
 
             //Localiza o servico remoto nomeado "piValueService"
-            String objectUrl = "rmi://localhost/remoteService"; //rmiregistry on localhost
+            String objectUrl = "rmi://localhost/RegistryDS"; //rmiregistry on localhost
 
             if(args.length > 0) {
-                objectUrl = "rmi://"+args[0]+"/remoteService";
+                objectUrl = "rmi://"+args[0]+"/RegistryDS";
             }
 
             AdministrationInterface service = (AdministrationInterface) Naming.lookup(objectUrl);

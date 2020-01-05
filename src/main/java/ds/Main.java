@@ -57,7 +57,7 @@ public class Main extends UnicastRemoteObject implements AdministrationInterface
 
             LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
             Main service = new Main();
-            Naming.rebind("rmi://localhost/remoteService", service);
+            Naming.rebind("rmi://localhost/RegistryDS", service);
 
         }catch(RemoteException | MalformedURLException e){
 
