@@ -197,6 +197,9 @@ public class MulticastUDP {
                                 packet = new DatagramPacket(buffer, buffer.length);
                                 multicastSock.receive(packet);
 
+                                bytes = packet.getLength();
+                                current += bytes;
+
                                 out.write(packet.getData(), 0, packet.getLength());
 
                             }while (current < size);
