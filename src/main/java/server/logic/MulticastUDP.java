@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -67,6 +66,18 @@ public class MulticastUDP {
     
     public void turnOff() {
         MulticastUDP.corre = false;
+        
+        //Forca o servidor a desligar o multicast
+        byte[] c = String.valueOf("morreu servidor " + ci.getServerPort()).getBytes();
+        DatagramPacket packetUser = new DatagramPacket(c, c.length, group, 3456);
+        try {
+            multicastSock.send(packetUser);
+        } catch (IOException ex) {
+            ci.Obj().put("exception", "[ERROR] Na morte do multicast (IO) -> " + ex.getMessage());
+            ci.notifyObserver(4);
+        }
+        //---------------------------------------
+        
     }
 
     public MulticastSocket getMulticastSock() {

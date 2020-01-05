@@ -138,10 +138,7 @@ public class ServerTCPconnect implements Runnable{
                             case 7:
                                 this.upperclass.update(7, data);
                                 
-                                if (data.getCommand().equals("entrar")){
-                                    data.setMenu(8);
-                                }
-                                else if(data.getCommand().equals("entraLogin")){
+                                if(data.getCommand().equals("entraLogin")){
                                     data.setMenu(2);
                                 }
                                 else if(data.getCommand().equals("entraRegisto")){

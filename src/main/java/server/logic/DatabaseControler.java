@@ -56,8 +56,6 @@ public class DatabaseControler {
                 namedb = "Principal";
             else
                 namedb = numbtoletter();
-                
-            System.out.println("Nome da base de dados: " + namedb);
             
             stmt = connect.createStatement();
             String CreateSql = ("CREATE DATABASE IF NOT EXISTS " + namedb);
